@@ -1,0 +1,25 @@
+@use "colors" as c;
+
+.header {
+  width: 100%;
+  background-color: c.$bg-header;
+  height: 5rem;
+  padding: 3px 30px 10px 30px;
+  border-radius: 0 0 20px 20px;
+
+  .icon-driving-school2 {
+    height: 4rem;
+    width: 4rem;
+  }
+
+  .header-nav {
+    .header-nav-link {
+      color: c.$text-header-nav;
+      padding: 5px;
+
+      &:hover {
+        background-color: c.$text-header-nav-hover-bg;
+      }
+    }
+  }
+}

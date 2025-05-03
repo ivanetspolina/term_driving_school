@@ -1,0 +1,7 @@
+@use "colors" as c;
+
+.auth-container {
+  .auth-header {
+    color: c.$text-auth-header;
+  }
+}

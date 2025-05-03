@@ -1,0 +1,45 @@
+@use "colors" as c;
+
+.profile-main {
+  color: c.$text;
+
+  .profile-info {
+    display: grid;
+    grid-template-columns: 100px 300px auto;
+    align-items: center;
+    column-gap: 0.5rem;
+
+    h2 {
+      font-size: 18px;
+      //margin: 0;
+    }
+
+    p {
+      word-break: break-all;
+      white-space: normal;
+      //margin: 0;
+    }
+
+    .btn-profile-edit {
+      flex-shrink: 0;
+      border-radius: 9999px;
+      background-color: c.$bg-btn-profile-edit; // bg-gray-400
+      padding: 4px;
+      color: c.$btn-profile-edit-color;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.btn-profile-delete {
+  background-color: #ff7171;
+  color: #ffffff;
+
+  &:hover {
+    background-color: #ffb5b5;
+  }
+}

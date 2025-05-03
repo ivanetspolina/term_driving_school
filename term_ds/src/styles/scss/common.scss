@@ -1,0 +1,79 @@
+@use "colors" as c;
+
+.custom-list {
+  list-style: none;
+  counter-reset: item;
+  padding: 15px 0 15px 0;
+  //padding-left: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    counter-increment: item;
+    color: c.$text-theme-name;
+
+    &::before {
+      content: counter(item);
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: c.$text-theme-name;
+      //#7c3aed;  rgb(124, 58, 237) // фіолетовий (Tailwind bg-purple-600)
+      color: white;
+      //font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .list-item-wrapper {
+      display: flex;
+      flex: 1 1 auto;
+      column-gap: 1rem;
+
+      a {
+        display: flex;
+        align-items: center;
+        font-family: "Nunito Sans", sans-serif;
+        font-size: 20px;
+        line-height: 20px;
+        white-space: normal;
+        word-break: break-all;
+      }
+    }
+  }
+}
+
+.center-main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.text-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: c.$text-h1;
+}
+
+.text-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+  background-color: c.$bg-profile-container;
+  padding: 60px;
+  border-radius: 12px;
+  width: 100%;
+  font-family: "Inter", sans-serif;
+}
