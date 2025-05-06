@@ -6,6 +6,7 @@ import Profile from "./pages/ProfilePage.jsx";
 import Statistics from "./pages/StatisticsPage.jsx";
 import Registration from "./pages/RegistrationPage.jsx";
 import Authorization from "./pages/AuthorizationPage.jsx";
+import RunTest from "./pages/RunTestPage.jsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/auth" element={<Authorization />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/runtest" element={<RunTest />} />
         </Routes>
       </Router>
     </>

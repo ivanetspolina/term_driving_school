@@ -5,6 +5,8 @@ export default function ConfirmModal({
   description,
   onConfirm,
   onCancel,
+  confirmLabel = "Так",
+  cancelLabel = "Скасувати",
 }) {
   return (
     <div className="fixed font-[Inter] inset-0 bg-gray-600/50 flex items-center justify-center z-50">
@@ -22,15 +24,15 @@ export default function ConfirmModal({
         <div className="flex justify-center gap-4">
           <button
             onClick={onConfirm}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            className="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500 transition"
           >
-            Так, підтвердити
+            {cancelLabel}
           </button>
           <button
             onClick={onCancel}
             className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
           >
-            Скасувати
+            {confirmLabel}
           </button>
         </div>
       </div>

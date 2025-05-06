@@ -1,6 +1,7 @@
 import Header from "../components/Header.jsx";
 import ScreenshotsSection from "../components/ScreenshotsSection.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
+import { NavLink } from "react-router-dom";
 
 export default function Test() {
   return (
@@ -16,7 +17,8 @@ export default function Test() {
         <ul role="list" className="test-list custom-list">
           <li>
             <div className="list-item-wrapper">
-              <a href="#">Дорожні знаки</a>
+              <NavLink to="/runtest">Дорожні знаки</NavLink>
+              {/*<a href="#">Дорожні знаки</a>*/}
             </div>
 
             <div className="list-progress-bar">

@@ -15,10 +15,17 @@ export default function Registration() {
 
             <form className="auth-form flex max-w-md flex-col gap-4">
               <AuthInputField
+                id="name"
+                label="Ім'я"
+                type="string"
+                placeholder="Emily"
+                required
+              />
+              <AuthInputField
                 id="email"
                 label="Пошта"
                 type="email"
-                placeholder="Enter email"
+                placeholder="user@example.com"
                 required
               />
               <AuthInputField

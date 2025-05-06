@@ -37,14 +37,6 @@ export default function Profile() {
           </div>
 
           <div className="profile-info">
-            <h2>Прізвище</h2>
-            <p>Лір'єр</p>
-            <button type="button" className="btn-profile-edit">
-              <PencilLine size={15} />
-            </button>
-          </div>
-
-          <div className="profile-info">
             <h2>Пошта</h2>
             <p>ariel.l@example.com</p>
             <button type="button" className="btn-profile-edit">
@@ -77,6 +69,8 @@ export default function Profile() {
         <ConfirmModal
           title="Підтвердіть дію"
           description="Ви точно хочете видалити акаунт?"
+          cancelLabel="Скасувати"
+          confirmLabel="Так, підтвердити"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
         />
