@@ -21,6 +21,14 @@ function App() {
           <Route path="/auth" element={<Authorization />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/runtest" element={<RunTest />} />
+          {/*<Route*/}
+          {/*    path="/tests"*/}
+          {/*    element={*/}
+          {/*      <PrivateRoute>*/}
+          {/*        <Test />*/}
+          {/*      </PrivateRoute>*/}
+          {/*    }*/}
+          {/*/>*/}
         </Routes>
       </Router>
     </>
