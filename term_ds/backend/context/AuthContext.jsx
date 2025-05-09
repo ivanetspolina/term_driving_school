@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import api from "../api/axios";
 
 export const AuthContext = createContext();
@@ -21,6 +21,10 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
+  const register = async ({ name, email, password }) => {
+    await api.post("/auth/register", { name, email, password });
+  };
+
   const login = async (email, password) => {
     const { data } = await api.post("/auth/login", { email, password });
     localStorage.setItem("jwt", data.accessToken);
@@ -35,7 +39,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
