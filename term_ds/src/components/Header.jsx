@@ -62,7 +62,7 @@ export default function Header() {
         <DropdownDivider />
         <DropdownItem className={"p-0"}>
           <NavLink to="/" className={"font-[manrope] w-full h-full px-4 py-2 "}>
-            Вихід
+            Вихід з профілю
           </NavLink>
         </DropdownItem>
       </Dropdown>

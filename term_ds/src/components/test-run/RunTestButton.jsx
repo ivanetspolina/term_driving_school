@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ConfirmModal from "./ConfirmModal.jsx";
+import ConfirmModal from "../ConfirmModal.jsx";
 import { Check } from "lucide-react";
 
 export function RunTestButton({

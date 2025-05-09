@@ -1,10 +1,10 @@
 import Header from "../components/Header.jsx";
 import ConfirmModal from "../components/ConfirmModal.jsx";
-import { RunTestHeader } from "../components/RunTestHeader.jsx";
-import { RunTestButton } from "../components/RunTestButton.jsx";
-import StartSection from "../components/StartSection.jsx";
+import { RunTestHeader } from "../components/test-run/RunTestHeader.jsx";
+import { RunTestButton } from "../components/test-run/RunTestButton.jsx";
+import StartSection from "../components/test-run/StartSection.jsx";
 
-export default function Index() {
+export default function RunTest() {
   return (
     <>
       <Header />

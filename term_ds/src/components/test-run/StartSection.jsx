@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useRandomBackground from "../scripts/useRandomBackground.js";
+import useRandomBackground from "../../scripts/useRandomBackground.js";
 
 export default function StartSection() {
   const [started, setStarted] = useState(false);

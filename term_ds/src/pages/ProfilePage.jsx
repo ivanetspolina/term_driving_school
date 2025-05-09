@@ -2,9 +2,11 @@ import { useState } from "react";
 import Header from "../components/Header.jsx";
 import { PencilLine, Trash2 } from "lucide-react";
 import ConfirmModal from "../components/ConfirmModal.jsx";
+import PasswordChange from "../components/auth/PasswordChange.jsx";
 
 export default function Profile() {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
 
   const handleDeleteClick = () => {
     setShowConfirmDelete(true);
@@ -17,6 +19,14 @@ export default function Profile() {
 
   const handleCancelDelete = () => {
     setShowConfirmDelete(false);
+  };
+
+  const handlePasswordEditClick = () => {
+    setShowPasswordChange(true);
+  };
+
+  const handleClosePasswordChange = () => {
+    setShowPasswordChange(false);
   };
 
   return (
@@ -47,7 +57,11 @@ export default function Profile() {
           <div className="profile-info">
             <h2>Пароль</h2>
             <p>••••••••</p>
-            <button type="button" className="btn-profile-edit">
+            <button
+              onClick={handlePasswordEditClick}
+              type="button"
+              className="btn-profile-edit"
+            >
               <PencilLine size={15} />
             </button>
           </div>
@@ -74,6 +88,10 @@ export default function Profile() {
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
         />
+      )}
+
+      {showPasswordChange && (
+        <PasswordChange onClose={handleClosePasswordChange} />
       )}
     </>
   );

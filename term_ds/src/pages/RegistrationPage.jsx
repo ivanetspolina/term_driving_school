@@ -1,6 +1,6 @@
-import AuthHeader from "../components/AuthHeader.jsx";
-import AuthButton from "../components/AuthButton.jsx";
-import AuthInputField from "../components/AuthInputField.jsx";
+import AuthHeader from "../components/auth/AuthHeader.jsx";
+import AuthButton from "../components/auth/AuthButton.jsx";
+import AuthInputField from "../components/auth/AuthInputField.jsx";
 import { FcGoogle } from "react-icons/fc";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../backend/context/AuthContext.jsx";

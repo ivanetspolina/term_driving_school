@@ -1,6 +1,6 @@
 import Header from "../components/Header.jsx";
-import ScreenshotsSection from "../components/ScreenshotsSection.jsx";
-import ProgressBar from "../components/ProgressBar.jsx";
+import ScreenshotsSection from "../components/test/ScreenshotsSection.jsx";
+import ProgressBar from "../components/test/ProgressBar.jsx";
 import { NavLink } from "react-router-dom";
 
 export default function Test() {

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../../backend/context/AuthContext.jsx";
+import { AuthContext } from "../../../backend/context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
 
 export function PrivateRoute({ children }) {
