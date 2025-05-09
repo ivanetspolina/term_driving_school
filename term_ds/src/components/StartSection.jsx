@@ -7,10 +7,10 @@ export default function StartSection() {
 
   if (!started) {
     return (
-      <div className="row-start-2 col-start-1 flex bg-white justify-center items-center">
+      <div className="row-start-2 col-start-1 flex bg-white justify-center items-center mb-4 rounded-[20px]">
         <button
           onClick={() => setStarted(true)}
-          className="px-6 py-3 bg-purple-700 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+          className="px-6 py-3 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-lg hover:ring-2 hover:ring-purple-300 transition"
         >
           Старт
         </button>
@@ -20,7 +20,7 @@ export default function StartSection() {
 
   return (
     <section
-      className="row-start-2 col-start-1 p-4 rounded-[20px] bg-white relative overflow-hidden"
+      className="row-start-2 col-start-1 p-4 rounded-[20px] bg-white relative overflow-hidden mb-4 rounded-[20px]"
       style={{
         backgroundImage: bg ? `url(${bg})` : undefined,
         backgroundPosition: "center",

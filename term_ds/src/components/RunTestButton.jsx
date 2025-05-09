@@ -34,21 +34,21 @@ export function RunTestButton({
       <aside className="row-start-2 col-start-2 p-[32px] space-y-4">
         <button
           onClick={handlePauseClick}
-          className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5"
+          className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5"
         >
           Пауза
         </button>
 
         <button
           onClick={handleCancelClick}
-          className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
+          className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
         >
           Скасувати проходження
         </button>
 
         <button
           onClick={handleSnapshotClick}
-          className="relative w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+          className="relative w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
         >
           Зробити знімок завдання
           {snapshotSuccess && (

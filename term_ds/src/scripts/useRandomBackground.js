@@ -5,20 +5,12 @@ import grassBg2 from "../assets/svg/grass-texture-background 1.svg";
 
 const BACKGROUNDS = [grassBg1, grassBg2];
 
-export default function useRandomBackground(intervalMs = 500) {
+export default function useRandomBackground(intervalMs = 200) {
   const [bg, setBg] = useState(null);
 
   useEffect(() => {
-    const pick = () => {
-      const idx = Math.floor(Math.random() * BACKGROUNDS.length);
-      setBg(BACKGROUNDS[idx]);
-    };
-
-    pick();
-
-    const timer = setInterval(pick, intervalMs);
-
-    return () => clearInterval(timer);
+    const idx = Math.floor(Math.random() * BACKGROUNDS.length);
+    setBg(BACKGROUNDS[idx]);
   }, [intervalMs]);
 
   return bg;
