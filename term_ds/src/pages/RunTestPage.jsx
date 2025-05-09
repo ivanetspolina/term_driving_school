@@ -2,6 +2,7 @@ import Header from "../components/Header.jsx";
 import ConfirmModal from "../components/ConfirmModal.jsx";
 import { RunTestHeader } from "../components/RunTestHeader.jsx";
 import { RunTestButton } from "../components/RunTestButton.jsx";
+import StartSection from "../components/StartSection.jsx";
 
 export default function Index() {
   return (
@@ -13,7 +14,7 @@ export default function Index() {
           <div className="row-start-1 col-start-1 flex justify-between">
             <RunTestHeader topic="Правила дорожнього руху" questionCount={20} />
           </div>
-          <section className="row-start-2 col-start-1 p-4 rounded-[20px] bg-white"></section>
+          <StartSection />
           <RunTestButton />
         </div>
       </main>
