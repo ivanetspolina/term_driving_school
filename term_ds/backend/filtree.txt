@@ -1,0 +1,11 @@
+backend
+ ┣ controllers
+ ┃ ┗ AuthController.js
+ ┣ models
+ ┃ ┗ User.js
+ ┣ routes
+ ┃ ┗ Auth.js
+ ┣ .env
+ ┣ app.js
+ ┣ package-lock.json
+ ┗ package.json

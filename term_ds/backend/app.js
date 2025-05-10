@@ -1,19 +1,26 @@
-import mongoose from "mongoose";
-import express from "express";
-import authRoutes from "./routes/auth.js";
-import process from "process";
+const express = require('express');
+// @ts-ignore TS1149: ignore filename casing
+const authRoutes = require('./routes/Auth.js');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Підключення до MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error(err));
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-app.use("/api/auth", authRoutes);
+// Авторизація та реєстрація
+app.use("/auth", authRoutes);
 
-app.listen(4000, () =>
-  console.log("🚀 Server running on http://localhost:4000"),
-);
+// Запуск сервера
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+

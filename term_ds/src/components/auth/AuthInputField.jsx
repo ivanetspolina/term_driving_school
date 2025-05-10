@@ -15,7 +15,7 @@ export default function AuthInputField({
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
   return (
-    <div>
+    <div className="form-group">
       <div className="mb-2 block">
         <Label htmlFor={id}>{label}</Label>
       </div>
@@ -38,6 +38,7 @@ export default function AuthInputField({
           </button>
         )}
       </div>
+
     </div>
   );
 }

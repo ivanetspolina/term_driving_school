@@ -2,8 +2,13 @@ import { NavLink } from "react-router-dom";
 import { Dropdown, DropdownDivider, DropdownItem } from "flowbite-react";
 import { CircleUserRound } from "lucide-react";
 import sprite from "../assets/svg/sprite.svg";
+import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
+  const {user, isAuthenticated} = useAuth();
+  console.log("Header user, isAuthenticated: ", user, isAuthenticated);
+
+  
   return (
     <header className="header flex items-center justify-between">
       <NavLink to="/">
