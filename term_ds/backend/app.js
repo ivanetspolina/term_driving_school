@@ -1,5 +1,4 @@
 const express = require('express');
-// @ts-ignore TS1149: ignore filename casing
 const authRoutes = require('./routes/Auth.js');
 const mongoose = require('mongoose');
 const cors = require('cors');

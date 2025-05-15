@@ -1,40 +1,15 @@
 import { useState } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+import { apiRequest, apiUrl } from "../../utils/api";
 
 export default function PasswordChange({ onClose }) {
-  const [passwords, setPasswords] = useState({
-    current: "",
-    new: "",
-    confirm: "",
-  });
-
-  const [showPassword, setShowPassword] = useState({
+   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
-    confirm: false,
   });
-
-  const [errors, setErrors] = useState({
-    current: "",
-    new: "",
-    confirm: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Очищаємо помилки при вводі
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
 
   const togglePasswordVisibility = (field) => {
     setShowPassword((prev) => ({
@@ -43,43 +18,34 @@ export default function PasswordChange({ onClose }) {
     }));
   };
 
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = { current: "", new: "", confirm: "" };
+  const validationSchema = Yup.object({
+    current: Yup.string().required("Поточний пароль обов'язковий"),
+    new: Yup.string()
+      .min(6, "Мінімум 6 символів")
+      .matches(/^[A-Za-z0-9]*$/, "Лише латинські літери та цифри")
+      .matches(/[A-Z]/, "Має містити хоча б одну велику літеру")
+      .matches(/[0-9]/, "Має містити хоча б одну цифру")
+      .notOneOf([Yup.ref("current")], "Новий пароль не може збігатися з поточним")
+      .required("Новий пароль обов'язковий"),
+  });
 
-    if (!passwords.current) {
-      newErrors.current = "Введіть поточний пароль";
-      valid = false;
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const res = await apiRequest(apiUrl.changePassword, "PATCH", {
+      currentPassword: values.current,
+      newPassword: values.new,
+    });
+
+    if (res.error) {
+      toast.error(`Помилка: ${res.error}`);
+    } else {
+      toast.success("Пароль успішно змінено");
+      resetForm();
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     }
 
-    if (!passwords.new) {
-      newErrors.new = "Введіть новий пароль";
-      valid = false;
-    } else if (passwords.new.length < 8) {
-      newErrors.new = "Пароль має містити не менше 8 символів";
-      valid = false;
-    }
-
-    if (!passwords.confirm) {
-      newErrors.confirm = "Підтвердіть новий пароль";
-      valid = false;
-    } else if (passwords.new !== passwords.confirm) {
-      newErrors.confirm = "Паролі не співпадають";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      console.log("Пароль змінено", passwords);
-      // Тут має бути логіка для відправки на сервер
-      onClose();
-    }
+    setSubmitting(false);
   };
 
   return (
@@ -95,105 +61,79 @@ export default function PasswordChange({ onClose }) {
 
         <h2 className="text-xl font-semibold mb-6">Зміна паролю</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">
-              Поточний пароль
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword.current ? "text" : "password"}
-                name="current"
-                value={passwords.current}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.current ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-2.5 text-gray-500"
-                onClick={() => togglePasswordVisibility("current")}
-              >
-                {showPassword.current ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
+        <Formik
+          initialValues={{ current: "", new: "" }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ getFieldProps, errors, touched, isSubmitting }) => (
+            <Form>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">
+                  Поточний пароль
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword.current ? "text" : "password"}
+                    {...getFieldProps("current")}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.current && touched.current
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-2.5 text-gray-500"
+                    onClick={() => togglePasswordVisibility("current")}
+                  >
+                    {showPassword.current ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {errors.current && touched.current && (
+                  <p className="text-red-500 text-sm mt-1">{errors.current}</p>
                 )}
-              </button>
-            </div>
-            {errors.current && (
-              <p className="text-red-500 text-sm mt-1">{errors.current}</p>
-            )}
-          </div>
+              </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">
-              Новий пароль
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword.new ? "text" : "password"}
-                name="new"
-                value={passwords.new}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.new ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-2.5 text-gray-500"
-                onClick={() => togglePasswordVisibility("new")}
-              >
-                {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            {errors.new && (
-              <p className="text-red-500 text-sm mt-1">{errors.new}</p>
-            )}
-          </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">
+                  Новий пароль
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword.new ? "text" : "password"}
+                    {...getFieldProps("new")}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.new && touched.new
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-2.5 text-gray-500"
+                    onClick={() => togglePasswordVisibility("new")}
+                  >
+                    {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {errors.new && touched.new && (
+                  <p className="text-red-500 text-sm mt-1">{errors.new}</p>
+                )}
+              </div>
 
-          {/*<div className="mb-6">*/}
-          {/*  <label className="block text-sm font-medium mb-2">*/}
-          {/*    Підтвердження нового паролю*/}
-          {/*  </label>*/}
-          {/*  <div className="relative">*/}
-          {/*    <input*/}
-          {/*      type={showPassword.confirm ? "text" : "password"}*/}
-          {/*      name="confirm"*/}
-          {/*      value={passwords.confirm}*/}
-          {/*      onChange={handleChange}*/}
-          {/*      className={`w-full px-3 py-2 border rounded-md ${*/}
-          {/*        errors.confirm ? "border-red-500" : "border-gray-300"*/}
-          {/*      }`}*/}
-          {/*    />*/}
-          {/*    <button*/}
-          {/*      type="button"*/}
-          {/*      className="absolute right-3 top-2.5 text-gray-500"*/}
-          {/*      onClick={() => togglePasswordVisibility("confirm")}*/}
-          {/*    >*/}
-          {/*      {showPassword.confirm ? (*/}
-          {/*        <EyeOff size={18} />*/}
-          {/*      ) : (*/}
-          {/*        <Eye size={18} />*/}
-          {/*      )}*/}
-          {/*    </button>*/}
-          {/*  </div>*/}
-          {/*  {errors.confirm && (*/}
-          {/*    <p className="text-red-500 text-sm mt-1">{errors.confirm}</p>*/}
-          {/*  )}*/}
-          {/*</div>*/}
-
-          <div className="flex justify-end gap-3">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800"
-            >
-              Зберегти
-            </button>
-          </div>
-        </form>
+              <div className="flex justify-end gap-3">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Збереження..." : "Зберегти"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

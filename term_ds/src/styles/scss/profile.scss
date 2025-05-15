@@ -5,19 +5,17 @@
 
   .profile-info {
     display: grid;
-    grid-template-columns: 100px 300px auto;
+    grid-template-columns: 100px 300px max-content;
     align-items: center;
     column-gap: 0.5rem;
 
     h2 {
       font-size: 18px;
-      //margin: 0;
     }
 
     p {
       word-break: break-all;
       white-space: normal;
-      //margin: 0;
     }
 
     .btn-profile-edit {

@@ -1,20 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header.jsx";
 import { PencilLine, Trash2 } from "lucide-react";
 import ConfirmModal from "../components/ConfirmModal.jsx";
 import PasswordChange from "../components/auth/PasswordChange.jsx";
+import EditNameField from "../components/profile/EditNameField.jsx";
+import { apiRequest, apiUrl } from "../utils/api";
+import { useAuth } from "../context/AuthContext";
+import { useUI } from "../context/UIContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const { setAlert } = useUI();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      setAlert("Авторизуйтесь!", "error");
+      navigate("/");
+    }
+  }, [isLoading, isAuthenticated]);
+
+  
+
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [profileData, setProfileData] = useState(null);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
 
   const handleDeleteClick = () => {
     setShowConfirmDelete(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     setShowConfirmDelete(false);
-    console.log("Акаунт видалено");
+    const result = await apiRequest(apiUrl.deleteAccount, "DELETE");
+
+    if (result?.message) {
+      logout(); 
+      localStorage.clear(); 
+      setAlert("Акаунт успішно видалено", "success");
+      navigate("/"); 
+    } else {
+      setAlert(result?.error || "Не вдалося видалити акаунт", "error");
+    }
   };
 
   const handleCancelDelete = () => {
@@ -29,6 +57,23 @@ export default function Profile() {
     setShowPasswordChange(false);
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const res = await apiRequest(apiUrl.profile, "GET");
+      console.log("Отримано з профілю:", res);
+      if (res.user) {
+        setProfileData(res.user);
+      } else if (res.error) {
+        console.warn("Помилка від API:", res.error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  // if (isLoading) {
+  //   return null;          
+  // }
+
   return (
     <>
       <Header />
@@ -38,29 +83,37 @@ export default function Profile() {
         </div>
 
         <div className="text-container shadow">
-          <div className="profile-info">
-            <h2>Ім'я</h2>
-            <p>Маріам</p>
-            <button type="button" className="btn-profile-edit">
-              <PencilLine size={15} />
-            </button>
-          </div>
+          <EditNameField
+            label="Ім'я"
+            value={profileData?.name || ""}
+            onSave={async (newName) => {
+              const result = await apiRequest(apiUrl.updateProfile, "PATCH", {name: newName, });
+              if (result?.user) {
+                setProfileData(result.user); 
+                setAlert("Ім’я оновлено", "success");
+              } else {
+                setAlert(result?.error || "Помилка при оновленні імені", "error");
+              }
+            }}
+          />
 
           <div className="profile-info">
             <h2>Пошта</h2>
-            <p>ariel.l@example.com</p>
-            <button type="button" className="btn-profile-edit">
-              <PencilLine size={15} />
-            </button>
+            <p>{profileData?.email || "..."}</p>
           </div>
 
           <div className="profile-info">
             <h2>Пароль</h2>
-            <p>••••••••</p>
+            <p
+              onClick={handlePasswordEditClick}
+              className="cursor-pointer text-gray-400 hover:underline"
+            >
+              змінити пароль
+            </p>
             <button
               onClick={handlePasswordEditClick}
               type="button"
-              className="btn-profile-edit"
+              className="btn-profile-edit flex"
             >
               <PencilLine size={15} />
             </button>

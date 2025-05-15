@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { apiUrl } from '../utils/api';
-import { toast } from 'react-toastify';
 
 // Створюємо контекст для авторизації
 const AuthContext = createContext();
@@ -9,12 +8,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Дані користувача
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Статус авторизації
-
-    // Загальна функція для обробки помилок
-    const handleError = (error, message) => {
-        console.error(error);
-        toast.error(message || "Щось пішло не так.");
-    };
+    const [isLoading, setIsLoading] = useState(true); 
 
     // Функція для авторизації користувача
     const login = (userData, token) => {
@@ -32,61 +26,10 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
     };
 
-    // Загальна функція для оновлення даних
-    const updateData = async (url, data, successMessage, errorMessage) => {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            const responseData = await response.json();
-            if (response.ok) {
-                toast.success(successMessage);
-                return responseData;
-            } else {
-                handleError(responseData.error, errorMessage);
-            }
-        } catch (error) {
-            handleError(error, errorMessage);
-        }
-    };
-
-    // Функція для оновлення профілю
-    const updateUser = async (userData) => {
-        const updatedUser = await updateData(
-            `${apiUrl.users}/${user.id}`,
-            userData,
-            "Профіль оновлено!",
-            "Не вдалося оновити профіль!"
-        );
-        if (updatedUser) {
-            const newUser = { ...user, ...userData };
-            setUser(newUser);
-            localStorage.setItem('user', JSON.stringify(newUser));
-        }
-    };
-
-    // Функція для оновлення пароля
-    const updatePassword = async (newPassword) => {
-        await updateData(
-            apiUrl.updatePassword,
-            { password: newPassword },
-            "Пароль оновлено!",
-            "Не вдалося оновити пароль!"
-        );
-    };
-
     // Перевірка токену при завантаженні сторінки
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); 
+        localStorage.setItem("token", token);
         const storedUser = localStorage.getItem('user');
 
         if (storedUser) {
@@ -96,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
         if (token) {
             fetch(import.meta.env.VITE_API_URL + apiUrl.auth, {
-                method: 'POST',
+                method: 'POST', 
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -110,16 +53,16 @@ export const AuthProvider = ({ children }) => {
                     logout();
                 }
             })
-            .catch(err => {
-                // handleError(err, "Помилка перевірки токену");
-                logout();
-                console.log("logout:");
-            });
+            // .catch(err => {
+            //     logout();
+            // });
+            .catch(() => logout())
+            .finally(() => setIsLoading(false)); 
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, login, logout, updateUser, updatePassword }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

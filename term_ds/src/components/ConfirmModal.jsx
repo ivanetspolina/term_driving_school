@@ -26,13 +26,13 @@ export default function ConfirmModal({
             onClick={onCancel}
             className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
           >
-            {confirmLabel}
+            {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             className="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500 transition"
           >
-            {cancelLabel}
+            {confirmLabel}
           </button>
         </div>
       </div>

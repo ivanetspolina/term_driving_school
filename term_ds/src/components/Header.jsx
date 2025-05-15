@@ -1,12 +1,13 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Dropdown, DropdownDivider, DropdownItem } from "flowbite-react";
 import { CircleUserRound } from "lucide-react";
 import sprite from "../assets/svg/sprite.svg";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
-  const {user, isAuthenticated} = useAuth();
+  const {user, isAuthenticated, logout} = useAuth();
   console.log("Header user, isAuthenticated: ", user, isAuthenticated);
+  const navigate = useNavigate();
 
   
   return (
@@ -39,38 +40,44 @@ export default function Header() {
         </NavLink>
       </nav>
 
-      <Dropdown
-        placement="bottom-end"
-        inline
-        arrowIcon={false}
-        label={
-          <CircleUserRound size={40} className="cursor-pointer stroke-white" />
-        }
-        className="mt-[18px]"
-      >
-        <DropdownItem className="p-0">
-          <NavLink
-            to="/profile"
-            className={"font-[manrope] w-full h-full px-4 py-2"}
+      {isAuthenticated ? (
+        <Dropdown
+          placement="bottom-end"
+          inline
+          arrowIcon={false}
+          label={
+            <CircleUserRound
+              size={40}
+              className="cursor-pointer stroke-white"
+            />
+          }
+          className="mt-[18px]"
+        >
+          <DropdownItem className="p-0" onClick={() => navigate("/profile")}>
+            <span className="font-[manrope] w-full h-full px-12 py-2">
+              Профіль
+            </span>
+          </DropdownItem>
+          <DropdownItem className="p-0" onClick={() => navigate("/statistics")}>
+            <span className="font-[manrope] w-full h-full px-12 py-2">
+              Статистика
+            </span>
+          </DropdownItem>
+          <DropdownDivider />
+          <DropdownItem className="p-0" onClick={() => {logout(); navigate("/");}}
           >
-            Профіль
-          </NavLink>
-        </DropdownItem>
-        <DropdownItem className="p-0">
-          <NavLink
-            to="/statistics"
-            className={"font-[manrope] w-full h-full px-4 py-2 "}
-          >
-            Статистика навчання
-          </NavLink>
-        </DropdownItem>
-        <DropdownDivider />
-        <DropdownItem className={"p-0"}>
-          <NavLink to="/" className={"font-[manrope] w-full h-full px-4 py-2 "}>
-            Вихід з профілю
-          </NavLink>
-        </DropdownItem>
-      </Dropdown>
+            <span className="font-[manrope] w-full h-full px-12 py-2">
+              Вийти
+            </span>
+          </DropdownItem>
+        </Dropdown>
+      ) : (
+        <CircleUserRound
+          size={40}
+          className="cursor-pointer stroke-white"
+          onClick={() => navigate("/auth")}
+        />
+      )}
     </header>
   );
 }

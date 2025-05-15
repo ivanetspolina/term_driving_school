@@ -1,0 +1,5 @@
+@use "colors" as c;
+
+.run-test-main{
+    color: c.$text;
+}
