@@ -19,8 +19,6 @@ export async function apiRequest(path, method = 'POST', data = null, apiUrlNeed 
   return await res.json(); 
 }
 
-
-// Посилання всього проекті до api
 export const apiUrl = {
   emailSend: "https://api.inderio.com/send-email",
   auth: "/auth",

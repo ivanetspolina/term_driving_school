@@ -32,7 +32,6 @@ export default function Test() {
           <li>
             <div className="list-item-wrapper">
               <NavLink to="/runtest">Дорожні знаки</NavLink>
-              {/*<a href="#">Дорожні знаки</a>*/}
             </div>
 
             <div className="list-progress-bar">
