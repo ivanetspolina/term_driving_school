@@ -6,7 +6,6 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const {user, isAuthenticated, logout} = useAuth();
-  console.log("Header user, isAuthenticated: ", user, isAuthenticated);
   const navigate = useNavigate();
 
   

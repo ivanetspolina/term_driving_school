@@ -1,0 +1,128 @@
+xterm_ds
+ ┣ .flowbite-react
+ ┃ ┣ .gitignore
+ ┃ ┣ class-list.json
+ ┃ ┗ config.json
+ ┣ backend
+ ┃ ┣ controllers
+ ┃ ┃ ┗ AuthController.js
+ ┃ ┣ models
+ ┃ ┃ ┣ TestStat.js
+ ┃ ┃ ┗ User.js
+ ┣ src
+ ┃ ┣ assets
+ ┃ ┃ ┣ img
+ ┃ ┃ ┣ png
+ ┃ ┃ ┃ ┣ 22183705_6598176.jpg
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_21_18.png
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_21_58.png
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_23_24.png
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_25_52.png
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_28_31.png
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_31_12.png
+ ┃ ┃ ┃ ┣ driving-school.png
+ ┃ ┃ ┃ ┣ grass-texture-background.jpg
+ ┃ ┃ ┃ ┣ green-grass-background.jpg
+ ┃ ┃ ┃ ┗ simulation.png
+ ┃ ┃ ┗ svg
+ ┃ ┃ ┃ ┣ 1349590_177701-OWIP3P-350.svg
+ ┃ ┃ ┃ ┣ 22183705_6598176 1.svg
+ ┃ ┃ ┃ ┣ 9176989_6694.svg
+ ┃ ┃ ┃ ┣ 9649854_7424.svg
+ ┃ ┃ ┃ ┣ ambulance_car.svg
+ ┃ ┃ ┃ ┣ blue_car.svg
+ ┃ ┃ ┃ ┣ bush(1).svg
+ ┃ ┃ ┃ ┣ bush(2).svg
+ ┃ ┃ ┃ ┣ bush(3).svg
+ ┃ ┃ ┃ ┣ bush(4).svg
+ ┃ ┃ ┃ ┣ bush(5).svg
+ ┃ ┃ ┃ ┣ bush(6).svg
+ ┃ ┃ ┃ ┣ bush.svg
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_28_31 1.svg
+ ┃ ┃ ┃ ┣ ChatGPT Image 6 трав. 2025 р., 12_31_12 1.svg
+ ┃ ┃ ┃ ┣ driving-school-svgrepo-com.svg
+ ┃ ┃ ┃ ┣ driving-school2.svg
+ ┃ ┃ ┃ ┣ driving-svgrepo-com (1).svg
+ ┃ ┃ ┃ ┣ driving-svgrepo-com.svg
+ ┃ ┃ ┃ ┣ driving-time-svgrepo-com.svg
+ ┃ ┃ ┃ ┣ file (1).svg
+ ┃ ┃ ┃ ┣ file (2).svg
+ ┃ ┃ ┃ ┣ file (3).svg
+ ┃ ┃ ┃ ┣ file.svg
+ ┃ ┃ ┃ ┣ grass-texture-background 1.svg
+ ┃ ┃ ┃ ┣ gray_car.svg
+ ┃ ┃ ┃ ┣ green-grass-background 1.svg
+ ┃ ┃ ┃ ┣ olive_car.svg
+ ┃ ┃ ┃ ┣ police_car.svg
+ ┃ ┃ ┃ ┣ red_car.svg
+ ┃ ┃ ┃ ┣ sprite.svg
+ ┃ ┃ ┃ ┗ taxi_car.svg
+ ┃ ┣ components
+ ┃ ┃ ┣ auth
+ ┃ ┃ ┃ ┣ AuthHeader.jsx
+ ┃ ┃ ┃ ┣ PasswordChange.jsx
+ ┃ ┃ ┃ ┗ PrivateRoute.jsx
+ ┃ ┃ ┣ index
+ ┃ ┃ ┃ ┗ Footer.jsx
+ ┃ ┃ ┣ profile
+ ┃ ┃ ┃ ┗ EditNameField.jsx
+ ┃ ┃ ┣ test
+ ┃ ┃ ┃ ┣ ProgressBar.jsx
+ ┃ ┃ ┃ ┗ ScreenshotsSection.jsx
+ ┃ ┃ ┣ test-result
+ ┃ ┃ ┃ ┗ RerunTestButton.jsx
+ ┃ ┃ ┣ test-run
+ ┃ ┃ ┃ ┣ RunTestButton.jsx
+ ┃ ┃ ┃ ┣ RunTestHeader.jsx
+ ┃ ┃ ┃ ┗ StartSection.jsx
+ ┃ ┃ ┣ ConfirmModal.jsx
+ ┃ ┃ ┗ Header.jsx
+ ┃ ┣ context
+ ┃ ┃ ┣ AuthContext.jsx
+ ┃ ┃ ┗ UIContext.jsx
+ ┃ ┣ pages
+ ┃ ┃ ┣ ActivatePage.jsx
+ ┃ ┃ ┣ AuthorizationPage.jsx
+ ┃ ┃ ┣ IndexPage.jsx
+ ┃ ┃ ┣ Layout.jsx
+ ┃ ┃ ┣ NoPage.jsx
+ ┃ ┃ ┣ ProfilePage.jsx
+ ┃ ┃ ┣ RegistrationPage.jsx
+ ┃ ┃ ┣ ResultPage.jsx
+ ┃ ┃ ┣ RunTestPage.jsx
+ ┃ ┃ ┣ StatisticsPage.jsx
+ ┃ ┃ ┣ TestPage.jsx
+ ┃ ┃ ┗ ThemePage.jsx
+ ┃ ┣ scripts
+ ┃ ┃ ┣ generate-styles-imports.js
+ ┃ ┃ ┣ resultTestFunc.js
+ ┃ ┃ ┗ useRandomBackground.js
+ ┃ ┣ styles
+ ┃ ┃ ┣ css
+ ┃ ┃ ┃ ┣ all-css.css
+ ┃ ┃ ┃ ┗ main.css
+ ┃ ┃ ┗ scss
+ ┃ ┃ ┃ ┣ all-scss.scss
+ ┃ ┃ ┃ ┣ auth-regist.scss
+ ┃ ┃ ┃ ┣ common.scss
+ ┃ ┃ ┃ ┣ header.scss
+ ┃ ┃ ┃ ┣ modal-window.scss
+ ┃ ┃ ┃ ┣ profile.scss
+ ┃ ┃ ┃ ┣ screenshots-section.scss
+ ┃ ┃ ┃ ┣ statistics.scss
+ ┃ ┃ ┃ ┣ test.scss
+ ┃ ┃ ┃ ┣ theme.scss
+ ┃ ┃ ┃ ┗ _colors.scss
+ ┃ ┣ utils
+ ┃ ┃ ┣ api.js
+ ┃ ┃ ┗ emails.js
+ ┃ ┣ App.jsx
+ ┃ ┗ main.jsx
+ ┣ .env
+ ┣ .gitignore
+ ┣ eslint.config.js
+ ┣ index.html
+ ┣ package-lock.json
+ ┣ package.json
+ ┣ README.md
+ ┗ vite.config.js

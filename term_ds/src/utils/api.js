@@ -29,4 +29,5 @@ export const apiUrl = {
   activate: "/auth/activate",
   updateProfile: "/auth/update_profile",
   deleteAccount: "/auth/delete",
+  tests: "/tests",
 };

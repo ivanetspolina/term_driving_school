@@ -1,5 +1,6 @@
 const express = require('express');
 const authRoutes = require('./routes/Auth.js');
+const testRoutes = require('./routes/Test.js');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -17,9 +18,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Авторизація та реєстрація
 app.use("/auth", authRoutes);
+app.use("/tests", testRoutes); 
 
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+
 

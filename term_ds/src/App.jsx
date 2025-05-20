@@ -11,6 +11,8 @@ import Result from "./pages/ResultPage.jsx";
 import Activate from "./pages/ActivatePage.jsx";
 import NoPage from "./pages/NoPage.jsx";
 import Layout from "./pages/Layout.jsx";
+import IntersectionSimulation from "./pages/IntersectionSimulation.jsx";
+import Expement from "./pages/Expement.jsx";
 
 function App() {
   return (
@@ -25,10 +27,12 @@ function App() {
             <Route path="statistics" element={<Statistics />} />
             <Route path="auth" element={<Authorization />} />
             <Route path="register" element={<Registration />} />
-            <Route path="runtest" element={<RunTest />} />
+            <Route path="runtest/:id" element={<RunTest />} />
             <Route path="result_test" element={<Result />} />
             <Route path="activate" element={<Activate />} />
             <Route path="activate/:token" element={<Activate />} />
+            <Route path="demo" element={<IntersectionSimulation />} />
+            <Route path="ex/:id" element={<Expement />} />
             <Route path="*" element={<NoPage />} />
           </Route>
 

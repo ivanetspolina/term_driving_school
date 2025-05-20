@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
+import { TimerDisplay } from "./elements/Timer";
 
-export function RunTestHeader({ topic, questionCount }) {
+export function RunTestHeader({ topic, questionCount, timer }) {
   return (
     <>
       <div className="w-2/3 font-[Nunito_Sans]">
@@ -10,7 +11,7 @@ export function RunTestHeader({ topic, questionCount }) {
         <p className="text-lg">{questionCount} питань</p>
       </div>
       <div className="w-1/3 flex items-end justify-center font-[Inter] text-[16px]/[18px] mb-[3px]">
-        <div>Таймер: 00:00</div>
+        <div>Таймер: {<TimerDisplay timer={timer} />}</div>
       </div>
     </>
   );
@@ -19,4 +20,5 @@ export function RunTestHeader({ topic, questionCount }) {
 RunTestHeader.propTypes = {
   topic: PropTypes.string.isRequired,
   questionCount: PropTypes.number.isRequired,
+  timer:  PropTypes.number.isRequired,
 };
