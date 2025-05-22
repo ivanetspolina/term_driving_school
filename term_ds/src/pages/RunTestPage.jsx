@@ -28,7 +28,7 @@ export default function RunTest() {
   const [isRunning, setIsRunning] = useState(STATES.START);
 
   const handleStart = () => {
-    setTimer(0);        // Скинути перед запуском
+    setTimer(0);        
     setIsRunning(STATES.RUNNING); 
   };
 
@@ -90,7 +90,6 @@ return (
           setIsRunning={setIsRunning}
           onPause={() => setIsRunning(STATES.PAUSED)}
           onCancel={resetTest}
-          // {() => setIsRunning(STATES.START)}
           onSnapshot={() => console.log("Snapshot clicked")}
           STATES={STATES} 
         />

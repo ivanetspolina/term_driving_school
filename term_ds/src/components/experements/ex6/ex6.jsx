@@ -1,115 +1,141 @@
-import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import { carsList, initialGrid, trafficLights } from "./data1";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "react-toastify";
+import {
+  calculateCarOrder,
+  isPathAllowed,
+  updateGridWithCar,
+  findCarAt,
+} from "./helpers";
 
 export default function MultiCarSimulation() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questionData, setQuestionData] = useState(null);
+  const [currentAnswer, setCurrentAnswer] = useState([]);
+  const [questionAnswered, setQuestionAnswered] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]);
 
-  const [grid, setGrid] = useState(initialGrid);
-  const [cars, setCars] = useState(carsList);
+  useEffect(() => {
+    fetch(`/questions/q${currentQuestionIndex + 1}.json`)
+      .then((res) => res.json())
+      .then((data) => {
+        setQuestionData({
+          ...data,
+          conditions: data.conditions || {}, // Підстраховка
+        });
+        setCurrentAnswer([]);
+        setQuestionAnswered(false);
+      })
+      .catch(() => toast.error("❌ Не вдалося завантажити питання"));
+  }, [currentQuestionIndex]);
 
-  const getCellType = (row, col) => {
-    if (row < 0 || col < 0 || row >= initialGrid.length || col >= initialGrid[0].length) return 0;
-    const cell = initialGrid[row][col];
-    if (cell === 3 || cell === 4) {
-      if ((row === 3 || row === 4) && (col === 3 || col === 4)) return 2;
-      return 1;
-    }
-    return cell;
-  };
+  const carMoveOrder = useMemo(() => {
+    return questionData ? calculateCarOrder(questionData) : [];    
+  }, [questionData]);
+  
 
-  const isPathAllowed = (path) => {
-    for (let [row, col] of path) {
-      const key = `${row},${col}`;
-      if (trafficLights[key] === "red") {
-        return { allowed: false, blockedAt: [row, col] };
-      }
-    }
-    return { allowed: true };
-  };
+  if (!questionData) return <div>Завантаження...</div>;
 
-  const handleCarClick = (carId) => {
-    const car = cars.find(c => c.id === carId);
-    if (!car || car.finished) {
-      toast.info("Машина вже завершила рух або не знайдена");
-      return;
-    }
+  const moveCar = (carId) => {
+    const car = questionData.cars.find((c) => c.id === carId);
+    if (!car || car.finished) return;
 
-    const { allowed, blockedAt } = isPathAllowed(car.path);
-    console.log("allowed, blockedAt: ", allowed, blockedAt);
-    if (!allowed) {
-      toast.error(`${car.color.toUpperCase()} машина не може їхати: червоний сигнал на [${blockedAt[0]}, ${blockedAt[1]}]`);
-      return;
-    }
-
-    toast.info(`${car.color.toUpperCase()} машина почала рух`);
+    const { allowed } = isPathAllowed(questionData.conditions, car.path);
+    if (!allowed) return;
 
     car.path.forEach(([row, col], i) => {
       setTimeout(() => {
-        setCars(prevCars => {
-          return prevCars.map(c => {
+        setQuestionData((prev) => {
+          if (!prev) return prev;
+
+          const updatedCars = prev.cars.map((c) => {
             if (c.id !== carId) return c;
 
-            const newGrid = grid.map(r => [...r]);
-            const [curRow, curCol] = c.position;
-            const cellType = getCellType(row, col);
-            if (cellType !== 1 && cellType !== 2) {
-              toast.warn(`🚫 ${c.color} машина не може їхати по недопустимій клітинці: [${row}, ${col}]`);
-              return c;
-            }
+            const updatedGrid = updateGridWithCar(prev.grid, c.position, [row, col], c.color);
 
-            newGrid[curRow][curCol] = getCellType(curRow, curCol);
-            newGrid[row][col] = c.color === "red" ? 3 : 4;
-            setGrid(newGrid);
+            const updatedCar = { ...c, position: [row, col] };
+            if (i === car.path.length - 1) updatedCar.finished = true;
 
-            const updated = { ...c, position: [row, col] };
-            if (i === c.path.length - 1) {
-              updated.finished = true;
-              toast.success(`${c.color.toUpperCase()} машина завершила рух`);
-            }
-            return updated;
+            return updatedCar;
           });
+
+          const updatedGrid = updateGridWithCar(prev.grid, car.position, [row, col], car.color);
+
+          return {
+            ...prev,
+            cars: updatedCars,
+            grid: updatedGrid || prev.grid,
+          };
         });
-      }, i * 600);
+      }, i * 200);
     });
   };
 
-  const renderCell = (type, row, col) => {
-    const car = cars.find(c => c.position[0] === row && c.position[1] === col);
-    const lightKey = `${row},${col}`;
-    const light = trafficLights[lightKey];
+  const handleCarClick = (carId) => {
+    if (questionAnswered || currentAnswer.includes(carId)) return;
 
-    let cellClass = "w-12 h-12 flex items-center justify-center border border-gray-300 ";
-    if (car) cellClass += car.color === "red" ? "bg-red-500" : "bg-blue-500";
-    else if (type === 0) cellClass += "bg-green-100";
-    else if (type === 1) cellClass += "bg-gray-400";
-    else if (type === 2) cellClass += "bg-yellow-200";
+    const newAnswer = [...currentAnswer, carId];
+    setCurrentAnswer(newAnswer);
+    moveCar(carId);
 
-    return (
-      <div
-        key={`${row},${col}`}
-        className={cellClass + (car ? " cursor-pointer" : "")}
-        onClick={() => { if (car) handleCarClick(car.id); }}
-      >
-        {car?.icon}
-        {light === "red" && <div className={`custom-rule custom-rule-top custom-rule-${light}`}></div>}
-        {light === "green" && <div className={`custom-rule custom-rule-bottom custom-rule-${light}`}></div>}
-      </div>
-    );
+    if (newAnswer.length === carMoveOrder.length) {
+      const isCorrect = newAnswer.every((id, i) => id === carMoveOrder[i]);
+
+      setUserAnswers((prev) => [
+        ...prev,
+        {
+          question: currentQuestionIndex,
+          userOrder: newAnswer,
+          correct: isCorrect,
+        },
+      ]);
+
+      toast[isCorrect ? "success" : "error"](
+        isCorrect
+          ? "✅ Правильна послідовність!"
+          : "❌ Неправильна послідовність!"
+      );
+
+      setQuestionAnswered(true);
+      setTimeout(() => {
+        setCurrentQuestionIndex((prev) => prev + 1);
+      }, 2000);
+    }
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <ToastContainer />
-      <h2 className="text-xl font-semibold text-center">Симуляція руху на перехресті (світлофор)</h2>
+    <div className="p-4">
+      <h2 className="text-xl font-semibold text-center mb-4">
+        Питання #{currentQuestionIndex + 1}
+      </h2>
       <div className="grid grid-cols-8 gap-0 w-fit mx-auto">
-        {grid.map((row, rowIndex) =>
-          row.map((cell, colIndex) => renderCell(cell, rowIndex, colIndex))
+        {questionData.grid.map((row, rowIndex) =>
+          row.map((cell, colIndex) => {
+            const car = findCarAt(questionData.cars, rowIndex, colIndex);
+            const condition = questionData.conditions[`${rowIndex},${colIndex}`];
+            let cellClass =
+              "w-12 h-12 flex items-center justify-center border border-gray-300 ";
+            if (car)
+              cellClass += car.color === "red" ? "bg-red-500" : "bg-blue-500";
+            else if (cell === 0) cellClass += "bg-green-100";
+            else if (cell === 1) cellClass += "bg-gray-400";
+
+            return (
+              <div
+                key={`${rowIndex},${colIndex}`}
+                className={cellClass + (car ? " cursor-pointer" : "")}
+                onClick={() => car && handleCarClick(car.id)}
+              >
+                {car?.icon}
+                {condition?.name === "red" && (
+                  <div className={`custom-rule ${condition.cssClass} custom-rule-red`}></div>
+                )}
+                {condition?.name === "green" && (
+                  <div className={`custom-rule ${condition.cssClass} custom-rule-green`}></div>
+                )}
+              </div>
+            );
+          })
         )}
-      </div>
-      <div className="text-center mt-4">
-        <p className="text-sm text-gray-600">Натисніть на будь-яку машину, щоб запустити її рух по маршруту.</p>
-        <p className="text-sm text-gray-600">Якщо на шляху червоне світло — рух буде заборонено.</p>
       </div>
     </div>
   );

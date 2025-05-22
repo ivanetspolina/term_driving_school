@@ -17,7 +17,7 @@ const scssFiles = fs
   .filter((f) => f.endsWith(".scss") && f !== "all-scss.scss");
 
 const cssImports = cssFiles.map((f) => `@import './${f}';`).join("\n");
-const scssImports = scssFiles.map((f) => `@import './${f}';`).join("\n");
+const scssImports = scssFiles.map((f) => `@use './${f}';`).join("\n");
 
 const cssOutFile = path.resolve(cssDir, "all-css.css");
 const scssOutFile = path.resolve(scssDir, "all-scss.scss");

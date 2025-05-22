@@ -354,6 +354,7 @@ export default function Ex5() {
       rightCol >= 0 && rightCol < grid[0].length
     ) {
       return grid[row][rightCol] === 5;
+      
     }
     return false;
   };
