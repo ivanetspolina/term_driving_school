@@ -48,3 +48,54 @@
 .custom-rule-green {
     --bg: #5ea727;
 }
+
+
+
+
+/////////////////////////////////////////////////////
+// Fixed sign positioning styles 
+.custom-sign {
+    --offset2: -15px;
+    --w2: 20px;
+    --h2: 20px;
+    width: var(--w2);
+    height: var(--h2);
+    position: absolute;
+    font-weight: bold;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-sign::before {
+    content: "";
+    width: var(--w2);
+    height: var(--h2);
+    position: absolute;
+    z-index: -1;
+}
+
+.custom-sign-top {
+    top: var(--offset2);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.custom-sign-bottom {
+    bottom: var(--offset2);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.custom-sign-left {
+    top: 50%;
+    left: var(--offset2);
+    transform: translateY(-50%);
+}
+
+.custom-sign-right {
+    top: 50%;
+    right: var(--offset2);
+    transform: translateY(-50%);
+}

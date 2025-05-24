@@ -1,0 +1,78 @@
+{
+  "signs": [
+    {
+      "id": "stop",
+      "name": "Стоп",
+      "signs_priority": 3,
+      "type": "regulatory",
+      "style": {
+        "shape": "octagon",
+        "color": "red",
+        "text": "STOP",
+        "css": "stop-sign"
+      }
+    },
+    {
+      "id": "give_way",
+      "name": "Дати дорогу",
+      "signs_priority": 3,
+      "type": "regulatory",
+      "style": {
+        "shape": "triangle",
+        "color": "red",
+        "text": "YIELD",
+        "css": "yield-sign"
+      }
+    },
+    {
+      "id": "main_road",
+      "name": "Головна дорога",
+      "signs_priority": 2,
+      "type": "regulatory",
+      "style": {
+        "shape": "diamond",
+        "color": "yellow",
+        "css": "priority-sign"
+      }
+    },
+    {
+      "id": "traffic_light",
+      "name": "Світлофор",
+      "signs_priority": 1,
+      "type": "light",
+      "style": {
+        "shape": "circle",
+        "color": ["red", "green"],
+        "css": "traffic-light"
+      }
+    }
+  ],
+  "sign_positions": {
+    "regular_cross": {
+      "west": { "position": [4, 2], "style": "bottom" },
+      "north": { "position": [2, 3], "style": "left" },
+      "east": { "position": [3, 5], "style": "top" },
+      "south": { "position": [5, 4], "style": "right" }
+    },
+    "t_cross_1": {
+      "south": { "position": [5, 4], "style": "right" },      
+      "east": { "position": [3, 5], "style": "top" },
+      "west": { "position": [4, 2], "style": "bottom" }
+    },
+    "t_cross_2": {
+      "north": { "position": [2, 3], "style": "left" },
+      "east": { "position": [3, 5], "style": "top" },
+      "west": { "position": [4, 2], "style": "bottom" }
+    },
+    "t_cross_3": {
+      "north": { "position": [2, 3], "style": "left" },
+      "east": { "position": [3, 5], "style": "top" },
+      "south": { "position": [5, 4], "style": "right" }
+    },
+    "t_cross_4": {
+      "north": { "position": [2, 3], "style": "left" },
+      "west": { "position": [4, 2], "style": "bottom" },
+      "south": { "position": [5, 4], "style": "right" }
+    }
+  }
+}

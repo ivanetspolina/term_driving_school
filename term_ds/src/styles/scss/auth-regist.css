@@ -1,0 +1,28 @@
+.auth-container .auth-header {
+  color: rgb(30, 66, 159);
+}
+.auth-container .auth-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+  padding: 0.625rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+.auth-container .auth-input::-moz-placeholder {
+  color: #6b7280;
+}
+.auth-container .auth-input::placeholder {
+  color: #6b7280;
+}
+.auth-container .auth-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 1px var(--primary-500);
+}
+.auth-container .auth-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}/*# sourceMappingURL=auth-regist.css.map */

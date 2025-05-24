@@ -1,0 +1,37 @@
+.profile-main {
+  color: rgb(37, 9, 57);
+}
+.profile-main .profile-info {
+  display: grid;
+  grid-template-columns: 100px 300px max-content;
+  align-items: center;
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+.profile-main .profile-info h2 {
+  font-size: 18px;
+}
+.profile-main .profile-info p {
+  word-break: break-all;
+  white-space: normal;
+}
+.profile-main .profile-info .btn-profile-edit {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: rgb(156, 163, 175);
+  padding: 4px;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-profile-delete {
+  background-color: #ff7171;
+  color: #ffffff;
+}
+.btn-profile-delete:hover {
+  background-color: #ffb5b5;
+}/*# sourceMappingURL=profile.css.map */

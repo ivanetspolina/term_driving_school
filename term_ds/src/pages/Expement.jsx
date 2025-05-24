@@ -5,6 +5,7 @@ import Ex3 from "../components/experements/ex3";
 import Ex4 from "../components/experements/ex4";
 import Ex5 from "../components/experements/ex5";
 import Ex6 from "../components/experements/ex6/ex6";
+import Ex7 from "../components/experements/ex7/ex7";
 
 export default function Expement() {
   const { id } = useParams();
@@ -22,6 +23,9 @@ export default function Expement() {
       return (<Ex5 />);
     case '6':
       return (<Ex6 />);
+    case '7':
+      return (<Ex7 />);
+
       
   }
 }

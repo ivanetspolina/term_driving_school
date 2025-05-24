@@ -1,0 +1,220 @@
+.auth-container .auth-header {
+  color: rgb(30, 66, 159);
+}
+.auth-container .auth-input {
+  display: block;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+  padding: 0.625rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+.auth-container .auth-input::-moz-placeholder {
+  color: #6b7280;
+}
+.auth-container .auth-input::placeholder {
+  color: #6b7280;
+}
+.auth-container .auth-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 1px var(--primary-500);
+}
+.auth-container .auth-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.custom-list {
+  list-style: none;
+  counter-reset: item;
+  padding: 15px 0 15px 0;
+}
+.custom-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  counter-increment: item;
+  color: rgb(121, 55, 203);
+}
+.custom-list li::before {
+  content: counter(item);
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background-color: rgb(121, 55, 203);
+  color: white;
+  font-size: 1rem;
+}
+.custom-list li .list-item-wrapper {
+  display: flex;
+  flex: 1 1 auto;
+  -moz-column-gap: 1rem;
+       column-gap: 1rem;
+}
+.custom-list li .list-item-wrapper a {
+  display: flex;
+  align-items: center;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 20px;
+  line-height: 20px;
+  white-space: normal;
+  word-break: break-all;
+}
+
+.center-main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.text-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: rgb(46, 30, 65);
+}
+
+.text-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+  background-color: rgb(255, 255, 255);
+  padding: 60px;
+  border-radius: 12px;
+  width: 100%;
+  font-family: "Inter", sans-serif;
+}
+
+.header {
+  width: 100%;
+  background-color: rgb(132, 75, 203);
+  height: 5rem;
+  padding: 3px 30px 10px 30px;
+  border-radius: 0 0 20px 20px;
+}
+.header .icon-driving-school2 {
+  height: 4rem;
+  width: 4rem;
+}
+.header .header-nav .header-nav-link {
+  color: rgb(255, 255, 255);
+  padding: 5px;
+}
+.header .header-nav .header-nav-link:hover {
+  background-color: rgb(143, 95, 203);
+}
+
+.profile-main {
+  color: rgb(37, 9, 57);
+}
+.profile-main .profile-info {
+  display: grid;
+  grid-template-columns: 100px 300px max-content;
+  align-items: center;
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+.profile-main .profile-info h2 {
+  font-size: 18px;
+}
+.profile-main .profile-info p {
+  word-break: break-all;
+  white-space: normal;
+}
+.profile-main .profile-info .btn-profile-edit {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: rgb(156, 163, 175);
+  padding: 4px;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-profile-delete {
+  background-color: #ff7171;
+  color: #ffffff;
+}
+.btn-profile-delete:hover {
+  background-color: #ffb5b5;
+}
+
+.screenshots-section {
+  color: rgb(37, 9, 57);
+}
+
+.statistics-main {
+  color: rgb(37, 9, 57);
+}
+
+.run-test-main {
+  color: rgb(37, 9, 57);
+}
+
+.custom-rule {
+  --w: 12px;
+  --h: 12px;
+  --offset: -6px;
+  --bg: #000000;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-rule::before {
+  content: "";
+  width: var(--w);
+  height: var(--h);
+  position: absolute;
+  background-color: var(--bg);
+  border-radius: 50%;
+}
+
+.custom-rule-top::before {
+  top: var(--offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-rule-bottom::before {
+  bottom: var(--offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-rule-left::before {
+  top: 50%;
+  left: var(--offset);
+  transform: translateY(-50%);
+}
+
+.custom-rule-right::before {
+  top: 50%;
+  right: var(--offset);
+  transform: translateY(-50%);
+}
+
+.custom-rule-red {
+  --bg: #d65050;
+}
+
+.custom-rule-green {
+  --bg: #5ea727;
+}/*# sourceMappingURL=all-scss.css.map */

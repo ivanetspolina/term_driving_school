@@ -1,0 +1,100 @@
+.run-test-main {
+  color: rgb(37, 9, 57);
+}
+
+.custom-rule {
+  --w: 12px;
+  --h: 12px;
+  --offset: -6px;
+  --bg: #000000;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.custom-rule::before {
+  content: "";
+  width: var(--w);
+  height: var(--h);
+  position: absolute;
+  background-color: var(--bg);
+  border-radius: 50%;
+}
+
+.custom-rule-top::before {
+  top: var(--offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-rule-bottom::before {
+  bottom: var(--offset);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-rule-left::before {
+  top: 50%;
+  left: var(--offset);
+  transform: translateY(-50%);
+}
+
+.custom-rule-right::before {
+  top: 50%;
+  right: var(--offset);
+  transform: translateY(-50%);
+}
+
+.custom-rule-red {
+  --bg: #d65050;
+}
+
+.custom-rule-green {
+  --bg: #5ea727;
+}
+
+.custom-sign {
+  --offset2: -15px;
+  --w2: 20px;
+  --h2: 20px;
+  width: var(--w2);
+  height: var(--h2);
+  position: absolute;
+  font-weight: bold;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-sign::before {
+  content: "";
+  width: var(--w2);
+  height: var(--h2);
+  position: absolute;
+  z-index: -1;
+}
+
+.custom-sign-top {
+  top: var(--offset2);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-sign-bottom {
+  bottom: var(--offset2);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.custom-sign-left {
+  top: 50%;
+  left: var(--offset2);
+  transform: translateY(-50%);
+}
+
+.custom-sign-right {
+  top: 50%;
+  right: var(--offset2);
+  transform: translateY(-50%);
+}/*# sourceMappingURL=test.css.map */
