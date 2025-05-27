@@ -53,7 +53,7 @@ export default function Result({
         .catch((err) => console.error("❌", err));
     }
   }, [user?._id, topicid]);
-
+console.log("topicid: ", topicid);
 
   return (
     <>
@@ -77,7 +77,7 @@ export default function Result({
             <p className="mt-6 text-center">
               {getRandomEncouragingPhrase(user.name, score, total)}
             </p>
-            <RerunTestBtn />
+            <RerunTestBtn testId={topicid} />
           </div>
         </div>
       </main>

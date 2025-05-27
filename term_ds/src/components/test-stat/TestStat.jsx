@@ -90,6 +90,13 @@ export default function TestStats() {
   const totalPassed = results.length;
   const passedWithoutMistakes = results.filter(r => r.scoreIncorrect === 0).length;
   const passedWithTwoMistakes = results.filter(r => r.scoreIncorrect === 2).length;
+  const averageTimeInSec =
+  results.length > 0
+    ? Math.round(results.reduce((sum, r) => sum + (r.time || 0), 0) / results.length)
+    : 0;
+
+const minutes = Math.floor(averageTimeInSec / 60);
+const seconds = averageTimeInSec % 60;
 
   return (
     <div className="p-6 min-h-screen font-[Inter]">
@@ -150,6 +157,7 @@ export default function TestStats() {
             Кількість вдало пройдених тестів без жодної помилки:{" "}
             {passedWithoutMistakes}
           </div>
+          <div>Середній час проходження тесту: {minutes} хв {seconds} сек</div>
         </div>
       </div>
     </div>

@@ -4,11 +4,36 @@ const jwt = require('jsonwebtoken');
 
 exports.getAllTests = async (req, res) => {
   try {
-    const tests = await Test.find().sort({ createdAt: -1 });
-    res.json(tests);
+    const tests = await Test.find();
+    const results = await TestResult.find();
+
+    const resultMap = {};
+
+    results.forEach((r) => {
+      const topicId = r.topic?.toString();
+      if (!topicId) return;
+
+      if (!resultMap[topicId]) {
+        resultMap[topicId] = { success: 0, error: 0 };
+      }
+
+      // 🟢 Успішно — якщо score >= 18
+      if (r.score >= 18) {
+        resultMap[topicId].success++;
+      } else {
+        resultMap[topicId].error++;
+      }
+    });
+
+    const testsWithStats = tests.map((test) => {
+      const stats = resultMap[test._id.toString()] || { success: 0, error: 0 };
+      return { ...test.toObject(), ...stats };
+    });
+
+    res.json(testsWithStats);
   } catch (err) {
-    console.error('❌ Error fetching tests:', err);
-    res.status(500).json({ error: 'Помилка сервера' });
+    console.error("❌ Error getting tests:", err);
+    res.status(500).json({ error: "Помилка сервера при отриманні тестів" });
   }
 };
 
@@ -65,3 +90,4 @@ exports.getUserResults = async function(req, res) {
     res.status(500).json({ error: "Помилка при отриманні статистики" });
   }
 };
+

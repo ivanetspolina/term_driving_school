@@ -8,44 +8,23 @@
   "cars": [
     {
       "id": "police",
-      "cars_priority": 1,
-      "style": {
-        "color": "black",
-        "size": "medium",
-        "icon": "🚓"
-      }
+      "cars_priority": 1
     },
     {
       "id": "car1",
-      "cars_priority": 2,
-      "style": {
-        "color": "red",
-        "size": "medium",
-        "icon": "🚗"
-      }
+      "cars_priority": 2
     },
     {
       "id": "car2",
-      "cars_priority": 2,
-      "style": {}
+      "cars_priority": 2
     },
     {
       "id": "car3",
-      "cars_priority": 2,
-      "style": {
-        "color": "blue",
-        "size": "medium",
-        "icon": "🚘"
-      }
+      "cars_priority": 2
     },
     {
       "id": "car4",
-      "cars_priority": 2,
-      "style": {
-        "color": "yellow",
-        "size": "medium",
-        "icon": "🚕"
-      }
+      "cars_priority": 2
     }
   ]
 }

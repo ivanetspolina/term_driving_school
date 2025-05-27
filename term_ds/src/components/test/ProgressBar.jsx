@@ -8,16 +8,17 @@ export default function ProgressBar({ success = 0, error = 0 }) {
       className="relative w-[200px] h-5 rounded-full bg-gray-200
                     overflow-hidden shadow-sm text-[12px]
                     font-semibold text-white"
+      title="Співвідношення успішних і неуспішних тестів у відсотках"
     >
       {/* Success bar */}
       <div
-        className="absolute top-0 left-0 h-full bg-red-400"
+        className="absolute top-0 left-0 h-full bg-green-400"
         style={{ width: `${successPercent}%` }}
       ></div>
 
       {/* Error bar - позиціонується правильно за допомогою left у style */}
       <div
-        className="absolute top-0 h-full bg-green-400"
+        className="absolute top-0 h-full bg-red-400"
         style={{
           left: `${successPercent}%`,
           width: `${errorPercent}%`,

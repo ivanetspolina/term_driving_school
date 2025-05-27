@@ -9,7 +9,7 @@ export function RunTestHeader({ topic, questionCount, timer, score}) {
           Тести на тему: {topic}
         </h2>
         <p className="text-lg">{questionCount} питань</p>
-        <div className="mb-2 text-lg text-green-700 font-semibold">
+        <div className="mb-2 text-lg text-purple-700 font-semibold">
           Ваш рахунок: {score} бал{score === 1 ? "" : score < 5 ? "и" : "ів"}
         </div>
       </div>

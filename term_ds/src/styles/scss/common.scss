@@ -34,16 +34,14 @@
       display: flex;
       flex: 1 1 auto;
       column-gap: 1rem;
+      font-family: "Nunito Sans", sans-serif;
+      word-break: break-all;
+      font-size: 20px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      white-space: normal;
 
-      a {
-        display: flex;
-        align-items: center;
-        font-family: "Nunito Sans", sans-serif;
-        font-size: 20px;
-        line-height: 20px;
-        white-space: normal;
-        word-break: break-all;
-      }
     }
   }
 }

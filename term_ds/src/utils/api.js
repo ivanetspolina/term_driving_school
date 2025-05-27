@@ -31,5 +31,6 @@ export const apiUrl = {
   deleteAccount: "/auth/delete",
   tests: "/tests",
   testResult: "/tests/result",
-  testResultUser: "/tests/results/user"
+  testResultUser: "/tests/results/user",
+  testsWithStats: "/tests/with-stats"  
 };

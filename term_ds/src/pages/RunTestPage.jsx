@@ -28,6 +28,7 @@ export default function RunTest() {
   const [isRunning, setIsRunning] = useState(STATES.START);
   const [score, setScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [canGoNext, setCanGoNext] = useState(false);
 
   const handleStart = () => {
     setTimer(0);
@@ -67,12 +68,12 @@ export default function RunTest() {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const getTestComponent = (score, setScore) => {
+  const getTestComponent = (score, setScore, questionIndex) => {
     switch (testData?.type) {
       case "crossroads":
-        return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} />;
+        return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
       case "roadSigns":
-        return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} />;
+        return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
       default:
         return <div>Тип тесту не підтримується</div>;
     }
@@ -117,6 +118,7 @@ export default function RunTest() {
             score={score}
             timer={timer}
             testData={testData}
+            canGoNext={canGoNext}
           />
         </div>        
       </main>

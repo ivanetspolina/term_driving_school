@@ -50,7 +50,3 @@ export const getRandomEncouragingPhrase = (name, score, total) => {
   
   return phrasesArray[Math.floor(Math.random() * phrasesArray.length)];
 };
-
-export const generateNewTest = () => {
-  console.log('Генерування нового тесту...');
-};

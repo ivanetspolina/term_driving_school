@@ -7,28 +7,43 @@ export const getFromDirection = (position, grid) => {
   return null;
 };
 
-export const getCarPriority = (car, grid, signPositions, blockedDirections, directionToSignId, signs, silent = false) => {
+export const getCarPriority = (car, grid, signPositions, blockedDirections, directionToSignId, signs, cars,  carsToPlace = [], silent = false) => {
   const fromDir = getFromDirection(car.position, grid);
+  
+  const carIndex = carsToPlace.findIndex(p =>
+    p.position[0] === car.position[0] && p.position[1] === car.position[1]
+  );
+  const carPriorityValue = cars[carIndex]?.cars_priority ?? 0;
+
+  if (carPriorityValue === 1) {
+    if (!silent) {
+      console.log(`🚓 Машина з [${car.position}] має абсолютний пріоритет`);
+    }
+    return 10;
+  }
+
   const signData = signPositions[fromDir];
   const signId = directionToSignId[fromDir];
 
   if (!signData || blockedDirections.includes(fromDir) || !signId) {
-   if (!silent) {
-      console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position[0]}, ${car.position[1]}]) не має знаку або напрям заблокований — пріоритет: 0`);
+    if (!silent) {
+      console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position}]) не має знаку або напрям заблокований — пріоритет: 0`);
     }
     return 0;
   }
 
   const sign = signs.find((s) => s.id === signId);
-  const priority = sign?.signs_priority ?? 0;
+  const priority = sign ? (10 - sign.signs_priority) : 0;
 
   if (!silent) {
-    console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position[0]}, ${car.position[1]}]) — знак '${signId}' на координатах [${signData.position[0]}, ${signData.position[1]}], пріоритет: ${priority}`);
+    console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position}]) — знак '${signId}', пріоритет: ${priority}`);
+    console.log(`[DEBUG] car.position: ${car.position}, cars_priority: ${carPriorityValue}`);
   }
+  
   return priority;
 };
 
-// Функція для отримання знака для конкретної клітинки
+
 export const getSignForCell = (row, col, signPositions, blockedDirections, directionToSignId, signStyles) => {
   for (const [direction, posData] of Object.entries(signPositions)) {
     if (posData.position[0] === row && posData.position[1] === col) {

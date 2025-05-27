@@ -41,17 +41,19 @@ export default function Test() {
         </div>
 
         <ul role="list" className="test-list custom-list">
-          {tests.map((test) => (
-            <li key={test._id}>
-              <div className="list-item-wrapper">
-                <NavLink to={`/runtest/${test._id}`}>{test.name}</NavLink>
-              </div>
+          {tests.map((test) => {
+            return (
+              <li key={test._id}>
+                <div className="list-item-wrapper">
+                  <NavLink to={`/runtest/${test._id}`}>{test.name}</NavLink>
+                </div>
 
-              <div className="list-progress-bar">
-                <ProgressBar success={20} error={80} /> {/* Статистику додамо пізніше */}
-              </div>
-            </li>
-          ))}
+                <div className="list-progress-bar">
+                  <ProgressBar success={test.success || 0} error={test.error || 0} />
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </main>
     </>
