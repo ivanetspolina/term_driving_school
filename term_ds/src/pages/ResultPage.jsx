@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import RerunTestBtn from "../components/test-result/RerunTestButton.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -8,18 +8,19 @@ import {
 } from "../scripts/resultTestFunc.js";
 import { useUI } from "../context/UIContext.jsx";
 import { useEffect } from "react";
+import { TimerDisplay } from "../components/test-run/elements/Timer.jsx";
+import { apiRequest, apiUrl } from "../utils/api.js";
 
 export default function Result({
-  score = 19,
   total = 20,
-  userName,
   passingScore = 18,
-}) {
-  const isPassed = isTestPassed(score, passingScore);
+}) { 
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading } = useAuth();
+  console.log("user: ", user);
   const { setAlert } = useUI();
-
+  const [searchParams] = useSearchParams();
+  
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       setAlert("Авторизуйтесь!", "error");
@@ -27,14 +28,32 @@ export default function Result({
     }
   }, [isLoading, isAuthenticated]);
 
-  const testResult = {
-    score: score,
-    total: total,
-    theme: "***",
-    time: "***",
-    userName: user.name,
-    passingScore: passingScore,
-  };
+  const score = Number(searchParams.get("score"));
+  const scoreIncorrect = total - score;
+  const time = Number(searchParams.get("time"));
+  const topic = searchParams.get("topic");
+  const topicid = searchParams.get("topicid");
+  const isPassed = isTestPassed(score, passingScore);
+
+  const sendTestData = {
+    user: user._id,
+    score,
+    scoreIncorrect,
+    time,
+    topicid
+  } 
+
+  useEffect(() => {
+    if (user?._id && topicid) {
+      apiRequest(apiUrl.testResult, "POST", sendTestData)
+        .then((res) => {
+          if (res.message) console.log("✅", res.message);
+          else console.warn("⚠️", res.error);
+        })
+        .catch((err) => console.error("❌", err));
+    }
+  }, [user?._id, topicid]);
+
 
   return (
     <>
@@ -48,15 +67,15 @@ export default function Result({
             </h2>
 
             <div className="space-y-2">
-              <p className="font-medium">Тема: ***</p>
-              <p className="font-medium">Час: ***</p>
+              <p className="font-medium">Тема: {topic}</p>
+              <p className="font-medium">Час: {<TimerDisplay timer={time} />}</p>
               <p className="font-medium">
                 Результат: {score}/{total}
               </p>
             </div>
 
             <p className="mt-6 text-center">
-              {getRandomEncouragingPhrase(userName, score, total)}
+              {getRandomEncouragingPhrase(user.name, score, total)}
             </p>
             <RerunTestBtn />
           </div>

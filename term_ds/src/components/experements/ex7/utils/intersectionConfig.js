@@ -33,6 +33,6 @@ export const specificCarPathsMap = (commonRoutes) => ({
     t_cross_4: {
         '4-0': commonRoutes.find(r => r.from === 'west' && r.to === 'south').path,
         '0-3': commonRoutes.find(r => r.from === 'north' && r.to === 'west').path,
-        '7-4': commonRoutes.find(r => r.from === 'south' && r.to === 'north').path,
+        '7-4': commonRoutes.find(r => r.from === 'south' && r.to === 'west').path,
     }
-    });
+});

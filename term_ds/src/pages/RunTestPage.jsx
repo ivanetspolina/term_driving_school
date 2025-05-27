@@ -5,31 +5,33 @@ import StartSection from "../components/test-run/StartSection.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useUI } from "../context/UIContext.jsx";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { apiRequest, apiUrl } from "../utils/api.js";
 import RuningSection from "../components/test-run/RuningSection.jsx";
-import FinishedSection from "../components/test-run/FinishedSection.jsx";
+import Crossroads from "../components/test-run/testType/crossroads/Crossroads.jsx";
+import RoadSigns from "../components/test-run/testType/roadSigns/RoadSigns.jsx";
 
 const STATES = {
-    START: "start",
-    RUNNING: "running",
-    PAUSED: "paused",
-    FINISHED: "finished",
-  };
+  START: "start",
+  RUNNING: "running",
+  PAUSED: "paused"
+};
 
 export default function RunTest() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading} = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { setAlert } = useUI();
   const { id } = useParams();
 
-  const [testName, setTestName] = useState("");
-  const [timer, setTimer] = useState(0);  
+  const [testData, setTestData] = useState(null);
+  const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(STATES.START);
+  const [score, setScore] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const handleStart = () => {
-    setTimer(0);        
-    setIsRunning(STATES.RUNNING); 
+    setTimer(0);
+    setIsRunning(STATES.RUNNING);
   };
 
   const resetTest = () => {
@@ -37,7 +39,7 @@ export default function RunTest() {
     setIsRunning(STATES.START);
     navigate("/tests");
   };
-  
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       setAlert("Авторизуйтесь!", "error");
@@ -48,13 +50,13 @@ export default function RunTest() {
   useEffect(() => {
     const fetchTest = async () => {
       const { test } = await apiRequest(`${apiUrl.tests}/${id}`, "GET", null);
-      if (test?.name) {
-        setTestName(test.name);
+      if (test) {
+        setTestData(test);
       }
     };
     if (id) fetchTest();
   }, [id]);
-  
+
   useEffect(() => {
     let interval;
     if (isRunning === STATES.RUNNING) {
@@ -65,36 +67,59 @@ export default function RunTest() {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-return (
-  <>
-    <Header />
+  const getTestComponent = (score, setScore) => {
+    switch (testData?.type) {
+      case "crossroads":
+        return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} />;
+      case "roadSigns":
+        return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} />;
+      default:
+        return <div>Тип тесту не підтримується</div>;
+    }
+  };
 
-    <main className="h-screen run-test-main center-main">
-      <div className="run-test-container mb-4 h-full grid grid-rows-[auto_1fr] grid-cols-[75%_25%]">
-        <div className="row-start-1 col-start-1 flex justify-between">
-          <RunTestHeader
-            timer={timer}
-            topic={testName || "Завантаження..."}
-            questionCount={20}
-          />
-        </div>
+  return (
+    <>
+      <Header />
 
-        {isRunning === STATES.START && (<StartSection handleStart={handleStart} />)}
-        {(isRunning === STATES.RUNNING || isRunning === STATES.PAUSED) && (
-            <RuningSection />
+      <main className="run-test-main center-main">
+        <div className="run-test-container mb-4 h-full grid grid-rows-[auto_1fr] grid-cols-[75%_25%]">
+          <div className="row-start-1 col-start-1 flex justify-between">
+            <RunTestHeader
+              timer={timer}
+              topic={testData?.name || "Завантаження..."}
+              questionCount={20}
+              score={score}
+            />
+          </div>
+
+          {isRunning === STATES.START && (
+            <StartSection handleStart={handleStart} />
           )}
-        {isRunning === STATES.FINISHED && <FinishedSection />}
 
-        <RunTestButton
-          isRunning={isRunning}
-          setIsRunning={setIsRunning}
-          onPause={() => setIsRunning(STATES.PAUSED)}
-          onCancel={resetTest}
-          onSnapshot={() => console.log("Snapshot clicked")}
-          STATES={STATES} 
-        />
-      </div>
-    </main>
-  </>
-);
+          {(isRunning === STATES.RUNNING || isRunning === STATES.PAUSED) && (
+            <RuningSection score={score} setScore={setScore}>
+              <Suspense fallback={<div>Завантаження тесту...</div>}>
+                {getTestComponent(score, setScore, currentQuestionIndex)}
+              </Suspense>
+            </RuningSection>
+          )}
+
+          <RunTestButton
+            isRunning={isRunning}
+            setIsRunning={setIsRunning}
+            onPause={() => setIsRunning(STATES.PAUSED)}
+            onCancel={resetTest}
+            onSnapshot={() => console.log("Snapshot clicked")}
+            STATES={STATES}
+            currentQuestionIndex={currentQuestionIndex}
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
+            score={score}
+            timer={timer}
+            testData={testData}
+          />
+        </div>        
+      </main>
+    </>
+  );
 }

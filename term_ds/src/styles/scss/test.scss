@@ -4,6 +4,18 @@
     color: c.$text;
 }
 
+.car-item {
+    width: 70%;
+    height: 70%;
+    background-repeat: no-repeat;
+    background-size: 28px;
+    background-position: center;
+}
+
+.car-car2 {
+    background-image: url('../../assets/svg/red_car.svg');
+}
+
 .custom-rule {
     --w: 12px;
     --h: 12px;

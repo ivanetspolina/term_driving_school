@@ -30,4 +30,6 @@ export const apiUrl = {
   updateProfile: "/auth/update_profile",
   deleteAccount: "/auth/delete",
   tests: "/tests",
+  testResult: "/tests/result",
+  testResultUser: "/tests/results/user"
 };

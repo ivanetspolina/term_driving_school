@@ -1,4 +1,16 @@
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { apiRequest, apiUrl } from "../../utils/api";
+import { uk } from "date-fns/locale";
+import {
+  parseISO,
+  format,
+  getDaysInMonth,
+  getMonth,
+  getYear,
+  startOfMonth,
+} from "date-fns";
+
 import {
   Chart as ChartJS,
   LineElement,
@@ -21,69 +33,123 @@ ChartJS.register(
 );
 
 export default function TestStats() {
-  const testStats = {
-    totalPassed: 47,
-    interrupted: 5,
-    passedWithoutMistakes: 19,
-    passedWithTwoMistakes: 12,
-    days: [...Array(30).keys()].map((d) => d + 1), // 1..30
-    testsPerDay: Array.from({ length: 30 }, () =>
-      Math.floor(Math.random() * 5)
-    ), // випадкові значення для графіку
-  };
+  const [results, setResults] = useState([]);
+  const [monthOptions, setMonthOptions] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(""); // формат: '2025-05'
+  const [dailyLabels, setDailyLabels] = useState([]);
+  const [dailyCounts, setDailyCounts] = useState([]);
 
-  const chartData = {
-    labels: testStats.days.map((d) => `День ${d}`),
-    datasets: [
-      {
-        label: "Пройдені тести",
-        data: testStats.testsPerDay,
-        borderColor: "rgb(132, 75, 203)", // фіолетовий
-        backgroundColor: "rgb(81, 3, 158)",
-        tension: 0.3,
-      },
-    ],
-  };
+  useEffect(() => {
+  async function fetchData() {
+    const data = await apiRequest(apiUrl.testResultUser, "GET");
+    if (Array.isArray(data)) {
+      setResults(data);
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "День",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Кількість пройдених тестів",
-        },
-        beginAtZero: true,
-        ticks: {
-          stepSize: 1,
-        },
-      },
-    },
-  };
+      // Визначаємо всі унікальні місяці
+        const monthsSet = new Set(
+          data.map((r) => format(parseISO(r.createdAt), "yyyy-MM"))
+        );
+        const sortedMonths = Array.from(monthsSet).sort().reverse(); // новіші зверху
+        setMonthOptions(sortedMonths);
+
+        if (!selectedMonth) {
+          setSelectedMonth(sortedMonths[0]); // обираємо найсвіжіший місяць
+        }
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedMonth || results.length === 0) return;
+
+    const [yearStr, monthStr] = selectedMonth.split("-");
+    const year = parseInt(yearStr);
+    const month = parseInt(monthStr) - 1;
+
+    const daysInMonth = getDaysInMonth(new Date(year, month));
+    const monthDates = [...Array(daysInMonth)].map((_, i) =>
+      format(new Date(year, month, i + 1), "yyyy-MM-dd")
+    );
+
+    const grouped = {};
+    results.forEach((r) => {
+      const date = format(parseISO(r.createdAt), "yyyy-MM-dd");
+      if (date.startsWith(selectedMonth)) {
+        grouped[date] = (grouped[date] || 0) + 1;
+      }
+    });
+
+    const counts = monthDates.map((d) => grouped[d] || 0);
+
+    setDailyLabels(monthDates);
+    setDailyCounts(counts);
+  }, [selectedMonth, results]);
+
+  const totalPassed = results.length;
+  const passedWithoutMistakes = results.filter(r => r.scoreIncorrect === 0).length;
+  const passedWithTwoMistakes = results.filter(r => r.scoreIncorrect === 2).length;
 
   return (
     <div className="p-6 min-h-screen font-[Inter]">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-8">
-          <Line data={chartData} options={chartOptions} />
-        </div>
+        <h2 className="text-xl font-bold mb-4">Кількість тестів по днях</h2>
+
+        <label className="block mb-2 font-medium">Оберіть місяць:</label>
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          className="p-2 border rounded mb-6"
+        >
+          {monthOptions.map((month) => (
+            <option key={month} value={month}>
+              {format(parseISO(`${month}-01`), "LLLL yyyy", {
+                locale: uk,
+              })}
+            </option>
+          ))}
+        </select>
+        <Line
+          data={{
+            labels: dailyLabels,
+            datasets: [
+              {
+                label: "Тестів у день",
+                data: dailyCounts,
+                borderColor: "rgb(124, 58, 237)",
+                tension: 0.3,
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                onClick: () => {}, 
+              },
+            },
+            scales: {
+              x: { title: { display: true, text: "Дата" } },
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: "Кількість тестів" },
+                ticks: { stepSize: 1 },
+              },
+            },
+          }}
+        />
 
         <div className="grid grid-cols-1 md:grid-rows-4 gap-6 text-base font-medium">
-          <div>Загальна кількість пройдених тестів: {testStats.totalPassed}</div>
-          <div>Кількість тестів з допущеними 2-ома помилками: {testStats.passedWithTwoMistakes}</div>
-          <div>Кількість перерваних тестів: {testStats.interrupted}</div>
-          <div>Кількість вдало пройдених тестів без жодної помилки: {testStats.passedWithoutMistakes}</div>
+          <div>Загальна кількість пройдених тестів: {totalPassed}</div>
+          <div>
+            Кількість тестів з допущеними 2-ома помилками:{" "}
+            {passedWithTwoMistakes}
+          </div>
+          <div>
+            Кількість вдало пройдених тестів без жодної помилки:{" "}
+            {passedWithoutMistakes}
+          </div>
         </div>
       </div>
     </div>
