@@ -1,8 +1,8 @@
-import StopIcon from "../../../../../assets/svg/stop.svg";
-import GiveWayIcon from "../../../../../assets/svg/give_way.svg";
-import MainRoadIcon from "../../../../../assets/svg/main_road.svg";
-import TrafficRedIcon from "../../../../../assets/svg/traffic_light_red.svg";
-import TrafficGreenIcon from "../../../../../assets/svg/traffic_light_green.svg";
+import StopIcon from "../../../assets/svg/stop.svg";
+import GiveWayIcon from "../../../assets/svg/give_way.svg";
+import MainRoadIcon from "../../../assets/svg/main_road.svg";
+import TrafficRedIcon from "../../../assets/svg/traffic_light_red.svg";
+import TrafficGreenIcon from "../../../assets/svg/traffic_light_green.svg";
 
 // Додамо цю функцію для рендеру знаків
 export const renderSign = (signId) => {

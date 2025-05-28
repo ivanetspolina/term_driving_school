@@ -86,16 +86,6 @@ export function RunTestButton({
         </button>
 
         <button
-          onClick={handleSnapshotClick}
-          className="relative w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
-        >
-          Зробити знімок завдання
-          {snapshotSuccess && (
-            <Check className="absolute right-4 top-1/2 w-5 h-5 text-white bg-green-500 rounded-full transform -translate-y-1/2" />
-          )}
-        </button>
-
-        <button
           onClick={handleNextQuestion}
           disabled={!canGoNext}
           className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 transition
@@ -124,7 +114,7 @@ export function RunTestButton({
           onConfirm={handleConfirmPause}
           onCancel={() => {
             setShowPauseConfirm(false);
-            onCancel();
+            setIsRunning(STATES.RUNNING); 
           }}
         />
       )}

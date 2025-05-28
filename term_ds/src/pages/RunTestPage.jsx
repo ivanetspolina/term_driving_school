@@ -24,6 +24,7 @@ export default function RunTest() {
   const { id } = useParams();
 
   const [testData, setTestData] = useState(null);
+  const [questionData, setQuestionData] = useState(null);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(STATES.START);
   const [score, setScore] = useState(0);
@@ -68,7 +69,18 @@ export default function RunTest() {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const getTestComponent = (score, setScore, questionIndex) => {
+  useEffect(() => {
+     async function getQuestion() {
+      const question = await apiRequest(`/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`, 'GET', false, false);
+      setQuestionData(question);
+    }
+    if (testData) {
+      getQuestion();
+    }
+  }, [currentQuestionIndex, testData])
+  
+
+  const getTestComponent = (score, setScore) => {
     switch (testData?.type) {
       case "crossroads":
         return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
@@ -99,7 +111,7 @@ export default function RunTest() {
           )}
 
           {(isRunning === STATES.RUNNING || isRunning === STATES.PAUSED) && (
-            <RuningSection score={score} setScore={setScore}>
+            <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext}>
               <Suspense fallback={<div>Завантаження тесту...</div>}>
                 {getTestComponent(score, setScore, currentQuestionIndex)}
               </Suspense>

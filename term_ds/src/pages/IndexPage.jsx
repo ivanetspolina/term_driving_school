@@ -113,7 +113,7 @@ export default function Index() {
                   </li>
                   <li className="mb-2">
                     <span className="font-semibold">Аналізуйте результати</span>{" "}
-                    – отримуйте детальну інформацію про свої відповіді
+                    – отримуйте інформацію про свої відповіді
                   </li>
                   <li className="mb-2">
                     <span className="font-semibold">Вдосконалюйтеся</span> –

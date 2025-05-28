@@ -31,7 +31,6 @@ export default function Authorization() {
 
   const handleFormSubmit = async (values) => {
     const res = await apiRequest(apiUrl.login, "POST", values);
-    console.log("res: ", res);
 
       if (res.error) {
         setAlert(`Помилка авторизації: ${res.error}`, "error");

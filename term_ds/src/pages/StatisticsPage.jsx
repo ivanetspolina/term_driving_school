@@ -25,8 +25,7 @@ export default function Statistics() {
         <div className="statistics-title text-title">
           <h1>Статистика</h1>
         </div>
-
-        <ScreenshotsSection />
+        
         <TestStat />
       </main>
     </>

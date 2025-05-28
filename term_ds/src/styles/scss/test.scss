@@ -4,34 +4,20 @@
     color: c.$text;
 }
 
-.car-item {
-    width: 70%;
-    height: 70%;
-    background-repeat: no-repeat;
-    background-size: 28px;
-    background-position: center;
+.car-visual {
+  position: absolute;
+  cursor: pointer;
+  width: 90%;
+  height: 90%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  top: 50%;
+  left: 50%;
+  transform: "translate(-50%, -50%)";
+  transition: transform 0.3s ease-in-out;
+  z-index: 10;
 }
-
-.car-car1 {
-    background-image: url('../../assets/svg/red_car.svg');
-}
-
-.car-car2 {
-    background-image: url('../../assets/svg/blue_car.svg');
-}
-
-.car-car3 {
-    background-image: url('../../assets/svg/olive_car.svg');
-}
-
-.car-car4 {
-    background-image: url('../../assets/svg/gray_car.svg');
-}
-
-.car-police {
-    background-image: url('../../assets/svg/police_car.svg');
-}
-
 
 /////////////////////////////////////////////////////
 // Fixed sign positioning styles 

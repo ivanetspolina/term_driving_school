@@ -1,0 +1,30 @@
+[
+  {
+    "intersection_id": "regular_cross",
+    "cars": ["west", "north", "east", "south"],
+    "sign_positions": {
+      "1-3": "main_road",
+      "3-6": "give_way",
+      "6-4": "stop",
+      "4-1": "main_road"
+    }
+  },
+  {
+    "intersection_id": "t_cross_1",
+    "cars": ["west", "east", "south"],
+    "sign_positions": {
+      "3-6": "give_way",
+      "6-4": "main_road",
+      "4-1": "stop"
+    }
+  },
+  {
+    "intersection_id": "t_cross_2",
+    "cars": ["north", "west", "east"],
+    "sign_positions": {
+      "1-3": "main_road",
+      "4-1": "main_road",
+      "3-6": "stop"
+    }
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "question_id": "q_regular_cross_01",
+  "intersection_id": "regular_cross",
+  "sign_positions": {
+    "west": {
+      "position": [4, 2],
+      "style": "bottom",
+      "sign_id": "main_road"
+    },
+    "north": {
+      "position": [2, 3],
+      "style": "left",
+      "sign_id": "give_way"
+    },
+    "east": {
+      "position": [3, 5],
+      "style": "top",
+      "sign_id": "stop"
+    },
+    "south": {
+      "position": [5, 4],
+      "style": "right",
+      "sign_id": "main_road"
+    }
+  },
+  "carsToPlace": [
+    {
+      "car_id": "car4",
+      "start_cars_points": 2,
+      "path_type": "straight"
+    },
+    {
+      "car_id": "car1",
+      "start_cars_points": 1,
+      "path_type": "right_turn"
+    },
+    {
+      "car_id": "car2",
+      "start_cars_points": 0,
+      "path_type": "left_turn"
+    },
+    {
+      "car_id": "car3",
+      "start_cars_points": 3,
+      "path_type": "left_turn"
+    }
+  ]
+}

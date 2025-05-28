@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-import grassBg1 from "../assets/svg/green-grass-background 1.svg";
-import grassBg2 from "../assets/svg/grass-texture-background 1.svg";
+import grassBg1 from "../assets/svg/green-grass-background1.svg";
+import grassBg2 from "../assets/svg/grass-texture-background1.svg";
 
 const BACKGROUNDS = [grassBg1, grassBg2];
 

@@ -1,4 +1,4 @@
-{ 
+{
   "signs": [
     {
       "id": "stop",
@@ -57,33 +57,5 @@
         "css": "traffic-light"
       }
     }    
-  ],
-  "sign_positions": [
-    {
-      "west": { "position": [4, 2], "style": "bottom" },
-      "north": { "position": [2, 3], "style": "left" },
-      "east": { "position": [3, 5], "style": "top" },
-      "south": { "position": [5, 4], "style": "right" }
-    },
-    {
-      "south": { "position": [5, 4], "style": "right" },
-      "east": { "position": [3, 5], "style": "top" },
-      "west": { "position": [4, 2], "style": "bottom" }
-    },
-    {
-      "north": { "position": [2, 3], "style": "left" },
-      "east": { "position": [3, 5], "style": "top" },
-      "west": { "position": [4, 2], "style": "bottom" }
-    },
-    {
-      "north": { "position": [2, 3], "style": "left" },
-      "east": { "position": [3, 5], "style": "top" },
-      "south": { "position": [5, 4], "style": "right" }
-    },
-    {
-      "north": { "position": [2, 3], "style": "left" },
-      "west": { "position": [4, 2], "style": "bottom" },
-      "south": { "position": [5, 4], "style": "right" }
-    }
   ]
 }

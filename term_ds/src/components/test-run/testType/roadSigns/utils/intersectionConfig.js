@@ -1,9 +1,9 @@
 // Пов’язуємо напрямки з конкретними знаками
 export const directionToSignId = {
-    south: "give_way",
-    east: "main_road",
-    north: "give_way",
-    west: "main_road"
+    south: "traffic_light_red",
+    east: "traffic_light_green",
+    north: "traffic_light_red",
+    west: "traffic_light_green"
   };
 
   
