@@ -9,3 +9,19 @@ backend
  ┣ app.js
  ┣ package-lock.json
  ┗ package.json
+
+ backend
+ ┣ controllers
+ ┃ ┣ AuthController.js
+ ┃ ┗ TestController.js
+ ┣ models
+ ┃ ┣ Test.js
+ ┃ ┣ TestResult.js
+ ┃ ┗ User.js 
+ ┣ routes
+ ┃ ┣ Auth.js
+ ┃ ┗ Test.js
+ ┣ .env
+ ┣ app.js
+ ┣ package-lock.json
+ ┗ package.json

@@ -54,10 +54,10 @@ export const generateValidOrders = (
   dfs([], allCars);
 
 
-  console.log("🔄 Можливі правильні послідовності проїзду:");
-  results.forEach((order, idx) => console.log(`${idx + 1}) ${order.join(" → ")}`));
-  console.log("carPriorities:", carPriorities);
-  console.log("allCars:", allCars.map(car => `${car.position} → ${carPriorities[`${car.position[0]}-${car.position[1]}`]}`));
+  // results.forEach((order, idx) => console.log(`${idx + 1}) ${order.join(" → ")}`));
+  // console.log("🔄 Можливі правильні послідовності проїзду:");
+  // console.log("carPriorities:", carPriorities);
+  // console.log("allCars:", allCars.map(car => `${car.position} → ${carPriorities[`${car.position[0]}-${car.position[1]}`]}`));
 
   return results;
 };

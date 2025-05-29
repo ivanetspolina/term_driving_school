@@ -1,8 +1,0 @@
-{
-  "id": "t_cross_1",
-  "sign_positions": {
-      "south": { "position": [5, 4], "style": "right" },
-      "east": { "position": [3, 5], "style": "top" },
-      "west": { "position": [4, 2], "style": "bottom" }
-    }
-}

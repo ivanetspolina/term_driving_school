@@ -13,22 +13,28 @@ import { getDirectionIndicators } from "./utils/getDirectionIndicators";
 import { setCarsToPlace } from "./utils/setCarsToPlace";
 import { getInitialRotationFromPath, createAnimatedStep } from "./utils/animatedCarMovement";
 import "../../styles/scss/test.scss";
+import { signDirectionsMap } from "./utils/signDirectionsMap";
 
 export default function RuningSection({ questionData, questionIndex, setScore, setCanGoNext, children }) {
   const [movingCars, setMovingCars] = useState({});
   const [isCarMoving, setIsCarMoving] = useState(false);
   const [userOrder, setUserOrder] = useState([]);
-  const [validOrders, setValidOrders] = useState([]);
+  // const [validOrders, setValidOrders] = useState([]);
   const [hasMistake, setHasMistake] = useState(false);  
   const cars = carsData.cars;
   
   const intersection = roadData.intersections.find((i) => i.id === questionData.id); // Отримуємо об'єкт перехрестя для поточного запитання (за індексом questionIndex)
   const grid = intersection.grid; // Витягуємо саму сітку (матрицю 8х8), яка описує розташування доріг і тротуарів
   const blockedDirections = intersection.blockedDirections || []; // Отримуємо список напрямків, які заблоковані для руху на цьому перехресті (наприклад, "north", "west" тощо)
-  const signPositions = questionData.sign_positions || {}; // Отримуємо об'єкт з позиціями дорожніх знаків для поточного запитання.
   const carsToPlace = setCarsToPlace(questionData.carsToPlace, carsData); // Це обчислення залежить від індексу питання і виконується лише тоді, коли він змінюється (useMemo для оптимізації).
   
   const cellStyles = roadData.cell_styles; // Отримуємо стилі клітинок (наприклад, яка CSS-клас буде для дороги, тротуару тощо)
+  
+  // Отримуємо об'єкт з позиціями дорожніх знаків для поточного запитання.
+  const signList = questionData.sign_positions?.map((item) => ({
+    ...item,
+    ...signDirectionsMap[item.direction] // додаємо position і style
+  })) || [];
 
   // Рух машин при кліку, обчислюємо маршрути руху машин для поточного питання (перехрестя).
   const carPaths = useMemo(() => {
@@ -57,9 +63,8 @@ export default function RuningSection({ questionData, questionIndex, setScore, s
       map[key] = getCarPriority(
         car,                         // поточна машинка
         grid,                        // сітка перехрестя
-        signPositions,               // розташування дорожніх знаків
+        signList,               // розташування дорожніх знаків
         blockedDirections,           // напрямки, які заблоковано
-        directionToSignId,           // відповідність напрямку — знаку
         conditionsData.signs,        // список всіх знаків
         cars,
         carsToPlace,
@@ -68,7 +73,7 @@ export default function RuningSection({ questionData, questionIndex, setScore, s
     });
 
     return map; // Повертаємо словник: {"4-0": 3, "0-3": 2, ...}
-  }, [carsToPlace, grid, signPositions, blockedDirections]);
+  }, [carsToPlace, grid, signList, blockedDirections]);
 
   // Зберігаються стилі для кожного типу дорожнього знака.
   const signStyles = useMemo(() => {
@@ -139,7 +144,7 @@ const handleCarClick = (row, col) => {
   let step = 0; // Початковий індекс кроку для руху машинки по маршруту
 
   // Запускаємо таймер, який буде рухати машинку по одній клітинці кожні 200 мілісекунд
-  const interval = setInterval(() => {
+  const interval = setInterval(() => {    
     // Коли ми досягли кінця маршруту — зупиняємо анімацію
     if (step >= path.length) {
       clearInterval(interval); // Зупиняємо інтервал
@@ -160,28 +165,23 @@ const handleCarClick = (row, col) => {
   }, 200); // Кожен крок руху відбувається з інтервалом 200 мс
 };
 
-  // Він викликає функцію, яка генерує всі правильні послідовності проїзду машин відповідно до правил дорожнього руху.
-  useEffect(() => {
-    // Генеруємо масив правильних варіантів порядку проїзду машин на поточному перехресті
-    const valid = generateValidOrders(
-      carsToPlace,               // машинки, які присутні на полі
-      grid,                      // сітка перехрестя
-      signPositions,             // положення дорожніх знаків
-      blockedDirections,         // напрямки, які заблоковані
-      directionToSignId,         // відповідність напрямку та знака
-      conditionsData.signs,      // всі доступні дорожні знаки
-      carPaths,                  // шляхи руху кожної машинки
-      carPriorities              // розраховані пріоритети кожної машинки
-    );
+const validOrders = useMemo(() => {
+  return generateValidOrders(
+    carsToPlace,
+    grid,
+    signList,
+    blockedDirections,
+    directionToSignId,
+    conditionsData.signs,
+    carPaths,
+    carPriorities
+  );
+}, [carsToPlace, grid, signList, blockedDirections, directionToSignId, conditionsData.signs, carPaths, carPriorities]);
 
-    // Зберігаємо згенеровані варіанти у стані — будемо використовувати для перевірки відповідей користувача
-    setValidOrders(valid);
-  }, [questionIndex, carPaths]);
 
 
   // Цей useEffect реагує на зміну порядку кліків користувача (userOrder).
   useEffect(() => {
-    console.log('userOrder:', userOrder, 'validOrders:', validOrders);
     // Якщо користувач обрав стільки машин, скільки є на полі, і вже згенеровані правильні варіанти:
     if (userOrder.length > 0 && userOrder.length === validOrders[0]?.length) {      
       // ❗ Якщо або послідовність неправильна, або були допущені порушення
@@ -203,8 +203,17 @@ const handleCarClick = (row, col) => {
     setCanGoNext(false); // Скидаємо прапорець, що робить видимою кнопку "Наступне питання"
   }, [questionIndex]);
 
+// validOrders
+// carPriorities
+// carsToPlace
+// signList
+console.log("carPriorities: ", carPriorities);
+console.log("validOrders: ", validOrders);
+console.log("carsToPlace: ", carsToPlace);
+console.log("signList: ", signList);
+
   return (
-    <section className="runing-section max-w-[98%] block h-full min-h-[591px] row-start-2 col-start-1 p-4 rounded-[20px] bg-white relative overflow-hidden rounded-[20px]">
+    <section className="runing-section max-w-[98%] block h-full min-h-[591px] row-start-2 col-start-1 p-4 rounded-[20px] bg-white relative overflow-hidden">
        <div className="relative">
              <div className="grid grid-cols-8 grid-rows-8 gap-0 grid-test-custom">
                {grid.flatMap((row, rowIndex) =>
@@ -221,13 +230,13 @@ const handleCarClick = (row, col) => {
                       
       
                        if (carRow === rowIndex && carCol === colIndex) {
-                         const carId = cars[idx]?.id;
-      
-                         console.log("carId:", carId, "image:", carImages[carId]);
+                         const carId = car.car_id;
+  
                          return (
                            <div
                              key={idx}
                              className={`car-visual`}
+                             data-type={carId}
                              style={{
                                backgroundImage: `url(${carImages[carId]})`,
                                transform: `translate(-50%, -50%) rotate(${current.rotation})`,
@@ -244,8 +253,11 @@ const handleCarClick = (row, col) => {
       
                    const hasCar = carsInCell.length > 0;
                    const cellSign = getSignForCell(
-                     rowIndex, colIndex, signPositions,
-                     blockedDirections, directionToSignId, signStyles
+                     rowIndex,
+                     colIndex,
+                     signList,
+                     blockedDirections,
+                     signStyles
                    );
       
                    return (

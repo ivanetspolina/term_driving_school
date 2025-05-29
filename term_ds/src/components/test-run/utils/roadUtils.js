@@ -7,58 +7,86 @@ export const getFromDirection = (position, grid) => {
   return null;
 };
 
-export const getCarPriority = (car, grid, signPositions, blockedDirections, directionToSignId, signs, cars,  carsToPlace = [], silent = false) => {
+
+/**
+ * Обчислює пріоритет машинки на перехресті, враховуючи знаки, напрямок, блокування та тип ТЗ.
+ *
+ * @param {Object} car - Машина з position, car_id, path_type
+ * @param {Array} grid - Сітка перехрестя (матриця 8x8)
+ * @param {Array} signPositions - Масив знаків [{ direction, sign_id, position, style }]
+ * @param {Array} blockedDirections - Напрямки, які заблоковано
+ * @param {Array} signs - Усі знаки з conditions.json
+ * @param {Array} cars - Усі машини з cars.json (для пріоритету)
+ * @param {Array} carsToPlace - Лише машини в поточному питанні
+ *
+ * @returns {number} - Числовий пріоритет (чим більше — тим вищий)
+ */
+export const getCarPriority = (
+  car,
+  grid,
+  signPositions,
+  blockedDirections,
+  signs,
+  cars,
+  carsToPlace = []
+) => {
+  // Визначаємо, з якого напрямку приїжджає машинка
   const fromDir = getFromDirection(car.position, grid);
-  
-  const carIndex = carsToPlace.findIndex(p =>
-    p.position[0] === car.position[0] && p.position[1] === car.position[1]
-  );
-  const carPriorityValue = cars[carIndex]?.cars_priority ?? 0;
 
-  if (carPriorityValue === 1) {
-    if (!silent) {
-      console.log(`🚓 Машина з [${car.position}] має абсолютний пріоритет`);
-    }
-    return 10;
-  }
-
-  const signData = signPositions[fromDir];
-  const signId = directionToSignId[fromDir];
-
-  if (!signData || blockedDirections.includes(fromDir) || !signId) {
-    if (!silent) {
-      console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position}]) не має знаку або напрям заблокований — пріоритет: 0`);
-    }
+  // Якщо напрямок не визначено або заблокований — пріоритет нульовий
+  if (!fromDir || blockedDirections.includes(fromDir)) {
+    console.log(`🚫 Напрям '${fromDir}' заблокований або не визначений для [${car.position}]`);
     return 0;
   }
 
-  const sign = signs.find((s) => s.id === signId);
-  const priority = sign ? (10 - sign.signs_priority) : 0;
+  // Знаходимо дані про машину за її car_id
+  const carData = cars.find(c => c.id === car.car_id);
+  const carPriorityValue = carData?.cars_priority ?? 0;
 
-  if (!silent) {
-    console.log(`🚘 Машина з ${fromDir} (позиція: [${car.position}]) — знак '${signId}', пріоритет: ${priority}`);
-    console.log(`[DEBUG] car.position: ${car.position}, cars_priority: ${carPriorityValue}`);
+  // Спецмашини (наприклад, поліція) мають абсолютний пріоритет
+  if (carPriorityValue === 1) {
+    console.log(`🚓 Машина '${car.car_id}' з позиції [${car.position}] має абсолютний пріоритет.`);
+    return 10;
   }
-  
+
+  // Знаходимо дорожній знак, який відповідає напрямку руху
+  const sign = signPositions.find(s => s.direction === fromDir);
+  const signId = sign?.sign_id;
+
+  // Якщо знаку немає — пріоритет нульовий
+  if (!signId) {
+    console.log(`ℹ️ Для напрямку '${fromDir}' немає дорожнього знаку`);
+    return 0;
+  }
+
+  // Отримуємо деталі знаку з conditions.json
+  const signDetails = signs.find(s => s.id === signId);
+  const priority = signDetails ? (10 - signDetails.signs_priority) : 0;
+
+  console.log(`🚗 Машина '${car.car_id}' з ${fromDir} — знак '${signId}', пріоритет: ${priority}`);
   return priority;
 };
 
 
-export const getSignForCell = (row, col, signPositions, blockedDirections, directionToSignId, signStyles) => {
-  for (const [direction, posData] of Object.entries(signPositions)) {
-    if (posData.position[0] === row && posData.position[1] === col) {
-      const signId = directionToSignId[direction];
-      if (signId && !blockedDirections.includes(direction)) {
-        return {
-          sign: signStyles[signId],
-          positionStyle: posData.style,
-          signId,
-        };
-      }
+
+
+export const getSignForCell = (row, col, signList, blockedDirections, signStyles) => {
+  for (const sign of signList) {
+    if (
+      sign.position[0] === row &&
+      sign.position[1] === col &&
+      !blockedDirections.includes(sign.direction)
+    ) {
+      return {
+        signId: sign.sign_id,
+        positionStyle: sign.style,
+        sign: signStyles[sign.sign_id],
+      };
     }
   }
   return null;
 };
+
 
 export const rightHandDirectionsMap = {
   north: ['east', 'south'],   // ті, хто під'їжджає з east або повертає з south

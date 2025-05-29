@@ -4,7 +4,7 @@ export const directionToSignId = {
     east: "traffic_light_green",
     north: "traffic_light_red",
     west: "traffic_light_green"
-  };
+};
 
   
 // Явно задані маршрути для кожного перехрестя та стартової точки

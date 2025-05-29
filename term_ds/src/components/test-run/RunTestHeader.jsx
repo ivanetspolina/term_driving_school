@@ -5,7 +5,7 @@ export function RunTestHeader({ topic, questionCount, timer, score}) {
   return (
     <>
       <div className="w-2/3 font-[Nunito_Sans]">
-        <h2 className="font-bold text-xl break-all white-space">
+        <h2 className="font-bold text-xl break-word white-space">
           Тести на тему: {topic}
         </h2>
         <p className="text-lg">{questionCount} питань</p>

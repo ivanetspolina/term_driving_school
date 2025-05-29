@@ -1,23 +1,23 @@
 {
   "id": "regular_cross",
-  "sign_positions": {
-    "west": {
-      "position": [ 4, 2 ],
-      "style": "bottom"
+  "sign_positions": [
+    {
+      "direction": "west",
+      "sign_id": "stop"
     },
-    "north": {
-      "position": [ 2, 3 ],
-      "style": "left"
+    {
+      "direction": "north",
+      "sign_id": "main_road"
     },
-    "east": {
-      "position": [ 3, 5 ],
-      "style": "top"
+    {
+      "direction": "east",
+      "sign_id": "give_way"
     },
-    "south": {
-      "position": [ 5, 4 ],
-      "style": "right"
+    {
+      "direction": "south",
+      "sign_id": "main_road"
     }
-  },
+  ],
   "carsToPlace": [
     {
       "car_id": "car4",

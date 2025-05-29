@@ -1,9 +1,0 @@
-{
-    "cars": [
-    { "id": "police", "cars_priority": 1 },
-    { "id": "car1", "cars_priority": 2 },
-    { "id": "car2", "cars_priority": 2 },
-    { "id": "car3", "cars_priority": 2 },
-    { "id": "car4", "cars_priority": 2 }
-  ]
-}

@@ -11,6 +11,7 @@ export default function Test() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { setAlert } = useUI();
   const [tests, setTests] = useState([]);
+  console.log("tests: ", tests);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

@@ -8,8 +8,6 @@ import { useUI } from "../context/UIContext.jsx";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { apiRequest, apiUrl } from "../utils/api.js";
 import RuningSection from "../components/test-run/RuningSection.jsx";
-import Crossroads from "../components/test-run/testType/crossroads/Crossroads.jsx";
-import RoadSigns from "../components/test-run/testType/roadSigns/RoadSigns.jsx";
 
 const STATES = {
   START: "start",
@@ -59,15 +57,15 @@ export default function RunTest() {
     if (id) fetchTest();
   }, [id]);
 
-  useEffect(() => {
-    let interval;
-    if (isRunning === STATES.RUNNING) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isRunning]);
+  // useEffect(() => {
+  //   let interval;
+  //   if (isRunning === STATES.RUNNING) {
+  //     interval = setInterval(() => {
+  //       setTimer((prev) => prev + 1);
+  //     }, 1000);
+  //   }
+  //   return () => clearInterval(interval);
+  // }, [isRunning]);
 
   useEffect(() => {
      async function getQuestion() {
@@ -80,16 +78,16 @@ export default function RunTest() {
   }, [currentQuestionIndex, testData])
   
 
-  const getTestComponent = (score, setScore) => {
-    switch (testData?.type) {
-      case "crossroads":
-        return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
-      case "roadSigns":
-        return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
-      default:
-        return <div>Тип тесту не підтримується</div>;
-    }
-  };
+  // const getTestComponent = (score, setScore) => {
+  //   switch (testData?.type) {
+  //     case "crossroads":
+  //       return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
+  //     case "roadSigns":
+  //       return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
+  //     default:
+  //       return <div>Тип тесту не підтримується</div>;
+  //   }
+  // };
 
   return (
     <>
@@ -111,11 +109,12 @@ export default function RunTest() {
           )}
 
           {(isRunning === STATES.RUNNING || isRunning === STATES.PAUSED) && (
-            <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext}>
-              <Suspense fallback={<div>Завантаження тесту...</div>}>
-                {getTestComponent(score, setScore, currentQuestionIndex)}
-              </Suspense>
-            </RuningSection>
+            <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext} />
+            // <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext}>
+            //   <Suspense fallback={<div>Завантаження тесту...</div>}>
+            //     {getTestComponent(score, setScore, currentQuestionIndex)}
+            //   </Suspense>
+            // </RuningSection>
           )}
 
           <RunTestButton
