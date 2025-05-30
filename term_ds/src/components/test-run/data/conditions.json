@@ -3,7 +3,7 @@
     {
       "id": "stop",
       "name": "Стоп",
-      "signs_priority": 4,
+      "signs_priority": 5,
       "type": "regulatory",
       "style": {
         "shape": "octagon",

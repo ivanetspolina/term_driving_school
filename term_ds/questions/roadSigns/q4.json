@@ -22,12 +22,12 @@
     {
       "car_id": "car2",
       "start_cars_points": 0,
-      "path_type": "right_turn"
+      "path_type": "straight"
     },
     {
       "car_id": "car4",
       "start_cars_points": 2,
-      "path_type": "left_turn"
+      "path_type": "straight"
     },
     {
       "car_id": "car3",
@@ -37,7 +37,7 @@
     {
       "car_id": "car1",
       "start_cars_points": 1,
-      "path_type": "left_turn"
+      "path_type": "straight"
     }
   ]
 }

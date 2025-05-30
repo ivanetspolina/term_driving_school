@@ -1,7 +1,9 @@
 export default function ProgressBar({ success = 0, error = 0 }) {
   const total = Math.min(success + error, 100);
+  if (total === 0) return null;
   const successPercent = (success / total) * 100;
   const errorPercent = (error / total) * 100;
+  
 
   return (
     <div

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { apiUrl } from '../utils/api';
 
 // Створюємо контекст для авторизації

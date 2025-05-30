@@ -27,8 +27,7 @@ export const getCarPriority = (
   signPositions,
   blockedDirections,
   signs,
-  cars,
-  carsToPlace = []
+  cars
 ) => {
   // Визначаємо, з якого напрямку приїжджає машинка
   const fromDir = getFromDirection(car.position, grid);
@@ -88,12 +87,8 @@ export const getSignForCell = (row, col, signList, blockedDirections, signStyles
 };
 
 
-export const rightHandDirectionsMap = {
-  north: ['east', 'south'],   // ті, хто під'їжджає з east або повертає з south
-  east: ['south', 'west'],
-  south: ['west', 'north'],
-  west: ['north', 'east'],
-};
+
+
 
 export const getTurnType = (from, to) => {
   const turns = {
@@ -105,12 +100,81 @@ export const getTurnType = (from, to) => {
   return turns[from]?.[to] || "unknown";
 };
 
+export const signDirectionsMap = {
+  west: {
+    position: [4, 2],
+    style: "bottom"
+  },
+  north: {
+    position: [2, 3],
+    style: "left"
+  },
+  east: {
+    position: [3, 5],
+    style: "top"
+  },
+  south: {
+    position: [5, 4],
+    style: "right"
+  }
+};
+
+
+// Явно задані маршрути для кожного перехрестя та стартової точки
+export const specificCarPathsMap = (questionData, carsData, routesData) => {
+
+    // Заглушка для повернення
+    const returnData = {};
+
+    // перебираємо всі машини, які є в цьому питанні
+    questionData.carsToPlace.forEach(car => {
+        
+        // відносно позиції машини відибраємо її координати
+        const [one, two] = carsData.start_cars_points[car.start_cars_points].position;
+        
+        // Текстовий варіант ключа
+        const keyText = `${one}-${two}`;
+
+        // Отримуємо потрібний вигляд дороги
+        const road = routesData[questionData.id];        
+
+        // Перебираємо масив, щоб знайти потрібний шлях
+        road.forEach(element => {
+            
+            // Відбираємо перший індекс
+            const { path, type } = element;
+
+            // Шукаємо в кого початковий індекс відповідє нашій позиції машини
+            if (path[0].join('-') == keyText && type == car.path_type) {
+                returnData[keyText] = path;
+            }
+        });
+    });
+
+    // Формуємо масив де позиція машини має мати from & to
+    return returnData;
+}
+
+
+
 export const isPathIntersecting = (pathA, pathB) => {
   const setA = new Set(pathA.map(([r, c]) => `${r},${c}`));
   return pathB.some(([r, c]) => setA.has(`${r},${c}`));
 };
 
-export const hasRightHandObstacle = ( currentCar, allCars, grid, signPositions, blockedDirections, directionToSignId, signs, carPaths, carPriorities) => {
+export const rightHandDirectionsMap = {
+  north: ['east', 'south'],   // ті, хто під'їжджає з east або повертає з south
+  east: ['south', 'west'],
+  south: ['west', 'north'],
+  west: ['north', 'east'],
+};
+
+
+export const hasRightHandObstacle = (
+  currentCar, allCars, grid,
+  signPositions, blockedDirections,
+  signs, carPaths, carPriorities
+) => {
   const currentKey = `${currentCar.position[0]}-${currentCar.position[1]}`;
   const currentFrom = getFromDirection(currentCar.position, grid);
   const currentToCoord = carPaths[currentKey]?.at(-1);
@@ -135,12 +199,45 @@ export const hasRightHandObstacle = ( currentCar, allCars, grid, signPositions, 
 
     const intersecting = isPathIntersecting(currentPath, otherPath);
 
-    return (
-      otherPriority === currentPriority &&
+    const isBlockingByRight = (
+      currentPriority === otherPriority &&
       rightDirs.includes(otherFrom) &&
-      currentTurn === "left" &&
-      (otherTurn === "straight" || otherTurn === "right") &&
-      intersecting
+      intersecting &&
+      (
+        (currentTurn === "left" && (otherTurn === "straight" || otherTurn === "right")) ||
+        (currentTurn === "straight" && (otherTurn === "straight" || otherTurn === "right")) ||
+        (currentTurn === "right" && otherTurn === "straight")
+      )
     );
+
+    return isBlockingByRight;
   }) || null;
 };
+
+
+
+export function setCarsToPlace(carsToPlace, carsData) {
+  return carsToPlace.map((carConfig) => {
+    const { car_id, start_cars_points, path_type } = carConfig;
+
+    // Знаходимо координати стартової точки і стрілки за індексом
+    const startPoint = carsData.start_cars_points[start_cars_points];
+
+    if (!startPoint) {
+      console.warn(`❗ Стартова точка з індексом ${start_cars_points} не знайдена`);
+      return null;
+    }
+
+    // Знаходимо пріоритет машинки за її ID
+    const carInfo = carsData.cars.find((car) => car.id === car_id);
+    const cars_priority = carInfo?.cars_priority ?? 0;
+
+    return {
+      car_id,
+      path_type,
+      position: startPoint.position,
+      arrow_position: startPoint.arrow_position,
+      cars_priority
+    };
+  }).filter(Boolean); // Відфільтровуємо null (якщо щось пішло не так)
+}

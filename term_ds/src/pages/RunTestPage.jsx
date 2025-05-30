@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { useUI } from "../context/UIContext.jsx";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { apiRequest, apiUrl } from "../utils/api.js";
-import RuningSection from "../components/test-run/RuningSection.jsx";
+import RunningSection from "../components/test-run/RunningSection.jsx";
 
 const STATES = {
   START: "start",
@@ -57,15 +57,15 @@ export default function RunTest() {
     if (id) fetchTest();
   }, [id]);
 
-  // useEffect(() => {
-  //   let interval;
-  //   if (isRunning === STATES.RUNNING) {
-  //     interval = setInterval(() => {
-  //       setTimer((prev) => prev + 1);
-  //     }, 1000);
-  //   }
-  //   return () => clearInterval(interval);
-  // }, [isRunning]);
+  useEffect(() => {
+    let interval;
+    if (isRunning === STATES.RUNNING) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning]);
 
   useEffect(() => {
      async function getQuestion() {
@@ -77,30 +77,20 @@ export default function RunTest() {
     }
   }, [currentQuestionIndex, testData])
   
-
-  // const getTestComponent = (score, setScore) => {
-  //   switch (testData?.type) {
-  //     case "crossroads":
-  //       return <Crossroads score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
-  //     case "roadSigns":
-  //       return <RoadSigns score={score} setScore={setScore} questionIndex={currentQuestionIndex} setCanGoNext={setCanGoNext} />;
-  //     default:
-  //       return <div>Тип тесту не підтримується</div>;
-  //   }
-  // };
-
   return (
     <>
       <Header />
 
       <main className="run-test-main center-main">
-        <div className="run-test-container mb-4 h-full grid grid-rows-[auto_1fr] grid-cols-[75%_25%]">
+        <div className="run-test-container mb-4 h-full grid grid-rows-[auto_1fr_auto] grid-cols-[75%_25%]">
           <div className="row-start-1 col-start-1 flex justify-between">
             <RunTestHeader
               timer={timer}
               topic={testData?.name || "Завантаження..."}
               questionCount={20}
+              currentQuestionIndex={currentQuestionIndex}
               score={score}
+              isRunning={isRunning === STATES.RUNNING}
             />
           </div>
 
@@ -109,13 +99,27 @@ export default function RunTest() {
           )}
 
           {(isRunning === STATES.RUNNING || isRunning === STATES.PAUSED) && (
-            <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext} />
-            // <RuningSection score={score} setScore={setScore} questionIndex={currentQuestionIndex} questionData={questionData} setCanGoNext={setCanGoNext}>
-            //   <Suspense fallback={<div>Завантаження тесту...</div>}>
-            //     {getTestComponent(score, setScore, currentQuestionIndex)}
-            //   </Suspense>
-            // </RuningSection>
+            <RunningSection
+              score={score}
+              setScore={setScore}
+              questionIndex={currentQuestionIndex}
+              questionData={questionData}
+              setCanGoNext={setCanGoNext}
+            />
           )}
+
+          <div className="row-start-3 col-span-2 px-4 py-2 font-[Inter]">
+            <p className="text-sm text-red-500 italic">Зверніть увагу!</p>
+            <p className="text-sm italic">
+              * Після завершення проїзду всіх транспортних засобів на зелений
+              сигнал світлофора слід вважати, що червоний сигнал змінено на
+              зелений.
+              <br />
+              * Завжди вважати, що поліцейський автомобіль рухається з увімкненими
+              проблисковими маячками червоного та синього кольору та має
+              безумовний пріоритет, тому завжди починає рух першим.
+            </p>
+          </div>
 
           <RunTestButton
             isRunning={isRunning}
@@ -131,7 +135,7 @@ export default function RunTest() {
             testData={testData}
             canGoNext={canGoNext}
           />
-        </div>        
+        </div>
       </main>
     </>
   );

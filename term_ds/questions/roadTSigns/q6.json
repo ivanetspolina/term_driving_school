@@ -1,0 +1,34 @@
+{
+  "id": "t_cross_3",
+  "sign_positions": [
+    {
+      "direction": "north",
+      "sign_id": "main_road"
+    },
+    {
+      "direction": "east",
+      "sign_id": "main_road"
+    },
+    {
+      "direction": "south",
+      "sign_id": "give_way"
+    }
+  ],
+  "carsToPlace": [
+    {
+      "car_id": "car2",
+      "start_cars_points": 2,
+      "path_type": "left_turn"
+    },
+    {
+      "car_id": "car3",
+      "start_cars_points": 3,
+      "path_type": "right_turn"
+    },
+    {
+      "car_id": "police",
+      "start_cars_points": 1,
+      "path_type": "straight"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "t_cross_2",
+  "sign_positions": [
+    {
+      "direction": "north",
+      "sign_id": "traffic_light_red"
+    },
+    {
+      "direction": "east",
+      "sign_id": "traffic_light_green"
+    },
+    {
+      "direction": "west",
+      "sign_id": "traffic_light_green"
+    }
+  ],
+  "carsToPlace": [
+    {
+      "car_id": "car2",
+      "start_cars_points": 0,
+      "path_type": "left_turn"
+    },
+    {
+      "car_id": "car3",
+      "start_cars_points": 2,
+      "path_type": "right_turn"
+    },
+    {
+      "car_id": "car1",
+      "start_cars_points": 1,
+      "path_type": "right_turn"
+    }
+  ]
+}

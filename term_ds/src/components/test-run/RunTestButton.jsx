@@ -15,12 +15,14 @@ export function RunTestButton({
   score,
   timer,
   testData,
-  canGoNext
+  canGoNext,
 }) {
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [snapshotSuccess, setSnapshotSuccess] = useState(false);
   const navigate = useNavigate();
+
+  const isLastQuestion = currentQuestionIndex >= 19;
 
   const handlePauseClick = () => {
     onPause();
@@ -46,13 +48,13 @@ export function RunTestButton({
   };
 
   const handleFinishTest = () => {
-     const params = new URLSearchParams({
+    const params = new URLSearchParams({
       score: score,
       time: timer,
       topicid: testData?._id,
-      topic: testData?.name || "Невідома тема"
+      topic: testData?.name || "Невідома тема",
     });
-    
+
     navigate(`/result_test?${params.toString()}`);
   };
 
@@ -85,24 +87,29 @@ export function RunTestButton({
           Скасувати проходження
         </button>
 
-        <button
-          onClick={handleNextQuestion}
-          disabled={!canGoNext}
-          className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 transition
-            ${canGoNext
-              ? "bg-purple-700 hover:bg-purple-800 hover:ring-2 hover:ring-green-300"
-              : "bg-purple-400 cursor-not-allowed"
-            }`}
+        {!isLastQuestion && (
+          <button
+            onClick={handleNextQuestion}
+            disabled={!canGoNext}
+            className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 transition
+      ${
+        canGoNext
+          ? "bg-purple-700 hover:bg-purple-800 hover:ring-2 hover:ring-green-300"
+          : "bg-purple-400 cursor-not-allowed"
+      }`}
           >
-          Наступне питання
-        </button>
+            Наступне питання
+          </button>
+        )}
 
-        <button
-          onClick={handleFinishTest}
-          className="w-full text-white bg-red-600 hover:bg-red-700 focus:outline-none hover:ring-2 hover:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
-        >
-          Завершити тестування
-        </button>
+        {isLastQuestion && (
+          <button
+            onClick={handleFinishTest}
+            className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
+          >
+            Завершити тестування
+          </button>
+        )}
       </aside>
 
       {showPauseConfirm && (
@@ -114,7 +121,7 @@ export function RunTestButton({
           onConfirm={handleConfirmPause}
           onCancel={() => {
             setShowPauseConfirm(false);
-            setIsRunning(STATES.RUNNING); 
+            setIsRunning(STATES.RUNNING);
           }}
         />
       )}
