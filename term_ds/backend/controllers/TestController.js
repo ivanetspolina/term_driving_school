@@ -2,6 +2,7 @@ const Test = require('../models/Test');
 const TestResult = require('../models/TestResult');
 const jwt = require('jsonwebtoken');
 
+// Отримуємо всі тести разом зі статистикою
 exports.getAllTests = async (req, res) => {
   try {
     const tests = await Test.find();
@@ -17,7 +18,6 @@ exports.getAllTests = async (req, res) => {
         resultMap[topicId] = { success: 0, error: 0 };
       }
 
-      // 🟢 Успішно — якщо score >= 18
       if (r.score >= 18) {
         resultMap[topicId].success++;
       } else {
@@ -32,11 +32,12 @@ exports.getAllTests = async (req, res) => {
 
     res.json(testsWithStats);
   } catch (err) {
-    console.error("❌ Error getting tests:", err);
+    console.error("Помилка при отриманні тестів:", err);
     res.status(500).json({ error: "Помилка сервера при отриманні тестів" });
   }
 };
 
+// Отримуємо тест за ID
 exports.getTestById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -48,11 +49,12 @@ exports.getTestById = async (req, res) => {
 
     res.json({ test });
   } catch (err) {
-    console.error("❌ Error getting test by ID:", err);
+    console.error("Помилка отримання тесту за ідентифікатором:", err);
     res.status(500).json({ error: "Помилка сервера" });
   }
 };
 
+// Зберігаємо результати проходження тесту
 exports.saveTestResult = async (req, res) => {
   try {
     const { user, score, scoreIncorrect, time, topicid } = req.body;
@@ -68,11 +70,12 @@ exports.saveTestResult = async (req, res) => {
 
     res.status(201).json({ message: 'Результат збережено', result });
   } catch (err) {
-    console.error('❌ Error saving test result:', err);
+    console.error('Помилка збереження результату тесту:', err);
     res.status(500).json({ error: 'Помилка при збереженні результату' });
   }
 };
 
+// Отримуємо всі результати тестів для поточного користувача
 exports.getUserResults = async function(req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -86,7 +89,7 @@ exports.getUserResults = async function(req, res) {
 
     res.status(200).json(results);
   } catch (err) {
-    console.error("❌ Error getting user results:", err);
+    console.error("Помилка отримання результатів користувача:", err);
     res.status(500).json({ error: "Помилка при отриманні статистики" });
   }
 };

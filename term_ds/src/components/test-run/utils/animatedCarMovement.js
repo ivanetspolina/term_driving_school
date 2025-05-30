@@ -5,12 +5,14 @@ export const rotationMap = {
   west: "270deg"
 };
 
+// Отримуємо початкове обертання машинки на основі її першого кроку шляху
 export const getInitialRotationFromPath = (position, path) => {
   if (!path || path.length === 0) return rotationMap.north;
   const direction = getFromDirectionDelta(position, path[0]);
   return rotationMap[direction];
 };
 
+// Визначаємо напрямок переміщення з однієї клітинки в іншу
 export const getFromDirectionDelta = (from, to) => {
   const [r1, c1] = from;
   const [r2, c2] = to;
@@ -21,10 +23,11 @@ export const getFromDirectionDelta = (from, to) => {
   return "north"; 
 };
 
+// Створюємо наступний крок для анімації руху машинки
 export const createAnimatedStep = (key, path, step, current, car, grid) => {
-  const next = path[step];
-  const direction = getFromDirectionDelta(current, next);
-  const rotation = rotationMap[direction];
+  const next = path[step]; // Наступна позиція на шляху
+  const direction = getFromDirectionDelta(current, next); // Напрямок переміщення
+  const rotation = rotationMap[direction]; // Кут обертання
 
   return {
     key,

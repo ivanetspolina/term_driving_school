@@ -1,10 +1,10 @@
+// Компонент для відображення співвідношення успішних і неуспішних результатів у вигляді смуги прогресу
 export default function ProgressBar({ success = 0, error = 0 }) {
   const total = Math.min(success + error, 100);
   if (total === 0) return null;
   const successPercent = (success / total) * 100;
   const errorPercent = (error / total) * 100;
   
-
   return (
     <div
       className="relative w-[200px] h-5 rounded-full bg-gray-200
@@ -12,13 +12,11 @@ export default function ProgressBar({ success = 0, error = 0 }) {
                     font-semibold text-white"
       title="Співвідношення успішних і неуспішних тестів у відсотках"
     >
-      {/* Success bar */}
       <div
         className="absolute top-0 left-0 h-full bg-green-400"
         style={{ width: `${successPercent}%` }}
       ></div>
 
-      {/* Error bar - позиціонується правильно за допомогою left у style */}
       <div
         className="absolute top-0 h-full bg-red-400"
         style={{
@@ -27,7 +25,6 @@ export default function ProgressBar({ success = 0, error = 0 }) {
         }}
       ></div>
 
-      {/* Success text */}
       <div
         className="absolute top-0 left-0 h-full flex items-center justify-center z-10"
         style={{ width: `${successPercent}%` }}
@@ -35,7 +32,6 @@ export default function ProgressBar({ success = 0, error = 0 }) {
         <span>{Math.round(successPercent)}%</span>
       </div>
 
-      {/* Error text */}
       <div
         className="absolute top-0 h-full flex items-center justify-center z-10"
         style={{

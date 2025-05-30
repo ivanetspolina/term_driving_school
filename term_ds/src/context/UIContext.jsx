@@ -1,11 +1,12 @@
 import { createContext, useContext } from "react";
 import { toast } from 'react-toastify';
 
+// Створюємо контекст для UI-повідомлень
 const UIContext = createContext();
 
-// eslint-disable-next-line react/prop-types
+// Провайдер контексту для надання функцій UI по всьому застосунку
 export function UIProvider({ children }) {
-     // Оповіщати між сторіками
+    // Функція для виклику спливаючих повідомлень 
     const setAlert = (text, type = 'error') => {
         switch (type) {
             case 'success':
@@ -24,7 +25,6 @@ export function UIProvider({ children }) {
         }
     };
 
-	// Формування контексту
     return (
         <UIContext.Provider value={{ setAlert }}>
             {children}
@@ -32,7 +32,7 @@ export function UIProvider({ children }) {
     );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+// Хук для спрощеного доступу до контексту
 export function useUI() {
     return useContext(UIContext);
 }

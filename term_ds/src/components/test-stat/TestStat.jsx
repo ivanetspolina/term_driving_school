@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { apiRequest, apiUrl } from "../../utils/api";
 import { uk } from "date-fns/locale";
-import {
-  parseISO,
-  format,
-  getDaysInMonth,
-  getMonth,
-  getYear,
-  startOfMonth,
-} from "date-fns";
+import { parseISO, format, getDaysInMonth } from "date-fns";
 
 import {
   Chart as ChartJS,
@@ -22,6 +15,7 @@ import {
   Legend,
 } from "chart.js";
 
+// Реєстрація необхідних модулів ChartJS
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -35,25 +29,26 @@ ChartJS.register(
 export default function TestStats() {
   const [results, setResults] = useState([]);
   const [monthOptions, setMonthOptions] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(""); // формат: '2025-05'
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [dailyLabels, setDailyLabels] = useState([]);
   const [dailyCounts, setDailyCounts] = useState([]);
 
+  // Завантаження даних при першому рендері
   useEffect(() => {
-  async function fetchData() {
-    const data = await apiRequest(apiUrl.testResultUser, "GET");
-    if (Array.isArray(data)) {
-      setResults(data);
+    async function fetchData() {
+      const data = await apiRequest(apiUrl.testResultUser, "GET");
+      if (Array.isArray(data)) {
+        setResults(data);
 
-      // Визначаємо всі унікальні місяці
         const monthsSet = new Set(
           data.map((r) => format(parseISO(r.createdAt), "yyyy-MM"))
         );
-        const sortedMonths = Array.from(monthsSet).sort().reverse(); // новіші зверху
+        const sortedMonths = Array.from(monthsSet).sort().reverse();
         setMonthOptions(sortedMonths);
 
+        // Вибір "найсвіжішого" місяця
         if (!selectedMonth) {
-          setSelectedMonth(sortedMonths[0]); // обираємо найсвіжіший місяць
+          setSelectedMonth(sortedMonths[0]); 
         }
       }
     }
@@ -61,6 +56,7 @@ export default function TestStats() {
     fetchData();
   }, []);
 
+  // Оновлення графіка при зміні місяця або результатів
   useEffect(() => {
     if (!selectedMonth || results.length === 0) return;
 
@@ -87,16 +83,23 @@ export default function TestStats() {
     setDailyCounts(counts);
   }, [selectedMonth, results]);
 
+   // Підрахунок статистики
   const totalPassed = results.length;
-  const passedWithoutMistakes = results.filter(r => r.scoreIncorrect === 0).length;
-  const passedWithTwoMistakes = results.filter(r => r.scoreIncorrect === 2).length;
+  const passedWithoutMistakes = results.filter(
+    (r) => r.scoreIncorrect === 0
+  ).length;
+  const passedWithTwoMistakes = results.filter(
+    (r) => r.scoreIncorrect === 2
+  ).length;
   const averageTimeInSec =
-  results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + (r.time || 0), 0) / results.length)
-    : 0;
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, r) => sum + (r.time || 0), 0) / results.length
+        )
+      : 0;
 
-const minutes = Math.floor(averageTimeInSec / 60);
-const seconds = averageTimeInSec % 60;
+  const minutes = Math.floor(averageTimeInSec / 60);
+  const seconds = averageTimeInSec % 60;
 
   return (
     <div className="p-6 min-h-screen font-[Inter]">
@@ -133,7 +136,7 @@ const seconds = averageTimeInSec % 60;
             responsive: true,
             plugins: {
               legend: {
-                onClick: () => {}, 
+                onClick: () => {},
               },
             },
             scales: {
@@ -157,7 +160,9 @@ const seconds = averageTimeInSec % 60;
             Кількість вдало пройдених тестів без жодної помилки:{" "}
             {passedWithoutMistakes}
           </div>
-          <div>Середній час проходження тесту: {minutes} хв {seconds} сек</div>
+          <div>
+            Середній час проходження тесту: {minutes} хв {seconds} сек
+          </div>
         </div>
       </div>
     </div>

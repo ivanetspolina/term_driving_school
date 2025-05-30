@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 
+// Компонент для підтвердження дії в модальному вікні
 export default function ConfirmModal({
   title,
   description,

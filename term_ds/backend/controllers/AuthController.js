@@ -2,9 +2,9 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
-
 require('dotenv').config();
 
+// Реєстрація нового користувача
 exports.register = async function(req, res) {
   try {
     const { name, email, password } = req.body;
@@ -39,6 +39,7 @@ exports.register = async function(req, res) {
   }
 };
 
+// Активація акаунту через токен
 exports.activateAccount = async function(req, res) {
   try {
     const { token } = req.body;
@@ -60,6 +61,7 @@ exports.activateAccount = async function(req, res) {
   }
 };
 
+// Повторне надсилання токена активації
 exports.resendActivateAccount = async function(req, res) {
   try {
     const { email } = req.body;
@@ -95,6 +97,8 @@ exports.resendActivateAccount = async function(req, res) {
   }
 };
 
+
+// Вхід користувача
 exports.login = async function(req, res) {
   try {
     const { email, password } = req.body;
@@ -139,6 +143,7 @@ exports.login = async function(req, res) {
   }
 };
 
+// Перевірка авторизації токеном
 exports.auth = async function (req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -159,6 +164,7 @@ exports.auth = async function (req, res) {
   }
 };
 
+// Отримання профілю користувача
 exports.getProfile = async function(req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -168,7 +174,7 @@ exports.getProfile = async function(req, res) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-password'); // без пароля
+    const user = await User.findById(decoded.id).select('-password'); 
     if (!user) {
       return res.status(404).json({ error: 'Користувача не знайдено' });
     }
@@ -179,6 +185,7 @@ exports.getProfile = async function(req, res) {
   }
 };
 
+// Зміна паролю користувача
 exports.changePassword = async function(req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -215,6 +222,7 @@ exports.changePassword = async function(req, res) {
   }
 };
 
+// Зміна імені користувача 
 exports.updateProfile = async function(req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -245,6 +253,7 @@ exports.updateProfile = async function(req, res) {
   }
 };
 
+// Видалення акаунту користувача
 exports.deleteAccount = async function (req, res) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

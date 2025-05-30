@@ -21,8 +21,6 @@ export default function Profile() {
     }
   }, [isLoading, isAuthenticated]);
 
-  
-
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -36,10 +34,10 @@ export default function Profile() {
     const result = await apiRequest(apiUrl.deleteAccount, "DELETE");
 
     if (result?.message) {
-      logout(); 
-      localStorage.clear(); 
+      logout();
+      localStorage.clear();
       setAlert("Акаунт успішно видалено", "success");
-      navigate("/"); 
+      navigate("/");
     } else {
       setAlert(result?.error || "Не вдалося видалити акаунт", "error");
     }
@@ -70,9 +68,9 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
-  // if (isLoading) {
-  //   return null;          
-  // }
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>
@@ -87,12 +85,17 @@ export default function Profile() {
             label="Ім'я"
             value={profileData?.name || ""}
             onSave={async (newName) => {
-              const result = await apiRequest(apiUrl.updateProfile, "PATCH", {name: newName, });
+              const result = await apiRequest(apiUrl.updateProfile, "PATCH", {
+                name: newName,
+              });
               if (result?.user) {
-                setProfileData(result.user); 
+                setProfileData(result.user);
                 setAlert("Ім’я оновлено", "success");
               } else {
-                setAlert(result?.error || "Помилка при оновленні імені", "error");
+                setAlert(
+                  result?.error || "Помилка при оновленні імені",
+                  "error"
+                );
               }
             }}
           />

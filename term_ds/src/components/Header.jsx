@@ -4,6 +4,7 @@ import { CircleUserRound } from "lucide-react";
 import sprite from "../assets/svg/sprite.svg";
 import { useAuth } from "../context/AuthContext";
 
+// Шапка (Header) сайту 
 export default function Header() {
   const {user, isAuthenticated, logout} = useAuth();
   const navigate = useNavigate();

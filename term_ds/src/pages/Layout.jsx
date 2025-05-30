@@ -6,6 +6,7 @@ export default function Layout() {
   return (
     <>
         <Outlet />
+        {/* Контейнер для показу toast-повідомлень */}
         <ToastContainer
         position="top-right"
         autoClose={3000}

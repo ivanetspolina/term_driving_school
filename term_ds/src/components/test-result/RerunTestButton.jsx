@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
+
+// Кнопка для повторного запуску тесту за testId
 export default function RerunTestBtn({ testId }) {
   const navigate = useNavigate();
   const handleRerun = () => {
@@ -8,7 +10,7 @@ export default function RerunTestBtn({ testId }) {
       return;
     }
 
-    navigate(`/runtest/${testId}`); // ✅ перехід на тест із тим самим ID
+    navigate(`/runtest/${testId}`); 
   };
 
   return (

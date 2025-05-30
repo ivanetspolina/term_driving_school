@@ -1,3 +1,5 @@
+// Функція формує HTML-контент листа для активації акаунту користувача
+// Приймає токен активації як аргумент
 export function emailReg(token) {
   return `<!DOCTYPE html>
     <html lang="uk">

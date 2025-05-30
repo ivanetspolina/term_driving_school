@@ -4,6 +4,7 @@ import oliveCar from '../../../assets/svg/olive_car.svg';
 import grayCar from '../../../assets/svg/gray_car.svg';
 import policeCar from '../../../assets/svg/police_car.svg';
 
+// Об'єкт зіставлення ідентифікаторів машин з відповідними зображеннями
 const carImages = {
   car1: redCar,
   car2: blueCar,

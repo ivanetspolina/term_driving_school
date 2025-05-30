@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Схема моделі для збереження результату проходження тесту конкретним користувачем
 const testResultSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   topic: { type: mongoose.Schema.Types.ObjectId, ref: 'Test', required: true },

@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
-import ScreenshotsSection from "../components/test-stat/ScreenshotsSection.jsx";
 import TestStat from "../components/test-stat/TestStat.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useUI } from "../context/UIContext.jsx";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Statistics() {
   const navigate = useNavigate();
@@ -17,6 +16,10 @@ export default function Statistics() {
       navigate("/");
     }
   }, [isLoading, isAuthenticated]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

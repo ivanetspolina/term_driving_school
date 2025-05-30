@@ -5,14 +5,14 @@ import StartSection from "../components/test-run/StartSection.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useUI } from "../context/UIContext.jsx";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiRequest, apiUrl } from "../utils/api.js";
 import RunningSection from "../components/test-run/RunningSection.jsx";
 
 const STATES = {
   START: "start",
   RUNNING: "running",
-  PAUSED: "paused"
+  PAUSED: "paused",
 };
 
 export default function RunTest() {
@@ -68,15 +68,24 @@ export default function RunTest() {
   }, [isRunning]);
 
   useEffect(() => {
-     async function getQuestion() {
-      const question = await apiRequest(`/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`, 'GET', false, false);
+    async function getQuestion() {
+      const question = await apiRequest(
+        `/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`,
+        "GET",
+        false,
+        false
+      );
       setQuestionData(question);
     }
     if (testData) {
       getQuestion();
     }
-  }, [currentQuestionIndex, testData])
-  
+  }, [currentQuestionIndex, testData]);
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <>
       <Header />
@@ -111,13 +120,18 @@ export default function RunTest() {
           <div className="row-start-3 col-span-2 px-4 py-2 font-[Inter]">
             <p className="text-sm text-red-500 italic">Зверніть увагу!</p>
             <p className="text-sm italic">
+              * Якщо машини мають однаковий пріоритет і їхні траєкторії не
+              перетинаються, то порядок їхнього проїзду не є строго
+              регламентованим, тож вони можуть проїжджати в будь-якій
+              послідовності.
+              <br />
               * Після завершення проїзду всіх транспортних засобів на зелений
               сигнал світлофора слід вважати, що червоний сигнал змінено на
               зелений.
               <br />
-              * Завжди вважати, що поліцейський автомобіль рухається з увімкненими
-              проблисковими маячками червоного та синього кольору та має
-              безумовний пріоритет, тому завжди починає рух першим.
+              * Завжди вважати, що поліцейський автомобіль рухається з
+              увімкненими проблисковими маячками червоного та синього кольору та
+              має безумовний пріоритет, тому завжди починає рух першим.
             </p>
           </div>
 

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { TimerDisplay } from "./elements/Timer";
 
+// Шапка (header) сторінки тесту, що показує тему, прогрес, рахунок і таймер
 export function RunTestHeader({ topic, questionCount, timer, currentQuestionIndex, score, isRunning}) {
   return (
     <>

@@ -22,7 +22,7 @@ export default function Theme() {
 
           <li>
               <a
-                href="https://green-way.com.ua/uk/dovidniki/pdr-slider/rozdil-8/punkt-4_a"
+                href="https://green-way.com.ua/uk/dovidniki/pdr-slider/rozdil-8/punkt-1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="list-item-wrapper"
@@ -44,7 +44,7 @@ export default function Theme() {
 
           <li>
               <a
-                href="https://green-way.com.ua/uk/dovidniki/pdr-slider/rozdil-35/punkt-1_daty-dorogu"
+                href="https://green-way.com.ua/uk/dovidniki/pdr-slider/rozdil-34/punkt-1_nebezpechnyj-povorot-pravoruch"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="list-item-wrapper"

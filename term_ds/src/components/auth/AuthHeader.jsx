@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 
+// Компонент шапки (header) для сторінок авторизації та реєстрації
 export default function AuthHeader() {
   const navigate = useNavigate();
 

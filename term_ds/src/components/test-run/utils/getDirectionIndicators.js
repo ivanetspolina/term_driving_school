@@ -14,6 +14,7 @@ const rotationMap = {
   west: "270deg",
 };
 
+// Генеруємо масив індикаторів напрямку руху для кожної машинки
 export const getDirectionIndicators = (startCarsPoints, carPaths, grid, commonRoutes) => {
   return startCarsPoints.map((car, idx) => {
     const key = `${car.position[0]}-${car.position[1]}`;

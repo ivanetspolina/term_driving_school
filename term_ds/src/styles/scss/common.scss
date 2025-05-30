@@ -4,7 +4,6 @@
   list-style: none;
   counter-reset: item;
   padding: 15px 0 15px 0;
-  //padding-left: 0;
 
   li {
     display: flex;
@@ -24,9 +23,7 @@
       height: 2rem;
       border-radius: 9999px;
       background-color: c.$text-theme-name;
-      //#7c3aed;  rgb(124, 58, 237) // фіолетовий (Tailwind bg-purple-600)
       color: white;
-      //font-weight: bold;
       font-size: 1rem;
     }
 

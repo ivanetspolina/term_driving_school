@@ -1,12 +1,11 @@
-/**
- * Виконує HTTP-запит до вашого бэкенду й повертає розпарсений JSON.
- * @param {string} path — шлях від кореня API, наприклад '/api/auth/register'
- * @param {string} [method='POST'] — HTTP-метод
- * @param {object|null} [data=null] — тіло запиту (автоматично JSON.stringify)
- */
+// Універсальна функція для запиту до API
 export async function apiRequest(path, method = 'POST', data = null, apiUrlNeed = true) {
+  // Отримуємо токен з localStorage (JWT для авторизації)
   const token = localStorage.getItem('token');
 
+  // Формуємо повну URL-адресу
+  // якщо `apiUrlNeed === true`, додаємо базову адресу з .env (VITE_API_URL)
+  // якщо false, то використовуємо лише `path` як абсолютне посилання
   const res = await fetch(`${apiUrlNeed ? import.meta.env.VITE_API_URL : '' || ''}${path}`, {
     method,
     headers: {
@@ -19,6 +18,7 @@ export async function apiRequest(path, method = 'POST', data = null, apiUrlNeed 
   return await res.json(); 
 }
 
+// Об'єкт з маршрутами API для централізованого доступу до них
 export const apiUrl = {
   emailSend: "https://api.inderio.com/send-email",
   auth: "/auth",

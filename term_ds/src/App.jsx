@@ -31,8 +31,6 @@ function App() {
             <Route path="activate/:token" element={<Activate />} />
             <Route path="*" element={<NoPage />} />
           </Route>
-
-
         </Routes>
       </Router>
     </>

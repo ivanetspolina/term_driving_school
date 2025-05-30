@@ -48,7 +48,8 @@ export default function Authorization() {
             <AuthHeader />
 
             <Formik
-              initialValues={{ email: "giraf1774@gmail.com", password: "Q12345" }}
+              // initialValues={{ email: "giraf1774@gmail.com", password: "Q12345" }}
+              initialValues={{ email: "", password: "" }}
               validationSchema={validationSchema}
               onSubmit={handleFormSubmit}
             >

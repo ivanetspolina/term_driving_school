@@ -11,16 +11,13 @@ import { useEffect } from "react";
 import { TimerDisplay } from "../components/test-run/elements/Timer.jsx";
 import { apiRequest, apiUrl } from "../utils/api.js";
 
-export default function Result({
-  total = 20,
-  passingScore = 18,
-}) { 
+export default function Result({ total = 20, passingScore = 18 }) {
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading } = useAuth();
   console.log("user: ", user);
   const { setAlert } = useUI();
   const [searchParams] = useSearchParams();
-  
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       setAlert("Авторизуйтесь!", "error");
@@ -40,20 +37,24 @@ export default function Result({
     score,
     scoreIncorrect,
     time,
-    topicid
-  } 
+    topicid,
+  };
 
   useEffect(() => {
     if (user?._id && topicid) {
       apiRequest(apiUrl.testResult, "POST", sendTestData)
         .then((res) => {
-          if (res.message) console.log("✅", res.message);
+          if (res.message) console.log("+", res.message);
           else console.warn("⚠️", res.error);
         })
-        .catch((err) => console.error("❌", err));
+        .catch((err) => console.error("-", err));
     }
   }, [user?._id, topicid]);
-console.log("topicid: ", topicid);
+  console.log("topicid: ", topicid);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>
@@ -68,7 +69,9 @@ console.log("topicid: ", topicid);
 
             <div className="space-y-2">
               <p className="font-medium">Тема: {topic}</p>
-              <p className="font-medium">Час: {<TimerDisplay timer={time} />}</p>
+              <p className="font-medium">
+                Час: {<TimerDisplay timer={time} />}
+              </p>
               <p className="font-medium">
                 Результат: {score}/{total}
               </p>

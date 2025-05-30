@@ -26,12 +26,16 @@ export default function Test() {
       if (Array.isArray(result)) {
         setTests(result);
       } else {
-        console.error("❌ Помилка при завантаженні тестів:", result?.error || result);
+        console.error("Помилка при завантаженні тестів:", result?.error || result);
       }
     };
 
     fetchTests();
   }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

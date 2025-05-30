@@ -10,13 +10,11 @@ import { useAuth } from "../context/AuthContext";
 import { useUI } from "../context/UIContext";
 import { useState } from "react";
 
-
 export default function Registration() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth()
   const { setAlert } = useUI()
   const [showPassword, setShowPassword] = useState(false);
-
   
   if (isAuthenticated) {
     setAlert('Ви вже авторизовані!', 'warning');
@@ -47,14 +45,14 @@ export default function Registration() {
     } else {
       setAlert("Реєстрація пройшла успішно! Активуйте акаунт в листі на пошті", 'success');
 
-      // Дані для відправки ан email
+      // Дані для відправки на email
       const emailData = {
         to: result.email,
         subject: "Активація профілю",
         message: emailReg(result.activationToken),
       }
 
-      // Відправмо листа користувачу
+      // Відправляємомо листа користувачу
       await apiRequest(apiUrl.emailSend, "POST", emailData, false);
 
       setTimeout(() => {

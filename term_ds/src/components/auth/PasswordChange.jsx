@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { apiRequest, apiUrl } from "../../utils/api";
 
+// Компонент модального вікна для зміни паролю користувача
 export default function PasswordChange({ onClose }) {
    const [showPassword, setShowPassword] = useState({
     current: false,
@@ -18,6 +19,7 @@ export default function PasswordChange({ onClose }) {
     }));
   };
 
+  // Визначаємо валідацію паролів за допомогою Yup
   const validationSchema = Yup.object({
     current: Yup.string().required("Поточний пароль обов'язковий"),
     new: Yup.string()
@@ -29,6 +31,7 @@ export default function PasswordChange({ onClose }) {
       .required("Новий пароль обов'язковий"),
   });
 
+  // Надсилаємо PATCH-запит для зміни паролю
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const res = await apiRequest(apiUrl.changePassword, "PATCH", {
       currentPassword: values.current,

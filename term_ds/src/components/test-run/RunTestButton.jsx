@@ -1,12 +1,11 @@
 import { useState } from "react";
 import ConfirmModal from "../ConfirmModal.jsx";
-import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// Компонент для кнопок керування тестом: пауза, скасування, перехід далі та завершення
 export function RunTestButton({
   onPause = () => {},
   onCancel = () => {},
-  onSnapshot = () => {},
   isRunning,
   setIsRunning,
   STATES,
@@ -18,8 +17,6 @@ export function RunTestButton({
   canGoNext,
 }) {
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [snapshotSuccess, setSnapshotSuccess] = useState(false);
   const navigate = useNavigate();
 
   const isLastQuestion = currentQuestionIndex >= 19;
@@ -28,6 +25,7 @@ export function RunTestButton({
     onPause();
     setShowPauseConfirm(true);
   };
+  
   const handleConfirmPause = () => {
     setShowPauseConfirm(false);
     setIsRunning(STATES.RUNNING);
@@ -35,12 +33,6 @@ export function RunTestButton({
 
   const handleCancelClick = () => {
     onCancel();
-  };
-
-  const handleSnapshotClick = () => {
-    onSnapshot();
-    setSnapshotSuccess(true);
-    setTimeout(() => setSnapshotSuccess(false), 800);
   };
 
   const handleNextQuestion = () => {

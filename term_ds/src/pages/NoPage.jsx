@@ -1,3 +1,4 @@
+// Компонент сторінки 404 показується, коли маршрут не знайдено
 export default function NoPage() {
   return (
     <div className="min-h-screen font-[Inter] flex items-center justify-center ">

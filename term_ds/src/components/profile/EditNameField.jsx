@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PencilLine } from "lucide-react";
 
+// Компонент для редагування імені
 export default function EditNameField({ 
   value = "", 
   label = "", 

@@ -3,7 +3,6 @@ import IndexFooter from "../components/index/Footer";
 import sprite from "../assets/svg/sprite.svg";
 
 export default function Index() {
-
   return (
     <>
       <div className="min-h-screen flex flex-col">
