@@ -59,7 +59,7 @@ export const generateValidOrders = (
 
         const intersecting = isPathIntersecting(currentCarPath, otherPath);
 
-        // Додаткова умова: якщо поточна машина повертає ліворуч,
+        // Додаткова умова: якщо поточна машина повертає ліворуч
         if (
           currentCarDirection === "left_turn" &&
           (otherCarDirection === "straight" ||
@@ -71,7 +71,7 @@ export const generateValidOrders = (
           break;
         }
 
-        // Дивимось в allCars, якщо машина їде прямо, тоді шляхи порівнювати не потріно, вона буде їхати пер
+        // Дивимось в allCars, якщо машина їде прямо чи вправо, тоді шляхи порівнювати не потріно, вона буде їхати перша
         if (
           currentCarDirection != "straight" ||
           currentCarDirection != "right_turn"
