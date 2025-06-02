@@ -113,7 +113,7 @@ export function RunTestButton({
           onConfirm={handleConfirmPause}
           onCancel={() => {
             setShowPauseConfirm(false);
-            setIsRunning(STATES.RUNNING);
+            handleCancelClick();
           }}
         />
       )}
