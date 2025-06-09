@@ -86,6 +86,7 @@ export default function Index() {
                 </p>
                 <ul className="list-disc pl-8 mb-6">
                   <li className="mb-2">Дорожні знаки</li>
+                  <li className="mb-2">Світлофори</li>
                   <li className="mb-2">
                     Правила проїзду перехресть
                   </li>
