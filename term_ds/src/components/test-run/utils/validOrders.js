@@ -109,5 +109,6 @@ export const generateValidOrders = (
   // Запуск рекурсії з порожнім порядком
   dfs([], allCars);
 
+  console.log("✅ DFS виконано. Побудовано порядки:", results);
   return results;
 };

@@ -117,16 +117,16 @@ export default function RunningSection({
 
   // Генеруємо всі допустимі правильні послідовності проїзду
   const validOrders = useMemo(() => {
-    return generateValidOrders(
-      carsToPlace,
-      carPaths,
-      carPriorities
-    );
-    // return generateTopologicalValidOrders(
+    // return generateValidOrders(
     //   carsToPlace,
     //   carPaths,
     //   carPriorities
     // );
+    return generateTopologicalValidOrders(
+      carsToPlace,
+      carPaths,
+      carPriorities
+    );
   }, [
     carsToPlace,
     carPaths,
