@@ -1,6 +1,6 @@
 import { isPathIntersecting } from "./roadUtils";
 
-const rightHand = {
+export const rightHand = {
   "4-0": ["7-4"],
   "7-4": ["3-7"],
   "3-7": ["0-3"],
@@ -13,7 +13,7 @@ export const generateValidOrders = (
   carPaths,
   carPriorities
 ) => {
-  console.log("carPaths: ", carPaths, allCars);
+  // console.log("carPaths: ", carPaths, allCars);
   const results = [];
 
   // Рекурсивна функція для побудови всіх допустимих послідовностей машин

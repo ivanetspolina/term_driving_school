@@ -37,8 +37,8 @@ export const getRoundFromDirection = (position, grid, fullPath = []) => {
   const [currRow, currCol] = fullPath[index];
   const [nextRow, nextCol] = fullPath[index + 1];
 
-  if (nextRow < currRow) return "west";
-  if (nextRow > currRow) return "east";
+  if (nextRow < currRow) return "east";
+  if (nextRow > currRow) return "west";
   if (nextCol < currCol) return "north";
   if (nextCol > currCol) return "south";
 
@@ -75,7 +75,7 @@ export const getCarPriority = (
   const carPriorityValue = carData?.cars_priority ?? 0;
 
   if (carPriorityValue === 1) {
-    console.log(`Машина '${car.car_id}' з позиції [${car.position}] має абсолютний пріоритет.`);
+    // console.log(`Машина '${car.car_id}' з позиції [${car.position}] має абсолютний пріоритет.`);
     return 10;
   }
 
@@ -92,7 +92,7 @@ export const getCarPriority = (
   const signDetails = signs.find(s => s.id === signId);
   const priority = signDetails ? (10 - signDetails.signs_priority) : 0;
 
-  console.log(`Машина '${car.car_id}' з ${fromDir} — знак '${signId}', пріоритет: ${priority}`);
+  // console.log(`Машина '${car.car_id}' з ${fromDir} — знак '${signId}', пріоритет: ${priority}`);
   return priority;
 };
 

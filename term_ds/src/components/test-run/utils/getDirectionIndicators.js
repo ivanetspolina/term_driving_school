@@ -20,13 +20,11 @@ export const getDirectionIndicators = (startCarsPoints, carPaths, grid, commonRo
     const key = `${car.position[0]}-${car.position[1]}`;
     const path = carPaths[key];
 
-    console.log(`\n🟦 Машина ${idx + 1}:`, car);
-    console.log("🔑 Key:", key);
-    console.log("🛣️ Path:", path);
+    // console.log(`\n🟦 Машина ${idx + 1}:`, car);
 
     // Отримуємо напрямок відправлення
     const from = getRoundFromDirection(car.position, grid, path);
-    console.log(`🔎 [${idx+1}] from="${from}"   position=[${car.position}]   arrow=[${car.arrow_position}]`);
+    // console.log(`🔎 [${idx+1}] from="${from}"   position=[${car.position}]   arrow=[${car.arrow_position}]`);
 
     // Отримуємо кінцеву точку маршруту
     const endPosition = path[path.length - 1];
@@ -61,8 +59,8 @@ export const getDirectionIndicators = (startCarsPoints, carPaths, grid, commonRo
       }
     }
 
-    console.log("🔎 Визначений маршрут:", routeInfo);
-    console.log("📍 Тип:", routeInfo?.type);
+    // console.log("🔎 Визначений маршрут:", routeInfo);
+    // console.log("📍 Тип:", routeInfo?.type);
 
     const type = routeInfo.type;
     const Icon = iconByType[type];

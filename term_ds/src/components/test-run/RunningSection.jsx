@@ -15,6 +15,7 @@ import {
 } from "./utils/roadUtils";
 import { renderSign } from "./utils/renderSign";
 import { generateValidOrders } from "./utils/validOrders";
+import { generateTopologicalValidOrders } from "./utils/validTopologicalOrders";
 import { getDirectionIndicators } from "./utils/getDirectionIndicators";
 import {
   getInitialRotationFromPath,
@@ -121,6 +122,11 @@ export default function RunningSection({
       carPaths,
       carPriorities
     );
+    // return generateTopologicalValidOrders(
+    //   carsToPlace,
+    //   carPaths,
+    //   carPriorities
+    // );
   }, [
     carsToPlace,
     carPaths,
@@ -200,7 +206,7 @@ export default function RunningSection({
         }));
         step = nextStep;
       }
-    }, 200);
+    }, 100);
   };
 
   // Оцінюємо відповідь користувача
