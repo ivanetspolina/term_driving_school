@@ -10,10 +10,6 @@ const rightHand = {
 // Генеруємо всі можливі правильні послідовності проїзду машин 
 export const generateValidOrders = (
   allCars,
-  grid,
-  signPositions,
-  blockedDirections,
-  signs,
   carPaths,
   carPriorities
 ) => {

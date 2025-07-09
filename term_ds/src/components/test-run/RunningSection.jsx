@@ -9,8 +9,9 @@ import {
   getCarPriority,
   getSignForCell,
   setCarsToPlace,
-  signDirectionsMap,
+  // signDirectionsMap,
   specificCarPathsMap,
+  getSignDirectionsMap 
 } from "./utils/roadUtils";
 import { renderSign } from "./utils/renderSign";
 import { generateValidOrders } from "./utils/validOrders";
@@ -49,11 +50,21 @@ export default function RunningSection({
   console.log("carsToPlace: ", carsToPlace);
 
   // Підготовка знаків із напрямком
+  const signDirMap = useMemo(
+    () => getSignDirectionsMap(questionData.id),
+    [questionData.id]
+  );
+
   const signList =
     questionData.sign_positions?.map((item) => ({
       ...item,
-      ...signDirectionsMap[item.direction],
+      ...signDirMap[item.direction],
     })) || [];
+  // const signList =
+  //   questionData.sign_positions?.map((item) => ({
+  //     ...item,
+  //     ...signDirectionsMap[item.direction],
+  //   })) || [];
 
   // Шляхи руху кожної машинки
   const carPaths = useMemo(() => {
@@ -107,19 +118,11 @@ export default function RunningSection({
   const validOrders = useMemo(() => {
     return generateValidOrders(
       carsToPlace,
-      grid,
-      signList,
-      blockedDirections,
-      conditionsData.signs,
       carPaths,
       carPriorities
     );
   }, [
     carsToPlace,
-    grid,
-    signList,
-    blockedDirections,
-    conditionsData.signs,
     carPaths,
     carPriorities,
   ]);
@@ -189,7 +192,7 @@ export default function RunningSection({
           position: next,
           rotation,
           step: nextStep,
-        } = createAnimatedStep(key, path, step, current, clickedCar, grid);
+        } = createAnimatedStep(key, path, step, current);
 
         setMovingCars((prev) => ({
           ...prev,

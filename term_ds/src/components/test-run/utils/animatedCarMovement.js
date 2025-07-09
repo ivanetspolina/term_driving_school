@@ -24,7 +24,7 @@ export const getFromDirectionDelta = (from, to) => {
 };
 
 // Створюємо наступний крок для анімації руху машинки
-export const createAnimatedStep = (key, path, step, current, car, grid) => {
+export const createAnimatedStep = (key, path, step, current) => {
   const next = path[step]; // Наступна позиція на шляху
   const direction = getFromDirectionDelta(current, next); // Напрямок переміщення
   const rotation = rotationMap[direction]; // Кут обертання
