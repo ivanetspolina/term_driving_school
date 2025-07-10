@@ -3,19 +3,19 @@
   "sign_positions": [
     {
       "direction": "north",
-      "sign_id": "traffic_light_green"
+      "sign_id": "traffic_light_red"
     },
     {
       "direction": "east",
-      "sign_id": "traffic_light_red"
-    },
-    {
-      "direction": "south",
       "sign_id": "traffic_light_green"
     },
     {
-      "direction": "west",
+      "direction": "south",
       "sign_id": "traffic_light_red"
+    },
+    {
+      "direction": "west",
+      "sign_id": "traffic_light_green"
     }
   ],
   "carsToPlace": [
@@ -26,8 +26,8 @@
     },
     {
       "car_id": "car2",
-      "start_cars_points": 3,
-      "path_type": "straight"
-    }
+      "start_round_cars_points": 1,
+      "path_type": "left_turn"
+    }    
   ]
 }

@@ -68,10 +68,10 @@ export const generateValidOrders = (
         }
 
         // Дивимось в allCars, якщо машина їде прямо чи вправо, тоді шляхи порівнювати не потріно, вона буде їхати перша
-        if (
-          currentCarDirection != "straight" ||
-          currentCarDirection != "right_turn"
-        ) {
+        // if (
+        //   currentCarDirection != "straight" ||
+        //   currentCarDirection != "right_turn"
+        // ) {
           if (
             otherPriority === priority &&
             rightHand[key]?.includes(otherKey) &&
@@ -80,7 +80,7 @@ export const generateValidOrders = (
             rightBlocker = true;
             break;
           }
-        }
+        // }
       }
 
       // Створюємо список інших машин (які ще не проїхали)

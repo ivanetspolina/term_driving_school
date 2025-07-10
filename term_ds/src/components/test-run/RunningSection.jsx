@@ -235,7 +235,7 @@ export default function RunningSection({
   }, [questionIndex, questionData]);
 
   console.log("carPriorities: ", carPriorities);
-  console.log("validOrders: ", validOrders);
+  // console.log("validOrders: ", validOrders);
   // console.log("carsToPlace: ", carsToPlace);
   // console.log("signList: ", signList);
 

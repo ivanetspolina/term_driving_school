@@ -13,8 +13,8 @@ export const getRoundFromDirection = (position, grid, fullPath = []) => {
   const direct = getFromDirection(position, grid);
   if (direct) return direct;
 
-  console.log("📦 fullPath:", JSON.stringify(fullPath));
-  console.log("📍 Очікувана позиція (має бути path[2]):", position);
+  // console.log("📦 fullPath:", JSON.stringify(fullPath));
+  // console.log("📍 Очікувана позиція (має бути path[2]):", position);
 
   // Спробуємо знайти індекс
   let index = fullPath.findIndex(
@@ -66,7 +66,7 @@ export const getCarPriority = (
   const fromDir = getFromDirection(car.position, grid);
 
   if (!fromDir || blockedDirections.includes(fromDir)) {
-    console.log(`Напрям '${fromDir}' заблокований або не визначений для [${car.position}]`);
+    // console.log(`Напрям '${fromDir}' заблокований або не визначений для [${car.position}]`);
     return 0;
   }
 

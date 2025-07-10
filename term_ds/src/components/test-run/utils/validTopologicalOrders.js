@@ -37,13 +37,32 @@ export const generateTopologicalValidOrders = (
       const dirB = carB.path_type;
 
       const intersecting = isPathIntersecting(pathA, pathB);
+      // console.log(`Перевірка перетину ${keyA} (${dirA}) з ${keyB} (${dirB}) — intersecting: ${intersecting}`);
 
       // Пріоритетна машина (наприклад, поліція)
-      if (prioA < prioB) {
-        graph[keyB].add(keyA);
-        inBlocked[keyA]++;
+      if (prioB > prioA) {
+        if (!graph[keyB].has(keyA)) {
+          graph[keyB].add(keyA); // A → B (тобто B чекає на A)
+          inBlocked[keyA]++;
+        }
+        continue;
       }
-
+      // if (prioA > prioB) {
+      //   if (!graph[keyB].has(keyA)) {
+      //     graph[keyB].add(keyA);
+      //     inBlocked[keyA]++;
+      //   }
+      //   // graph[keyB].add(keyA);       
+      //   // inBlocked[keyA]++;
+      //   continue; // Не треба перевіряти інші умови — це вже достатньо
+      // }
+      
+      // if (carB.cars_priority === 1) {
+      //   graph[keyA].add(keyB);
+      //   inBlocked[keyB]++;
+      //   continue;
+      // }
+   
       // Лівий поворот чекає на прямо або праворуч
       if (
         dirA === "left_turn" &&
@@ -51,20 +70,36 @@ export const generateTopologicalValidOrders = (
         intersecting &&
         prioA === prioB
       ) {
-        console.log(`🛑 ${keyA} (left_turn) чекає на ${keyB} (${dirB})`);
-        graph[keyB].add(keyA);
-        inBlocked[keyA]++;
+        if (!graph[keyB].has(keyA)) {
+          graph[keyB].add(keyA);
+          inBlocked[keyA]++;
+        }
+        // graph[keyB].add(keyA);
+        // inBlocked[keyA]++;
       }
 
       // Правило правої руки — тільки якщо carA НЕ їде прямо чи вправо
       if (
         prioA === prioB &&
-        (dirA !== "straight" || dirA !== "right_turn") &&
+        //(dirA !== "straight" || dirA !== "right_turn") &&
         rightHand[keyA]?.includes(keyB) &&
         intersecting
+
+        // prioA === prioB &&
+        // (dirA !== "straight" || dirA !== "right_turn") &&
+        // rightHand[keyA]?.includes(keyB) &&
+        // intersecting
       ) {
-        graph[keyB].add(keyA);
-        inBlocked[keyA]++;
+         if (!graph[keyB].has(keyA)) {
+            graph[keyB].add(keyA);
+            inBlocked[keyA]++;
+          }
+        // if (!graph[keyA].has(keyB)) {
+        //   graph[keyA].add(keyB);
+        //   inBlocked[keyB]++;
+        // }
+        // graph[keyB].add(keyA);
+        // inBlocked[keyA]++;
       }
     }
   }
@@ -79,6 +114,12 @@ export const generateTopologicalValidOrders = (
     for (const key of keys) {
       if (used.has(key)) continue;
       if (localinBlocked[key] > 0) continue;
+      // if (localinBlocked[key] > 0) {
+      //   console.log(`⛔️ ${key} заблоковано, inBlocked = ${localinBlocked[key]}`);
+      //   continue;
+      // }
+
+      // console.log(`✅ Додаємо ${key} до шляху`);
 
       // використовуємо машину
       used.add(key);
@@ -96,6 +137,11 @@ export const generateTopologicalValidOrders = (
       path.pop();
     }
   };
+
+  console.log("Граф залежностей:");
+  for (const key in graph) {
+    console.log(`${key} ← [${[...graph[key]].join(", ")}]`);
+  }
 
   backtrack([], new Set(), inBlocked);
 

@@ -32,7 +32,7 @@
     {
       "car_id": "car3",
       "start_cars_points": 3,
-      "path_type": "straight"
+      "path_type": "left_turn"
     },
     {
       "car_id": "car1",
