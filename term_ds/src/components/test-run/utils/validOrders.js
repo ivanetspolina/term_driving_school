@@ -13,6 +13,7 @@ export const generateValidOrders = (
   carPaths,
   carPriorities
 ) => {
+  // const start = performance.now();
   // console.log("carPaths: ", carPaths, allCars);
   const results = [];
 
@@ -110,5 +111,9 @@ export const generateValidOrders = (
   dfs([], allCars);
 
   console.log("✅ DFS виконано. Побудовано порядки:", results);
+
+  // const end = performance.now(); 
+  // console.log(`⏱️ Час побудови порядків DFS: ${(end - start).toFixed(2)} мс`);
+
   return results;
 };

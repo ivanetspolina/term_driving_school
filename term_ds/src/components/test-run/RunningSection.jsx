@@ -116,22 +116,33 @@ export default function RunningSection({
   }, []);
 
   // Генеруємо всі допустимі правильні послідовності проїзду
+  // const validOrders = useMemo(() => {
+  //   // return generateValidOrders(
+  //   // carsToPlace,
+  //   // carPaths,
+  //   // carPriorities
+  //   // );
+  //   return generateTopologicalValidOrders(
+  //     carsToPlace,
+  //     carPaths,
+  //     carPriorities
+  //   );
+  // }, [
+  //   carsToPlace,
+  //   carPaths,
+  //   carPriorities,
+  // ]);
   const validOrders = useMemo(() => {
-    // return generateValidOrders(
-    //   carsToPlace,
-    //   carPaths,
-    //   carPriorities
-    // );
     return generateTopologicalValidOrders(
       carsToPlace,
       carPaths,
-      carPriorities
+      carPriorities,
+      {
+        isRoundabout: questionData.id === "round_cross",
+        roundaboutPositions: questionData.start_round_cars_points?.map(p => p.position) || []
+      }
     );
-  }, [
-    carsToPlace,
-    carPaths,
-    carPriorities,
-  ]);
+  }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
   // Обробляємо натискання на машинку
   const handleCarClick = (row, col) => {

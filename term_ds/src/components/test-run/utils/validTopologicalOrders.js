@@ -6,8 +6,10 @@ import { rightHand } from "./validOrders";
 export const generateTopologicalValidOrders = (
   allCars,
   carPaths,
-  carPriorities
+  carPriorities,
+  { isRoundabout = false } = {}
 ) => {
+  // const start = performance.now(); 
 //   console.log("carPaths: ", carPaths, allCars);
   const results = [];
   const graph = {}; // key -> Set of cars it must go before
@@ -35,6 +37,10 @@ export const generateTopologicalValidOrders = (
       const pathB = carPaths[keyB];
       const prioB = carPriorities[keyB];
       const dirB = carB.path_type;
+
+      // Визначення, чи машини вже на колі
+      const isAOnRound = carA.start_round_cars_points !== undefined;
+      const isBOnRound = carB.start_round_cars_points !== undefined;
 
       const intersecting = isPathIntersecting(pathA, pathB);
       // console.log(`Перевірка перетину ${keyA} (${dirA}) з ${keyB} (${dirB}) — intersecting: ${intersecting}`);
@@ -146,5 +152,9 @@ export const generateTopologicalValidOrders = (
   backtrack([], new Set(), inBlocked);
 
   console.log("✅ Топологічне сортування виконано. Побудовано порядки:", results);
+
+  // const end = performance.now();
+  // console.log(`⏱️ Час побудови топологічного порядку: ${(end - start).toFixed(2)} мс`);
+
   return results;
 };
