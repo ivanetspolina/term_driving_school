@@ -22,7 +22,7 @@
     {
       "car_id": "car1",
       "start_round_cars_points": 0,
-      "path_type": "straight"
+      "path_type": "left_turn"
     },
     {
       "car_id": "car3",

@@ -63,12 +63,7 @@ export const getCarPriority = (
   signs,
   cars
 ) => {
-  const fromDir = getFromDirection(car.position, grid);
-
-  if (!fromDir || blockedDirections.includes(fromDir)) {
-    // console.log(`Напрям '${fromDir}' заблокований або не визначений для [${car.position}]`);
-    return 0;
-  }
+  const fromDir = getFromDirection(car.position, grid);  
 
   // Знаходимо дані про машину за її car_id
   const carData = cars.find(c => c.id === car.car_id);
@@ -76,7 +71,17 @@ export const getCarPriority = (
 
   if (carPriorityValue === 1) {
     // console.log(`Машина '${car.car_id}' з позиції [${car.position}] має абсолютний пріоритет.`);
+    return 11;
+  }
+
+  if (car.isOnRoundabout) {
+    console.log(`Машина '${car.car_id}' з позиції [${car.position}] на колі.`);
     return 10;
+  }
+
+  if (!fromDir || blockedDirections.includes(fromDir)) {
+    // console.log(`Напрям '${fromDir}' заблокований або не визначений для [${car.position}]`);
+    return 0;
   }
 
   // Знаходимо дорожній знак, який відповідає напрямку руху
@@ -224,7 +229,8 @@ export function setCarsToPlace(carsToPlace, carsData) {
       path_type,
       position: startPoint.position,
       arrow_position: startPoint.arrow_position,
-      cars_priority
+      cars_priority,
+      isOnRoundabout: isRound
     };
   }).filter(Boolean);
 }

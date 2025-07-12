@@ -7,7 +7,7 @@ export const generateTopologicalValidOrders = (
   allCars,
   carPaths,
   carPriorities,
-  { isRoundabout = false } = {}
+  { isRoundabout = false, roundaboutPositions = [] } = {}
 ) => {
   // const start = performance.now(); 
 //   console.log("carPaths: ", carPaths, allCars);
@@ -38,74 +38,72 @@ export const generateTopologicalValidOrders = (
       const prioB = carPriorities[keyB];
       const dirB = carB.path_type;
 
-      // Визначення, чи машини вже на колі
-      const isAOnRound = carA.start_round_cars_points !== undefined;
-      const isBOnRound = carB.start_round_cars_points !== undefined;
-
       const intersecting = isPathIntersecting(pathA, pathB);
+      if (!intersecting) {
+          continue;
+      }
       // console.log(`Перевірка перетину ${keyA} (${dirA}) з ${keyB} (${dirB}) — intersecting: ${intersecting}`);
 
       // Пріоритетна машина (наприклад, поліція)
-      if (prioB > prioA) {
-        if (!graph[keyB].has(keyA)) {
-          graph[keyB].add(keyA); // A → B (тобто B чекає на A)
-          inBlocked[keyA]++;
-        }
-        continue;
-      }
-      // if (prioA > prioB) {
+      // if (prioB > prioA) {
       //   if (!graph[keyB].has(keyA)) {
       //     graph[keyB].add(keyA);
       //     inBlocked[keyA]++;
       //   }
-      //   // graph[keyB].add(keyA);       
-      //   // inBlocked[keyA]++;
-      //   continue; // Не треба перевіряти інші умови — це вже достатньо
-      // }
-      
-      // if (carB.cars_priority === 1) {
-      //   graph[keyA].add(keyB);
-      //   inBlocked[keyB]++;
       //   continue;
       // }
-   
-      // Лівий поворот чекає на прямо або праворуч
-      if (
-        dirA === "left_turn" &&
-        (dirB === "straight" || dirB === "right_turn") &&
-        intersecting &&
-        prioA === prioB
-      ) {
-        if (!graph[keyB].has(keyA)) {
+      if (prioA > prioB) {
+        if (!graph[keyA].has(keyB)) {
+          graph[keyA].add(keyB);
+          inBlocked[keyB]++;
+        }
+        continue;
+      }
+
+
+      // Спеціальні правила для кругового перехрестя
+      if (isRoundabout) {     
+        // Визначення, чи машини вже на колі
+        const isPositionIn = (pos, posArray) => posArray.some(([r, c]) => r === pos[0] && c === pos[1]);        
+        const isAOnRound = isPositionIn(carA.position, roundaboutPositions);
+        const isBOnRound = isPositionIn(carB.position, roundaboutPositions);
+
+        // Машина на колі має перевагу над тією, що в'їжджає
+        if (isAOnRound && !isBOnRound) {
+          console.log(`${keyA} вже на колі, ${keyB} в'їжджає ➜ ${isBOnRound} чекає`);
           graph[keyB].add(keyA);
           inBlocked[keyA]++;
         }
-        // graph[keyB].add(keyA);
-        // inBlocked[keyA]++;
-      }
+        
 
-      // Правило правої руки — тільки якщо carA НЕ їде прямо чи вправо
-      if (
-        prioA === prioB &&
-        //(dirA !== "straight" || dirA !== "right_turn") &&
-        rightHand[keyA]?.includes(keyB) &&
-        intersecting
 
-        // prioA === prioB &&
-        // (dirA !== "straight" || dirA !== "right_turn") &&
-        // rightHand[keyA]?.includes(keyB) &&
-        // intersecting
-      ) {
-         if (!graph[keyB].has(keyA)) {
+      } else {
+
+        // Лівий поворот чекає на прямо або праворуч
+        if (
+          dirA === "left_turn" &&
+          (dirB === "straight" || dirB === "right_turn") &&
+          intersecting &&
+          prioA === prioB
+        ) {
+          if (!graph[keyB].has(keyA)) {
             graph[keyB].add(keyA);
             inBlocked[keyA]++;
           }
-        // if (!graph[keyA].has(keyB)) {
-        //   graph[keyA].add(keyB);
-        //   inBlocked[keyB]++;
-        // }
-        // graph[keyB].add(keyA);
-        // inBlocked[keyA]++;
+        }
+
+        // Правило правої руки — тільки якщо carA НЕ їде прямо чи вправо
+        if (
+          prioA === prioB &&
+          //(dirA !== "straight" || dirA !== "right_turn") &&
+          rightHand[keyA]?.includes(keyB) &&
+          intersecting
+        ) {
+          if (!graph[keyB].has(keyA)) {
+            graph[keyB].add(keyA);
+            inBlocked[keyA]++;
+          }
+        }
       }
     }
   }
@@ -124,7 +122,6 @@ export const generateTopologicalValidOrders = (
       //   console.log(`⛔️ ${key} заблоковано, inBlocked = ${localinBlocked[key]}`);
       //   continue;
       // }
-
       // console.log(`✅ Додаємо ${key} до шляху`);
 
       // використовуємо машину
@@ -158,3 +155,18 @@ export const generateTopologicalValidOrders = (
 
   return results;
 };
+
+// if (isAOnRound !== isBOnRound) {
+//   const [priorityCar, waitCar] = isAOnRound ? [keyA, keyB] : [keyB, keyA];
+//   console.log(`🔄 ${priorityCar} вже на колі, ${waitCar} чекає`);
+//   if (!graph[priorityCar].has(waitCar)) {
+//     graph[priorityCar].add(waitCar);
+//     inBlocked[waitCar]++;
+//   }
+//   continue;
+// }
+// if (!isAOnRound && isBOnRound) {
+        //   console.log(`🔄 ${keyB} вже на колі, ${keyA} в'їжджає ➜ ${keyA} чекає`);
+        //   graph[keyA].add(keyB);
+        //   inBlocked[keyB]++;
+        // }

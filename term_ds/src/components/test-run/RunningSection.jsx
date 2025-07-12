@@ -133,14 +133,19 @@ export default function RunningSection({
   //   carPriorities,
   // ]);
   const validOrders = useMemo(() => {
+    const isRoundabout = questionData.id === "round_cross";
+    const roundaboutPositions = carsToPlace
+    .filter((car) => car.isOnRoundabout)
+    .map((car) => car.position);
+
+    // console.log("roundaboutPositions:", roundaboutPositions);
+    // console.log("questionData:", questionData);
+
     return generateTopologicalValidOrders(
       carsToPlace,
       carPaths,
       carPriorities,
-      {
-        isRoundabout: questionData.id === "round_cross",
-        roundaboutPositions: questionData.start_round_cars_points?.map(p => p.position) || []
-      }
+      { isRoundabout, roundaboutPositions }
     );
   }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
