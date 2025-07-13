@@ -1,11 +1,4 @@
-import { isPathIntersecting } from "./roadUtils";
-
-export const rightHand = {
-  "4-0": ["7-4"],
-  "7-4": ["3-7"],
-  "3-7": ["0-3"],
-  "0-3": ["4-0"],
-};
+import { isPathIntersecting, rightHand } from "./roadUtils";
 
 // Генеруємо всі можливі правильні послідовності проїзду машин 
 export const generateValidOrders = (

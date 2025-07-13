@@ -8,7 +8,7 @@
   "start_round_cars_points": [
     { "position": [4, 2], "arrow_position": [4, 1] },
     { "position": [2, 3], "arrow_position": [1, 3] },
-    { "position": [3, 5], "arrow_position": [3, 6] },
+    { "position": [3, 5], "arrow_position": [3, 4] },
     { "position": [5, 4], "arrow_position": [6, 4] }
   ],  
   "cars": [

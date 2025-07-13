@@ -1,3 +1,10 @@
+export const rightHand = {
+  "4-0": ["7-4"],
+  "7-4": ["3-7"],
+  "3-7": ["0-3"],
+  "0-3": ["4-0"],
+};
+
 // Визначаємо, з якого напрямку перехрестя розміщена машинка
 export const getFromDirection = (position, grid) => {
   const [row, col] = position;
@@ -12,9 +19,6 @@ export const getFromDirection = (position, grid) => {
 export const getRoundFromDirection = (position, grid, fullPath = []) => {
   const direct = getFromDirection(position, grid);
   if (direct) return direct;
-
-  // console.log("📦 fullPath:", JSON.stringify(fullPath));
-  // console.log("📍 Очікувана позиція (має бути path[2]):", position);
 
   // Спробуємо знайти індекс
   let index = fullPath.findIndex(

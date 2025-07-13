@@ -28,6 +28,21 @@
       "car_id": "car2",
       "start_round_cars_points": 3,
       "path_type": "straight"
+    },
+    {
+      "car_id": "car3",
+      "start_round_cars_points": 2,
+      "path_type": "right_turn"
+    },
+    {
+      "car_id": "car2",
+      "start_cars_points": 2,
+      "path_type": "straight"
+    },
+    {
+      "car_id": "car1",
+      "start_cars_points": 1,
+      "path_type": "straight"
     }
   ]
 }
