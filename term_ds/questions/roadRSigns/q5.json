@@ -3,19 +3,19 @@
   "sign_positions": [
     {
       "direction": "north",
-      "sign_id": "traffic_light_green"
+      "sign_id": "main_road"
     },
     {
       "direction": "east",
-      "sign_id": "traffic_light_green"
+      "sign_id": "main_road"
     },
     {
       "direction": "south",
-      "sign_id": "traffic_light_green"
+      "sign_id": "give_way"
     },
     {
       "direction": "west",
-      "sign_id": "traffic_light_green"
+      "sign_id": "give_way"
     }
   ],
   "carsToPlace": [

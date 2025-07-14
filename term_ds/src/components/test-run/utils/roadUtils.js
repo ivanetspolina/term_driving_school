@@ -1,10 +1,3 @@
-export const rightHand = {
-  "4-0": ["7-4"],
-  "7-4": ["3-7"],
-  "3-7": ["0-3"],
-  "0-3": ["4-0"],
-};
-
 // Визначаємо, з якого напрямку перехрестя розміщена машинка
 export const getFromDirection = (position, grid) => {
   const [row, col] = position;
@@ -201,12 +194,6 @@ export const specificCarPathsMap = (questionData, carsData, routesData) => {
 //     });
 //     return returnData;
 // }
-
-// Перевіряємо, чи перетинаються два шляхи
-export const isPathIntersecting = (pathA, pathB) => {
-  const setA = new Set(pathA.map(([r, c]) => `${r},${c}`));
-  return pathB.some(([r, c]) => setA.has(`${r},${c}`));
-};
 
 // Формуємо остаточний список машинок
 export function setCarsToPlace(carsToPlace, carsData) {

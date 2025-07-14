@@ -9,7 +9,6 @@ import {
   getCarPriority,
   getSignForCell,
   setCarsToPlace,
-  // signDirectionsMap,
   specificCarPathsMap,
   getSignDirectionsMap 
 } from "./utils/roadUtils";
@@ -61,11 +60,6 @@ export default function RunningSection({
       ...item,
       ...signDirMap[item.direction],
     })) || [];
-  // const signList =
-  //   questionData.sign_positions?.map((item) => ({
-  //     ...item,
-  //     ...signDirectionsMap[item.direction],
-  //   })) || [];
 
   // Шляхи руху кожної машинки
   const carPaths = useMemo(() => {
@@ -116,31 +110,18 @@ export default function RunningSection({
   }, []);
 
   // Генеруємо всі допустимі правильні послідовності проїзду
-  // const validOrders = useMemo(() => {
-  //   // return generateValidOrders(
-  //   // carsToPlace,
-  //   // carPaths,
-  //   // carPriorities
-  //   // );
-  //   return generateTopologicalValidOrders(
-  //     carsToPlace,
-  //     carPaths,
-  //     carPriorities
-  //   );
-  // }, [
-  //   carsToPlace,
-  //   carPaths,
-  //   carPriorities,
-  // ]);
   const validOrders = useMemo(() => {
     const isRoundabout = questionData.id === "round_cross";
     const roundaboutPositions = carsToPlace
     .filter((car) => car.isOnRoundabout)
     .map((car) => car.position);
 
-    // console.log("roundaboutPositions:", roundaboutPositions);
-    // console.log("questionData:", questionData);
-
+    // return generateValidOrders(
+    // carsToPlace,
+    // carPaths,
+    // carPriorities,
+    // { isRoundabout, roundaboutPositions }
+    // );
     return generateTopologicalValidOrders(
       carsToPlace,
       carPaths,
