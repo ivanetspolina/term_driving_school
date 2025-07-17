@@ -26,7 +26,7 @@
     },
     {
       "car_id": "car3",
-      "start_round_cars_points": 2,
+      "start_cars_points": 2,
       "path_type": "left_turn"
     },
     {

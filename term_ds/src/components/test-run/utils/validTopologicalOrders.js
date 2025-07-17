@@ -1,7 +1,6 @@
 import { isPathIntersecting, rightHand, isOnRoundabout, hasBlockingCar, addDependency } from "./validUtils";
 
-// Генеруємо всі можливі правильні послідовності проїзду машин 
-// використовуючи топологічне сортування
+// Генеруємо всі можливі правильні послідовності проїзду машин використовуючи топологічне сортування
 export const generateTopologicalValidOrders = (
   allCars,
   carPaths,
@@ -10,16 +9,18 @@ export const generateTopologicalValidOrders = (
 ) => {
   const start = performance.now(); 
   const results = [];
-  const graph = {}; 
-  const inBlocked = {}; 
+  const graph = {}; // Орієнтований граф залежностей: key → Set інших машин, які мають їхати після key
+  const inBlocked = {}; // Кількість вхідних ребер для кожної машини (тобто скільки інших машин її блокують)
   console.log("carPaths:", carPaths);
 
+  // Генеруємо унікальні ключі машин за позицією
   const keys = allCars.map((car) => `${car.position[0]}-${car.position[1]}`);
   keys.forEach((key) => {
     graph[key] = new Set();
     inBlocked[key] = 0;
   });
 
+  // Поліцейські машини мають абсолютний пріоритет — всі інші залежать від них
   const policeKeys = allCars
     .filter((car) => car.cars_priority === 1)
     .map((car) => `${car.position[0]}-${car.position[1]}`);
@@ -33,6 +34,7 @@ export const generateTopologicalValidOrders = (
     }
   }  
   
+  // Побудова графа залежностей на основі правил пріоритету, напрямків і перешкод
   for (let i = 0; i < allCars.length; i++) {
     const carA = allCars[i];
     const keyA = `${carA.position[0]}-${carA.position[1]}`;
@@ -49,13 +51,12 @@ export const generateTopologicalValidOrders = (
       const prioB = carPriorities[keyB];
       const dirB = carB.path_type;
 
-      if (carA.cars_priority === 1 || carB.cars_priority === 1) continue;
+      if (carA.cars_priority === 1 || carB.cars_priority === 1) continue; // Поліцію ми вже врахували, тут не розглядаємо
 
       const intersecting = isPathIntersecting(pathA, pathB);
-      // if (!isRoundabout && !intersecting) continue;
-      if (!intersecting) continue;
+      if (!intersecting) continue; // Якщо не перетинаються, немає залежності
             
-      if (prioA > prioB) {
+      if (prioA > prioB) { // Якщо одна машина має вищий пріоритет — вона їде раніше
         addDependency(graph, inBlocked, keyA, keyB);
         continue;
       }
@@ -68,6 +69,7 @@ export const generateTopologicalValidOrders = (
         const isRightA = dirA === "right_turn";
         const isRightB = dirB === "right_turn";
 
+        // Машина, що вже на колі, має пріоритет над тією, що в'їжджає
         if (isAOn && !isBOn && intersecting) {
           addDependency(graph, inBlocked, keyA, keyB);
           continue;
@@ -77,7 +79,9 @@ export const generateTopologicalValidOrders = (
           continue;
         }      
         
+        // Якщо обидві вже на колі — перевірка правих поворотів і блокувань
         if (isAOn && isBOn) {
+          // Правий поворот має перевагу
           if (isRightA && !isRightB) {
             addDependency(graph, inBlocked, keyA, keyB);
             continue;
@@ -92,9 +96,11 @@ export const generateTopologicalValidOrders = (
           const aBlocked = hasBlockingCar(pathA, keyA, allCars, roundaboutPositions);
           const bBlocked = hasBlockingCar(pathB, keyB, allCars, roundaboutPositions);
 
+          // Пріоритет має та машина, що не заблокована
           if (isRightA && !aBlocked) continue;
           if (isRightB && !bBlocked) continue;
 
+          // Якщо лише одна машина заблокована — інша їде першою
           if (aBlocked && !bBlocked) {
             addDependency(graph, inBlocked, keyB, keyA);
             continue;
@@ -104,10 +110,8 @@ export const generateTopologicalValidOrders = (
             continue;
           }
 
+          // Якщо обидві заблоковані — перевіряємо взаємне блокування
           if (aBlocked && bBlocked) {
-            console.log(`Обидві машини заблоковані: ${keyA} і ${keyB}`);
-            
-            // Знаходимо, хто кого блокує безпосередньо
             const aBlocksB = pathA.some(([r, c]) => r === carB.position[0] && c === carB.position[1]);
             const bBlocksA = pathB.some(([r, c]) => r === carA.position[0] && c === carA.position[1]);
             
@@ -116,6 +120,7 @@ export const generateTopologicalValidOrders = (
             } else if (bBlocksA && !aBlocksB) {
               addDependency(graph, inBlocked, keyA, keyB);
             } else {
+              // Не додаємо ребро, щоб не зациклювати граф
               console.warn(`Взаємне блокування між ${keyA} і ${keyB}!`);
             }
           }
@@ -133,7 +138,7 @@ export const generateTopologicalValidOrders = (
           addDependency(graph, inBlocked, keyB, keyA);
         }
 
-        // Правило правої руки — тільки якщо carA НЕ їде прямо чи вправо
+        // Правило правої руки 
         if (
           prioA === prioB &&
           rightHand[keyA]?.includes(keyB) &&
@@ -145,10 +150,10 @@ export const generateTopologicalValidOrders = (
     }
   }
 
-  // Пошук усіх допустимих топологічних порядків
+  // Топологічне сортування: пошук усіх допустимих порядків
   const backtrack = (path, used, localInBlocked) => {
     if (path.length === keys.length) {
-      results.push([...path]);
+      results.push([...path]); // Зберігаємо повний порядок
       return;
     }
 
@@ -159,11 +164,13 @@ export const generateTopologicalValidOrders = (
       used.add(key);
       path.push(key);
 
+      // Створюємо копію inBlocked для наступної ітерації
       const updatedInBlocked = { ...localInBlocked };
       for (const neighbor of graph[key]) {
         updatedInBlocked[neighbor]--;
       }
 
+      // Рекурсивно шукаємо далі
       backtrack(path, used, updatedInBlocked);
 
       used.delete(key);
@@ -173,15 +180,16 @@ export const generateTopologicalValidOrders = (
 
   console.log("Граф залежностей:");
   for (const key in graph) {
-    console.log(`${key} ← [${[...graph[key]].join(", ")}]`);
+    console.log(`${key} → [${[...graph[key]].join(", ")}]`);
   }
 
+  // Запуск пошуку всіх допустимих топологічних порядків
   backtrack([], new Set(), inBlocked);
 
-  console.log("✅ Топологічне сортування виконано. Побудовано порядки:", results);
+  console.log("Топологічне сортування виконано. Побудовано порядки:", results);
 
   const end = performance.now();
-  console.log(`⏱️ Час побудови топологічного порядку: ${(end - start).toFixed(2)} мс`);
+  console.log(`Час побудови топологічного порядку: ${(end - start).toFixed(2)} мс`);
 
   return results;
 };

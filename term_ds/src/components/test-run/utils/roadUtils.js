@@ -24,7 +24,7 @@ export const getRoundFromDirection = (position, grid, fullPath = []) => {
     if (assumed[0] === position[0] && assumed[1] === position[1]) {
       index = 2;
     } else {
-      console.warn("❌ Позиція не знайдена в маршруті:", position, fullPath);
+      console.warn("Позиція не знайдена в маршруті:", position, fullPath);
       return null;
     }
   }
@@ -41,15 +41,6 @@ export const getRoundFromDirection = (position, grid, fullPath = []) => {
 
   return null;
 };
-
-
-// export const getRoundFromDirection = (position, grid, fullPath = []) => {
-//   const direct = getFromDirection(position, grid);
-//   if (direct) return direct;
-
-  // // Якщо не край сітки — шукаємо позицію у повному шляху
-  // const index = fullPath.findIndex((p) => p[0] === position[0] && p[1] === position[1]);
-// };
 
 // Обчислюємо пріоритет машини для проїзду через перехрестя
 export const getCarPriority = (
@@ -94,7 +85,6 @@ export const getCarPriority = (
   const signDetails = signs.find(s => s.id === signId);
   const priority = signDetails ? (10 - signDetails.signs_priority) : 0;
 
-  // console.log(`Машина '${car.car_id}' з ${fromDir} — знак '${signId}', пріоритет: ${priority}`);
   return priority;
 };
 
@@ -169,31 +159,6 @@ export const specificCarPathsMap = (questionData, carsData, routesData) => {
 
     return returnData;
 }
-// export const specificCarPathsMap = (questionData, carsData, routesData) => {
-//     const returnData = {};
-
-//     // Перебираємо всі машини, які є в цьому питанні
-//     questionData.carsToPlace.forEach(car => {
-        
-//         // Відносно позиції машини відибраємо її координати
-//         const [one, two] = carsData.start_cars_points[car.start_cars_points].position;
-//         const keyText = `${one}-${two}`;
-
-//         // Отримуємо потрібний вигляд дороги
-//         const road = routesData[questionData.id];        
-
-//         // Перебираємо масив, щоб знайти потрібний шлях
-//         road.forEach(element => {
-//             const { path, type } = element;
-
-//             // Шукаємо в кого початковий індекс відповідє нашій позиції машини
-//             if (path[0].join('-') == keyText && type == car.path_type) {
-//                 returnData[keyText] = path;
-//             }
-//         });
-//     });
-//     return returnData;
-// }
 
 // Формуємо остаточний список машинок
 export function setCarsToPlace(carsToPlace, carsData) {
@@ -225,28 +190,3 @@ export function setCarsToPlace(carsToPlace, carsData) {
     };
   }).filter(Boolean);
 }
-// export function setCarsToPlace(carsToPlace, carsData) {
-//   return carsToPlace.map((carConfig) => {
-//     const { car_id, start_cars_points, path_type } = carConfig;
-
-//     // Знаходимо координати стартової точки і стрілки за індексом
-//     const startPoint = carsData.start_cars_points[start_cars_points];
-
-//     if (!startPoint) {
-//       console.warn(`Стартова точка з індексом ${start_cars_points} не знайдена`);
-//       return null;
-//     }
-
-//     // Знаходимо пріоритет машинки за її ID
-//     const carInfo = carsData.cars.find((car) => car.id === car_id);
-//     const cars_priority = carInfo?.cars_priority ?? 0;
-
-//     return {
-//       car_id,
-//       path_type,
-//       position: startPoint.position,
-//       arrow_position: startPoint.arrow_position,
-//       cars_priority
-//     };
-//   }).filter(Boolean); 
-// }
