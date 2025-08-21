@@ -116,18 +116,18 @@ export default function RunningSection({
     .filter((car) => car.isOnRoundabout)
     .map((car) => car.position);
 
-    return generateValidOrders(
-    carsToPlace,
-    carPaths,
-    carPriorities,
-    { isRoundabout, roundaboutPositions }
-    );
-    // return generateTopologicalValidOrders(
-    //   carsToPlace,
-    //   carPaths,
-    //   carPriorities,
-    //   { isRoundabout, roundaboutPositions }
+    // return generateValidOrders(
+    // carsToPlace,
+    // carPaths,
+    // carPriorities,
+    // { isRoundabout, roundaboutPositions }
     // );
+    return generateTopologicalValidOrders(
+      carsToPlace,
+      carPaths,
+      carPriorities,
+      { isRoundabout, roundaboutPositions }
+    );
   }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
   // Обробляємо натискання на машинку
