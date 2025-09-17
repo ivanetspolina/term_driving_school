@@ -7,6 +7,7 @@ const testResultSchema = new mongoose.Schema({
   score: { type: Number, required: true },
   scoreIncorrect: { type: Number, required: true },
   time: { type: Number, required: true },
+  questionTimes: [{ type: Number }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('TestResult', testResultSchema);

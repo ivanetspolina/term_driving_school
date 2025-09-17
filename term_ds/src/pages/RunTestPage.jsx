@@ -23,21 +23,50 @@ export default function RunTest() {
 
   const [testData, setTestData] = useState(null);
   const [questionData, setQuestionData] = useState(null);
+
   const [timer, setTimer] = useState(0);
+  const [questionTimer, setQuestionTimer] = useState(0); 
+  const [questionTimes, setQuestionTimes] = useState([]);
+
   const [isRunning, setIsRunning] = useState(STATES.START);
   const [score, setScore] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [canGoNext, setCanGoNext] = useState(false);
-
+ 
   const handleStart = () => {
     setTimer(0);
+    setQuestionTimer(0);
+    setQuestionTimes([]);
     setIsRunning(STATES.RUNNING);
   };
 
   const resetTest = () => {
     setTimer(0);
+    setQuestionTimer(0);
+    setQuestionTimes([]);
     setIsRunning(STATES.START);
     navigate("/tests");
+  };
+
+  const handleNextQuestion = () => {
+    setQuestionTimes((prev) => [...prev, questionTimer]);
+    setQuestionTimer(0);
+    setCurrentQuestionIndex((prev) => prev + 1);
+    // setCanGoNext(false);
+  };
+
+  const handleFinishTest = () => {
+    const finalTimes = [...questionTimes, questionTimer];
+    const params = new URLSearchParams({
+      score: score,
+      time: timer,
+      topicid: testData?._id,
+      topic: testData?.name || "Невідома тема",
+      questionTimes: JSON.stringify(finalTimes),
+    });
+
+    navigate(`/result_test?${params.toString()}`);
+    // return finalTimes;
   };
 
   useEffect(() => {
@@ -59,12 +88,17 @@ export default function RunTest() {
 
   useEffect(() => {
     let interval;
+    let questionInterval;
     if (isRunning === STATES.RUNNING) {
       interval = setInterval(() => {
         setTimer((prev) => prev + 1);
       }, 1000);
+
+      questionInterval = setInterval(() => {
+        setQuestionTimer((prev) => prev + 1);
+      }, 1000);
     }
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); clearInterval(questionInterval); };
   }, [isRunning]);
 
   useEffect(() => {
@@ -128,8 +162,7 @@ export default function RunTest() {
               * Після завершення проїзду всіх транспортних засобів на зелений
               сигнал світлофора слід вважати, що червоний сигнал змінено на
               зелений.
-              <br />
-              * Завжди вважати, що поліцейський автомобіль рухається з
+              <br />* Завжди вважати, що поліцейський автомобіль рухається з
               увімкненими проблисковими маячками червоного та синього кольору та
               має безумовний пріоритет, тому завжди починає рух першим.
             </p>
@@ -140,7 +173,6 @@ export default function RunTest() {
             setIsRunning={setIsRunning}
             onPause={() => setIsRunning(STATES.PAUSED)}
             onCancel={resetTest}
-            onSnapshot={() => console.log("Snapshot clicked")}
             STATES={STATES}
             currentQuestionIndex={currentQuestionIndex}
             setCurrentQuestionIndex={setCurrentQuestionIndex}
@@ -148,6 +180,8 @@ export default function RunTest() {
             timer={timer}
             testData={testData}
             canGoNext={canGoNext}
+            onNextQuestion={handleNextQuestion}
+            onFinish={handleFinishTest}
           />
         </div>
       </main>

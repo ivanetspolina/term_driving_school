@@ -4,6 +4,7 @@ import { PencilLine, Trash2 } from "lucide-react";
 import ConfirmModal from "../components/ConfirmModal.jsx";
 import PasswordChange from "../components/auth/PasswordChange.jsx";
 import EditNameField from "../components/profile/EditNameField.jsx";
+import DrivingStatusEdit from "../components/auth/DrivingStatus.jsx";
 import { apiRequest, apiUrl } from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useUI } from "../context/UIContext.jsx";
@@ -105,6 +106,22 @@ export default function Profile() {
             <p>{profileData?.email || "..."}</p>
           </div>
 
+          <DrivingStatusEdit
+            label="Маєте посвідчення водія?"
+            value={profileData?.drivingStatus || ""}
+            onSave={async (newStatus) => {
+              const result = await apiRequest(apiUrl.updateProfile, "PATCH", {
+                drivingStatus: newStatus,
+              });
+              if (result?.user) {
+                setProfileData(result.user);
+                setAlert("Статус оновлено", "success");
+              } else {
+                setAlert(result?.error || "Помилка при оновленні статусу", "error");
+              }
+            }}
+          />
+
           <div className="profile-info">
             <h2>Пароль</h2>
             <p
@@ -131,7 +148,7 @@ export default function Profile() {
               <Trash2 size={18} />
               Видалити акаунт
             </button>
-          </div>
+          </div>          
         </div>
       </main>
 

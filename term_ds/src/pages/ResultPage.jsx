@@ -32,12 +32,21 @@ export default function Result({ total = 20, passingScore = 18 }) {
   const topicid = searchParams.get("topicid");
   const isPassed = isTestPassed(score, passingScore);
 
+  const rawTimes = searchParams.get("questionTimes");
+  let questionTimes = [];
+  try {
+    questionTimes = rawTimes ? JSON.parse(rawTimes) : [];
+  } catch (err) {
+    console.error("Помилка парсингу questionTimes:", err);
+  }
+
   const sendTestData = {
     user: user._id,
     score,
     scoreIncorrect,
     time,
     topicid,
+    questionTimes,
   };
 
   useEffect(() => {

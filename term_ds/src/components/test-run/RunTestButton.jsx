@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ConfirmModal from "../ConfirmModal.jsx";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 // Компонент для кнопок керування тестом: пауза, скасування, перехід далі та завершення
 export function RunTestButton({
@@ -10,14 +10,16 @@ export function RunTestButton({
   setIsRunning,
   STATES,
   currentQuestionIndex,
-  setCurrentQuestionIndex,
-  score,
-  timer,
-  testData,
+  // setCurrentQuestionIndex,
+  // score,
+  // timer,
+  // testData,
+  onNextQuestion,
+  onFinish,
   canGoNext,
 }) {
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const isLastQuestion = currentQuestionIndex >= 19;
 
@@ -35,20 +37,20 @@ export function RunTestButton({
     onCancel();
   };
 
-  const handleNextQuestion = () => {
-    setCurrentQuestionIndex((prev) => prev + 1);
-  };
+  // const handleNextQuestion = () => {
+  //   setCurrentQuestionIndex((prev) => prev + 1);
+  // };
 
-  const handleFinishTest = () => {
-    const params = new URLSearchParams({
-      score: score,
-      time: timer,
-      topicid: testData?._id,
-      topic: testData?.name || "Невідома тема",
-    });
+  // const handleFinishTest = () => {
+  //   const params = new URLSearchParams({
+  //     score: score,
+  //     time: timer,
+  //     topicid: testData?._id,
+  //     topic: testData?.name || "Невідома тема",
+  //   });
 
-    navigate(`/result_test?${params.toString()}`);
-  };
+  //   navigate(`/result_test?${params.toString()}`);
+  // };
 
   return (
     <>
@@ -81,7 +83,7 @@ export function RunTestButton({
 
         {!isLastQuestion && (
           <button
-            onClick={handleNextQuestion}
+            onClick={onNextQuestion}
             disabled={!canGoNext}
             className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 transition
       ${
@@ -96,7 +98,7 @@ export function RunTestButton({
 
         {isLastQuestion && (
           <button
-            onClick={handleFinishTest}
+            onClick={onFinish}
             className="w-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none hover:ring-2 hover:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
           >
             Завершити тестування

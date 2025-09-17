@@ -6,7 +6,7 @@ export default function FinishedSection() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigate("/result_test"); // або `/result/${id}` якщо результат залежить від тесту
+      navigate("/result_test"); 
     }, 500);
 
     return () => clearTimeout(timeout);

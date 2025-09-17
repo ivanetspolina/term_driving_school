@@ -34,6 +34,9 @@ export default function Registration() {
       .matches(/^[A-Za-z0-9]*$/, "Пароль повинен містити лише латинські літери та цифри")
       .matches(/[0-9]/, "Пароль повинен містити хоча б одну цифру")
       .required("Пароль обов'язковий"),
+    drivingStatus: Yup.string()
+      .oneOf(["Так", "Навчаюсь", "Ні"], "Оберіть один з варіантів")
+      .required("Поле обов'язкове"),
   });
 
   const handleRegister = async (values, { setSubmitting }) => {
@@ -131,6 +134,25 @@ export default function Registration() {
                     <div className="text-red-600 text-sm">
                       {errors.password}
                     </div>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    Маєте посвідчення водія?
+                  </label>
+                  <select
+                    id="drivingStatus"
+                    className="auth-input"
+                    {...getFieldProps("drivingStatus")}
+                  >
+                    <option value="" label="Оберіть варіант" />
+                    <option value="Так" label="Так" />
+                    <option value="Навчаюсь" label="Навчаюсь" />
+                    <option value="Ні" label="Ні" />
+                  </select>
+                  {touched.drivingStatus && errors.drivingStatus && (
+                    <div className="text-red-600 text-sm">{errors.drivingStatus}</div>
                   )}
                 </div>
 

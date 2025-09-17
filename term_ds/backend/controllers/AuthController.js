@@ -7,14 +7,18 @@ require('dotenv').config();
 // Реєстрація нового користувача
 exports.register = async function(req, res) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, drivingStatus } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !drivingStatus) {
       return res.status(400).json({ error: 'Всі поля обов\'язкові' });
     }
 
-    const existing = await User.findOne({ email });
+    const allowed = ["Так", "Навчаюсь", "Ні"];
+    if (!allowed.includes(drivingStatus)) {
+      return res.status(400).json({ error: "Неправильне значення для випадаючого списку" });
+    }
 
+    const existing = await User.findOne({ email });
     if (existing) {
       return res.status(409).json({ error: 'Користувач з таким email вже існує' });
     }
@@ -26,6 +30,7 @@ exports.register = async function(req, res) {
       name,
       email,
       password: hashed,
+      drivingStatus,
       isActive: false,
       activationToken,
     });
@@ -232,10 +237,15 @@ exports.updateProfile = async function(req, res) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { name } = req.body;
+    const { name, drivingStatus } = req.body;
 
-    if (!name || name.length < 2) {
+    if (name && name.length < 2) {
       return res.status(400).json({ error: "Ім'я повинно містити щонайменше 2 символи" });
+    }
+
+    const allowedStatuses = ["Так", "Навчаюсь", "Ні"];
+    if (drivingStatus && !allowedStatuses.includes(drivingStatus)) {
+      return res.status(400).json({ error: "Невірний статус" });
     }
 
     const user = await User.findById(decoded.id);
@@ -243,10 +253,11 @@ exports.updateProfile = async function(req, res) {
       return res.status(404).json({ error: 'Користувача не знайдено' });
     }
 
-    user.name = name;
+    if (name) user.name = name;
+    if (drivingStatus) user.drivingStatus = drivingStatus;
     await user.save();
 
-    res.status(200).json({ message: 'Ім’я оновлено успішно', user: { name: user.name, email: user.email } });
+    res.status(200).json({ message: 'Профіль оновлено успішно', user: { name: user.name, email: user.email, drivingStatus: user.drivingStatus } });
   } catch (err) {
     console.error(err);
     res.status(403).json({ error: 'Недійсний токен' });
@@ -270,3 +281,50 @@ exports.deleteAccount = async function (req, res) {
     res.status(403).json({ error: "Помилка при видаленні акаунту" });
   }
 };
+
+// Визначення рівня обізнаності користувача
+
+
+// exports.drivingStatus = async (req, res) => {
+//   const authHeader = req.headers.authorization;
+//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+//     return res.status(401).json({ error: "Немає токена" });
+//   }
+
+//   const token = authHeader.split(" ")[1];
+
+// try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const { drivingStatus } = req.body;
+
+//     if (!["Так", "Навчаюсь", "Ні"].includes(drivingStatus)) {
+//       return res.status(400).json({ error: "Неправильне значення" });
+//     }
+
+//     const user = await User.findById(decoded.id);
+//     if (!user) {
+//       return res.status(404).json({ error: "Користувача не знайдено" });
+//     }
+
+//     user.drivingStatus = drivingStatus;
+//     await user.save();
+
+//     res.status(200).json({ message: "Статус оновлено", drivingStatus: user.drivingStatus });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(403).json({ error: "Недійсний токен" });
+//   }
+
+//   // try {
+//   //   const { id } = req.params;
+//   //   const { drivingStatus } = req.body;
+//   //   const user = await User.findByIdAndUpdate(
+//   //     id,
+//   //     { drivingStatus },
+//   //     { new: true }
+//   //   );
+//   //   res.json(user);
+//   // } catch (err) {
+//   //   res.status(500).json({ error: "Update failed" });
+//   // }
+// };

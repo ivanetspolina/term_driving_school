@@ -57,7 +57,7 @@ exports.getTestById = async (req, res) => {
 // Зберігаємо результати проходження тесту
 exports.saveTestResult = async (req, res) => {
   try {
-    const { user, score, scoreIncorrect, time, topicid } = req.body;
+    const { user, score, scoreIncorrect, time, topicid, questionTimes } = req.body;
     console.log("req.body: ", req.body);
 
     const result = await TestResult.create({
@@ -65,7 +65,8 @@ exports.saveTestResult = async (req, res) => {
       score,
       scoreIncorrect,
       time,
-      topic: topicid
+      topic: topicid,
+      questionTimes
     });
 
     res.status(201).json({ message: 'Результат збережено', result });
