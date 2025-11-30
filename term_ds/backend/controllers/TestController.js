@@ -6,7 +6,25 @@ const jwt = require('jsonwebtoken');
 exports.getAllTests = async (req, res) => {
   try {
     const tests = await Test.find();
-    const results = await TestResult.find();
+
+    // пробуємо отримати токен
+    const authHeader = req.headers.authorization;
+    let userId = null;
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+        console.warn("JWT невірний або прострочений:", err.message);
+      }
+    }
+
+    // Якщо є userId → фільтруємо результати тільки цього користувача
+    const results = userId
+      ? await TestResult.find({ user: userId })
+      : await TestResult.find(); // можна і пустий масив, якщо не треба глобальна статистика
 
     const resultMap = {};
 
@@ -25,6 +43,7 @@ exports.getAllTests = async (req, res) => {
       }
     });
 
+    // Приєднуємо статистику до кожного тесту
     const testsWithStats = tests.map((test) => {
       const stats = resultMap[test._id.toString()] || { success: 0, error: 0 };
       return { ...test.toObject(), ...stats };
@@ -36,6 +55,39 @@ exports.getAllTests = async (req, res) => {
     res.status(500).json({ error: "Помилка сервера при отриманні тестів" });
   }
 };
+// exports.getAllTests = async (req, res) => {
+//   try {
+//     const tests = await Test.find();
+//     const results = await TestResult.find();
+
+//     const resultMap = {};
+
+//     results.forEach((r) => {
+//       const topicId = r.topic?.toString();
+//       if (!topicId) return;
+
+//       if (!resultMap[topicId]) {
+//         resultMap[topicId] = { success: 0, error: 0 };
+//       }
+
+//       if (r.score >= 18) {
+//         resultMap[topicId].success++;
+//       } else {
+//         resultMap[topicId].error++;
+//       }
+//     });
+
+//     const testsWithStats = tests.map((test) => {
+//       const stats = resultMap[test._id.toString()] || { success: 0, error: 0 };
+//       return { ...test.toObject(), ...stats };
+//     });
+
+//     res.json(testsWithStats);
+//   } catch (err) {
+//     console.error("Помилка при отриманні тестів:", err);
+//     res.status(500).json({ error: "Помилка сервера при отриманні тестів" });
+//   }
+// };
 
 // Отримуємо тест за ID
 exports.getTestById = async (req, res) => {

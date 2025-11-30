@@ -12,6 +12,5 @@ router.post('/activate', AuthController.activateAccount);
 router.post('/resend_activation', AuthController.resendActivateAccount);
 router.patch('/update_profile', AuthController.updateProfile);
 router.delete('/delete', AuthController.deleteAccount);
-// router.patch("/driving-status",  AuthController.drivingStatus);
 
 module.exports = router;

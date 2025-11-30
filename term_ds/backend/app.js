@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./routes/Auth.js');
 const testRoutes = require('./routes/Test.js');
+const analyticsRoutes = require("./routes/Analytics.js");
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -19,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Маршрути авторизації та тестів
 app.use("/auth", authRoutes);
 app.use("/tests", testRoutes); 
+app.use("/analytics", analyticsRoutes);
 
 // Запускаємо сервер
 app.listen(PORT, () => {

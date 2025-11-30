@@ -1,4 +1,4 @@
-import { isPathIntersecting, rightHand, isOnRoundabout, hasBlockingCar, addDependency } from "./validUtils";
+import { isPathIntersecting, isOnRoundabout, hasBlockingCar, addDependency } from "./validUtils";
 
 // Генеруємо всі можливі правильні послідовності проїзду машин використовуючи топологічне сортування
 export const generateTopologicalValidOrders = (
@@ -126,27 +126,7 @@ export const generateTopologicalValidOrders = (
           }
           continue;
         }        
-
-      } else {
-        // Лівий поворот чекає на прямо або праворуч
-        if (
-          dirA === "left_turn" &&
-          (dirB === "straight" || dirB === "right_turn") &&
-          intersecting &&
-          prioA === prioB
-        ) {
-          addDependency(graph, inBlocked, keyB, keyA);
-        }
-
-        // Правило правої руки 
-        if (
-          prioA === prioB &&
-          rightHand[keyA]?.includes(keyB) &&
-          intersecting
-        ) {
-          addDependency(graph, inBlocked, keyB, keyA);
-        }
-      }
+      } 
     }
   }
 

@@ -33,5 +33,5 @@ export const apiUrl = {
   testResult: "/tests/result",
   testResultUser: "/tests/results/user",
   testsWithStats: "/tests/with_stats",
-  // drivingStatus: "/auth/driving_status",
+  testAnalytics: "/analytics/test",
 };

@@ -1,11 +1,10 @@
-import { isPathIntersecting, rightHand, isOnRoundabout, hasBlockingCar } from "./validUtils";
+import { isPathIntersecting, rightHand } from "./validUtils";
 
 // Генеруємо всі можливі правильні послідовності проїзду машин DFS
 export const generateValidOrders = (
   allCars,
   carPaths,
-  carPriorities,
-  { isRoundabout = false, roundaboutPositions = [] } = {}
+  carPriorities
 ) => {
   const start = performance.now();
   const results = [];
@@ -25,12 +24,12 @@ export const generateValidOrders = (
       // Машина з пріоритетом 1 (наприклад, поліція) завжди може їхати
       if (car.cars_priority === 1) return true;
 
-      const key = `${car.position[0]}-${car.position[1]}`; 
-      const priority = carPriorities[key]; 
-      const currentCarPath = carPaths[key]; 
+      const key = `${car.position[0]}-${car.position[1]}`;
+      const priority = carPriorities[key];
+      const currentCarPath = carPaths[key];
       const currentCarDirection = car.path_type;
-         
-      let rightBlocker = false; 
+
+      let rightBlocker = false;
 
       // Перевіряємо всі інші машини, які ще не проїхали
       for (const otherCar of remainingCars) {
@@ -43,89 +42,26 @@ export const generateValidOrders = (
         const intersecting = isPathIntersecting(currentCarPath, otherPath);
         if (!intersecting) continue; // Якщо шляхи не перетинаються — не блокує
 
-        // Спеціальні правила для кругового перехрестя
-        if (isRoundabout) { 
-          const isCurrentOn = isOnRoundabout(car.position, roundaboutPositions);
-          const isOtherOn = isOnRoundabout(otherCar.position, roundaboutPositions);
-          const isRightCurrent = currentCarDirection === "right_turn";
-          const isRightOther = otherCarDirection === "right_turn";
+        // Лівий поворот чекає на прямо або праворуч
+        if (
+          currentCarDirection === "left_turn" &&
+          (otherCarDirection === "straight" ||
+            otherCarDirection === "right_turn") &&
+          intersecting &&
+          otherPriority === priority
+        ) {
+          rightBlocker = true;
+          break;
+        }
 
-          // Машина, яка вже на колі, блокує ту, що тільки заїжджає
-          if (isOtherOn && !isCurrentOn && intersecting) {
-            rightBlocker = true;
-            break;
-          }
-
-          if (isCurrentOn && isOtherOn) {
-            // Машина з правим поворотом має перевагу
-            if (isRightOther && !isRightCurrent) {
-              rightBlocker = true;
-              break;
-            }
-
-            // Перевіряємо блокування шляху іншими машинами
-            const currentBlocked = hasBlockingCar(currentCarPath, key, allCars, roundaboutPositions);
-            const otherBlocked = hasBlockingCar(otherPath, otherKey, allCars, roundaboutPositions);
-
-            // Якщо машина з правим поворотом не заблокована, вона може їхати
-            if (isRightCurrent && !currentBlocked) continue;
-            if (isRightOther && !otherBlocked) {
-              rightBlocker = true;
-              break;
-            }
-
-            // Якщо поточна машина заблокована, а інша ні
-            if (currentBlocked && !otherBlocked) {
-              rightBlocker = true;
-              break;
-            }
-
-            // Якщо обидві заблоковані - перевіряємо взаємне блокування
-            if (currentBlocked && otherBlocked) {
-              const currentKey = `${car.position[0]}-${car.position[1]}`;
-              const otherKey = `${otherCar.position[0]}-${otherCar.position[1]}`;
-
-              const otherBlocksCurrent = otherPath.some(
-                ([r, c]) => r === car.position[0] && c === car.position[1]
-              );
-              const currentBlocksOther = currentCarPath.some(
-                ([r, c]) => r === otherCar.position[0] && c === otherCar.position[1]
-              );
-
-              if (otherBlocksCurrent && currentBlocksOther) {
-                console.warn(`Взаємне блокування між ${currentKey} і ${otherKey}`);
-                rightBlocker = true;
-                break;
-              }
-
-              if (otherBlocksCurrent) {
-                rightBlocker = true;
-                break;
-              }
-            }
-          }
-        } else {
-          // Лівий поворот чекає на прямо або праворуч
-          if (
-            currentCarDirection === "left_turn" &&
-            (otherCarDirection === "straight" ||
-              otherCarDirection === "right_turn") &&
-            intersecting &&
-            otherPriority === priority
-          ) {
-            rightBlocker = true;
-            break;
-          }
-
-          // Правило правої руки
-          if (
-            otherPriority === priority &&
-            rightHand[key]?.includes(otherKey) &&
-            intersecting
-          ) {
-            rightBlocker = true;
-            break;
-          }
+        // Правило правої руки
+        if (
+          otherPriority === priority &&
+          rightHand[key]?.includes(otherKey) &&
+          intersecting
+        ) {
+          rightBlocker = true;
+          break;
         }
       }
 
@@ -140,11 +76,8 @@ export const generateValidOrders = (
 
         // Якщо інша машина має вищий пріоритет і є перетин — блокує
         if (otherPriority > priority) {
-          if (
-            isRoundabout &&
-            !isPathIntersecting(carPaths[key], carPaths[otherKey])
-          ) {
-            return false; // Якщо не перетинаються на колі — не блокує
+          if (!isPathIntersecting(carPaths[key], carPaths[otherKey])) {
+            return false; 
           }
           return true; 
         }

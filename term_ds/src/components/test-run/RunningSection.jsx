@@ -113,21 +113,23 @@ export default function RunningSection({
   const validOrders = useMemo(() => {
     const isRoundabout = questionData.id === "round_cross";
     const roundaboutPositions = carsToPlace
-    .filter((car) => car.isOnRoundabout)
-    .map((car) => car.position);
+      .filter((car) => car.isOnRoundabout)
+      .map((car) => car.position);
 
-    // return generateValidOrders(
-    // carsToPlace,
-    // carPaths,
-    // carPriorities,
-    // { isRoundabout, roundaboutPositions }
-    // );
-    return generateTopologicalValidOrders(
-      carsToPlace,
-      carPaths,
-      carPriorities,
-      { isRoundabout, roundaboutPositions }
-    );
+    if (isRoundabout) {
+      return generateTopologicalValidOrders(
+        carsToPlace,
+        carPaths,
+        carPriorities,
+        { isRoundabout, roundaboutPositions }
+      );
+    }
+
+    return generateValidOrders(
+      carsToPlace, 
+      carPaths, 
+      carPriorities);
+      
   }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
   // Обробляємо натискання на машинку

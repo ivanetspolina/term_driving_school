@@ -8,7 +8,7 @@ export default function Layout() {
         <Outlet />
         {/* Контейнер для показу toast-повідомлень */}
         <ToastContainer
-        position="top-right"
+        position="top-right"        
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop
@@ -16,6 +16,7 @@ export default function Layout() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        style={{ marginTop: "70px" }}
       />
     </>
   )
