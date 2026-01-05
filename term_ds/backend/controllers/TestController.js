@@ -114,6 +114,7 @@ exports.saveTestResult = async (req, res) => {
 
     const result = await TestResult.create({
       user,
+      // user: user.id,
       score,
       scoreIncorrect,
       time,
