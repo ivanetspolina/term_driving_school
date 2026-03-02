@@ -1,5 +1,6 @@
 const Test = require('../models/Test');
 const TestResult = require('../models/TestResult');
+const TestQuestion = require('../models/TestQuestion');
 const jwt = require('jsonwebtoken');
 
 // Отримуємо всі тести разом зі статистикою
@@ -99,6 +100,23 @@ exports.getTestById = async (req, res) => {
       return res.status(404).json({ error: "Тест не знайдено" });
     }
 
+     // Якщо тест згенерований, завантажуємо питання з окремої колекції
+    if (test.isGenerated) {
+      const questions = await TestQuestion.find({ test: id })
+        .sort({ questionIndex: 1 })
+        .select('questionData questionIndex');
+      
+      // Формуємо масив питань у форматі, який очікує frontend
+      const generatedQuestions = questions.map(q => q.questionData);
+      
+      return res.json({ 
+        test: {
+          ...test.toObject(),
+          generatedQuestions
+        }
+      });
+    }
+
     res.json({ test });
   } catch (err) {
     console.error("Помилка отримання тесту за ідентифікатором:", err);
@@ -148,3 +166,114 @@ exports.getUserResults = async function(req, res) {
   }
 };
 
+
+// Генеруємо новий тест з динамічними питаннями
+exports.generateTest = async (req, res) => {
+  try {
+    const QuestionGenerator = require('../utils/QuestionGenerator');
+    const generator = new QuestionGenerator();
+    
+    // Отримуємо параметри з запиту (за замовчуванням)
+    const { topicType = 'signs', questionCount = 5 } = req.body;
+    
+    // Валідація topicType
+    const validTopicTypes = ['lights', 'signs'];
+    const finalTopicType = validTopicTypes.includes(topicType) ? topicType : 'signs';
+    
+    // Валідація кількості питань (мінімум 1, максимум 20)
+    const finalQuestionCount = Math.max(1, Math.min(20, parseInt(questionCount) || 5));
+    
+    // Генеруємо унікальний тип для тесту
+    const timestamp = Date.now();
+    const randomSuffix = Math.random().toString(36).substring(2, 8);
+    const testType = `generated_${timestamp}_${randomSuffix}`;
+    
+    // Генеруємо питання використовуючи клас
+    const generatedQuestions = generator.generateQuestions(finalQuestionCount, finalTopicType);
+    
+    // Формуємо назву тесту
+    const topicName = finalTopicType === 'lights' ? 'Світлофори' : 'Дорожні знаки';
+    const testName = `Згенерований тест: ${topicName} (${new Date().toLocaleDateString('uk-UA')})`;
+
+    // Створюємо новий тест
+    const test = await Test.create({
+      name: testName,
+      type: testType,
+      isGenerated: true
+    });
+
+    // Зберігаємо питання в окрему колекцію
+    const questionsToSave = generatedQuestions.map((question, index) => ({
+      test: test._id,
+      questionIndex: index,
+      questionData: question
+    }));
+
+    await TestQuestion.insertMany(questionsToSave);
+
+    res.status(201).json({ 
+      message: 'Тест успішно згенеровано',
+      test,
+      stats: {
+        questionCount: generatedQuestions.length,
+        topicType: finalTopicType
+      }
+    });
+  } catch (err) {
+    console.error('Помилка генерації тесту:', err);
+    res.status(500).json({ error: 'Помилка при генерації тесту' });
+  }
+};
+
+// Отримуємо всі згенеровані тести
+exports.getGeneratedTests = async (req, res) => {
+  try {
+    const tests = await Test.find({ isGenerated: true });
+
+    // Отримуємо статистику для згенерованих тестів
+    const authHeader = req.headers.authorization;
+    let userId = null;
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+        console.warn("JWT невірний або прострочений:", err.message);
+      }
+    }
+
+    const results = userId
+      ? await TestResult.find({ user: userId })
+      : [];
+
+    const resultMap = {};
+
+    results.forEach((r) => {
+      const topicId = r.topic?.toString();
+      if (!topicId) return;
+
+      if (!resultMap[topicId]) {
+        resultMap[topicId] = { success: 0, error: 0 };
+      }
+
+      if (r.score >= 18) {
+        resultMap[topicId].success++;
+      } else {
+        resultMap[topicId].error++;
+      }
+    });
+
+    // Приєднуємо статистику до кожного тесту
+    const testsWithStats = tests.map((test) => {
+      const stats = resultMap[test._id.toString()] || { success: 0, error: 0 };
+      return { ...test.toObject(), ...stats };
+    });
+
+    res.json(testsWithStats);
+  } catch (err) {
+    console.error("Помилка при отриманні згенерованих тестів:", err);
+    res.status(500).json({ error: "Помилка сервера при отриманні згенерованих тестів" });
+  }
+};

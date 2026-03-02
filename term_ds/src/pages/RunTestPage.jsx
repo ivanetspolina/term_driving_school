@@ -103,18 +103,42 @@ export default function RunTest() {
 
   useEffect(() => {
     async function getQuestion() {
-      const question = await apiRequest(
-        `/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`,
-        "GET",
-        false,
-        false
-      );
-      setQuestionData(question);
+      // Якщо тест згенерований, використовуємо згенеровані питання
+      if (testData?.isGenerated && testData?.generatedQuestions) {
+        const question = testData.generatedQuestions[currentQuestionIndex];
+        if (question) {
+          setQuestionData(question);
+        }
+      } else {
+        // Інакше завантажуємо з JSON файлів
+        const question = await apiRequest(
+          `/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`,
+          "GET",
+          false,
+          false
+        );
+        setQuestionData(question);
+      }
     }
     if (testData) {
       getQuestion();
     }
   }, [currentQuestionIndex, testData]);
+
+  // useEffect(() => {
+  //   async function getQuestion() {
+  //     const question = await apiRequest(
+  //       `/questions/${testData?.type}/q${currentQuestionIndex + 1}.json`,
+  //       "GET",
+  //       false,
+  //       false
+  //     );
+  //     setQuestionData(question);
+  //   }
+  //   if (testData) {
+  //     getQuestion();
+  //   }
+  // }, [currentQuestionIndex, testData]);
 
   if (isLoading) {
     return null;

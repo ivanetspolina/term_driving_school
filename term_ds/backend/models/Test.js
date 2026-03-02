@@ -10,7 +10,11 @@ const testSchema = new mongoose.Schema({
     type: String,
     required: true, 
     unique: true,
-  }  
+  },
+  isGenerated: {
+    type: Boolean,
+    default: false,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Test', testSchema);

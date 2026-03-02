@@ -6,6 +6,7 @@ import Profile from "./pages/ProfilePage.jsx";
 import Statistics from "./pages/StatisticsPage.jsx";
 import Registration from "./pages/RegistrationPage.jsx";
 import Authorization from "./pages/AuthorizationPage.jsx";
+import GeneratedTests from "./pages/GeneratedTestsPage.jsx";
 import RunTest from "./pages/RunTestPage.jsx";
 import Result from "./pages/ResultPage.jsx";
 import Activate from "./pages/ActivatePage.jsx";
@@ -21,6 +22,7 @@ function App() {
             <Route index element={<Index />} />
             <Route path="theme" element={<Theme />} />
             <Route path="tests" element={<Test />} />
+            <Route path="tests/generated" element={<GeneratedTests />} />
             <Route path="profile" element={<Profile />} />
             <Route path="statistics" element={<Statistics />} />
             <Route path="auth" element={<Authorization />} />

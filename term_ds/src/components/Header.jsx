@@ -38,6 +38,12 @@ export default function Header() {
         >
           Тести
         </NavLink>
+        <NavLink
+          to="/tests/generated"
+          className="header-nav-link font-[manrope] text-xl font-medium"
+        >
+          Згенеровані тести
+        </NavLink>
       </nav>
 
       {isAuthenticated ? (

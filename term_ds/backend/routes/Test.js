@@ -8,5 +8,8 @@ router.get('/:id', TestController.getTestById);
 router.post('/result', TestController.saveTestResult);
 router.get('/results/user', TestController.getUserResults);
 
+router.get('/generated', TestController.getGeneratedTests);
+router.post('/generate', TestController.generateTest);
+
 module.exports = router;
 
