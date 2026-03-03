@@ -10,7 +10,7 @@ export default function ProgressBar({ success = 0, error = 0 }) {
       className="relative w-[200px] h-5 rounded-full bg-gray-200
                     overflow-hidden shadow-sm text-[12px]
                     font-semibold text-white"
-      title="Співвідношення успішних і неуспішних тестів у відсотках"
+      title="Співвідношення успішних і неуспішних пройдених тестів у відсотках"
     >
       <div
         className="absolute top-0 left-0 h-full bg-green-400"

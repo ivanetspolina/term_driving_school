@@ -216,14 +216,14 @@ exports.generateTest = async (req, res) => {
     }
     
     // Отримуємо параметри з запиту (за замовчуванням)
-    const { topicType = 'signs', questionCount = 20 } = req.body;
+    const { topicType, questionCount, roadType } = req.body;    
     
     // Валідація topicType
-    const validTopicTypes = ['lights', 'signs'];
+    const validTopicTypes = ['lights', 'signs', 'both'];
     const finalTopicType = validTopicTypes.includes(topicType) ? topicType : 'signs';
     
     // Валідація кількості питань (мінімум 1, максимум 20)
-    const finalQuestionCount = Math.max(1, Math.min(20, parseInt(questionCount) || 5));
+    const finalQuestionCount = 20;
     
     // Генеруємо унікальний тип для тесту
     const timestamp = Date.now();
@@ -234,8 +234,19 @@ exports.generateTest = async (req, res) => {
     const generatedQuestions = generator.generateQuestions(finalQuestionCount, finalTopicType);
     
     // Формуємо назву тесту
-    const topicName = finalTopicType === 'lights' ? 'світлофори' : 'дорожні знаки';
-    const intersectionName = 'Звичайне перехрестя';
+    let topicName = 'дорожні знаки';
+    if (finalTopicType === 'lights') {
+      topicName = 'світлофори';
+    } 
+    else if (finalTopicType === 'both') {
+      topicName = 'світлофори та дорожні знаки';
+    }
+    let intersectionName = 'Звичайне перехрестя';
+    if (roadType === 't_cross') {
+      intersectionName = 'Т-подібне перехрестя';
+    } else if (roadType === 'round') {
+      intersectionName = 'Кругове перехрестя';
+    }
     const testName = `${intersectionName}: ${topicName} (${new Date().toLocaleDateString(
       'uk-UA'
     )})`;

@@ -35,3 +35,23 @@ export const addDependency = (graph, inBlocked, from, to, reason = "") => {
       if (reason) console.log(`${from} → ${to} (${reason})`);
     }
   };
+
+export const directionByKey = {
+  "0-3": "north",
+  "3-7": "east",
+  "7-4": "south",
+  "4-0": "west",
+};
+
+export const areOncoming = (keyA, keyB) => {
+  const a = directionByKey[keyA];
+  const b = directionByKey[keyB];
+  if (!a || !b) return false;
+
+  return (
+    (a === "north" && b === "south") ||
+    (a === "south" && b === "north") ||
+    (a === "east" && b === "west") ||
+    (a === "west" && b === "east")
+  );
+};

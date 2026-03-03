@@ -1,4 +1,4 @@
-import { isPathIntersecting, rightHand } from "./validUtils";
+import { isPathIntersecting, rightHand, areOncoming } from "./validUtils";
 
 // Генеруємо всі можливі правильні послідовності проїзду машин DFS
 export const generateValidOrders = (
@@ -47,6 +47,7 @@ export const generateValidOrders = (
           currentCarDirection === "left_turn" &&
           (otherCarDirection === "straight" ||
             otherCarDirection === "right_turn") &&
+          areOncoming(key, otherKey) &&
           intersecting &&
           otherPriority === priority
         ) {
@@ -58,11 +59,7 @@ export const generateValidOrders = (
         if (
           otherPriority === priority &&
           rightHand[key]?.includes(otherKey) &&
-          intersecting &&
-          !(
-            currentCarDirection === "straight" &&
-            otherCarDirection === "left_turn"
-          )
+          intersecting 
         ) {
           rightBlocker = true;
           break;

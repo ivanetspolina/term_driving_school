@@ -21,9 +21,14 @@ class QuestionGenerator {
    * @returns {Array} Масив об'єктів {direction, sign_id}
    */
   generateSigns(topicType) {
-    const availableSigns = topicType === 'lights' 
-      ? this.TRAFFIC_LIGHTS 
-      : this.REGULATORY_SIGNS;
+    let availableSigns;
+    if (topicType === 'lights') {
+      availableSigns = this.TRAFFIC_LIGHTS;
+    } else if (topicType === 'both') {
+      availableSigns = this.ALL_SIGNS;
+    } else {
+      availableSigns = this.REGULATORY_SIGNS;
+    }
     
     const signPositions = [];
     const usedSigns = {};
@@ -134,11 +139,61 @@ class QuestionGenerator {
    * @param {string} topicType - 'lights' або 'signs'
    * @returns {Object} Об'єкт питання
    */
-  generateQuestion(topicType = 'signs') {
+generateQuestion(topicType = 'signs') {
+    const sign_positions = this.generateSigns(topicType);
+    let carsToPlace = this.generateCars();
+
+    if (topicType === 'lights' || topicType === 'both') {
+      const greenDirections = sign_positions
+        .filter((s) => s.sign_id === 'traffic_light_green')
+        .map((s) => s.direction);
+
+      if (greenDirections.length === 3) {
+        const directionOrder = ['west', 'north', 'east', 'south'];
+        const directionToStartIndex = {
+          west: 0,
+          north: 1,
+          east: 2,
+          south: 3,
+        };
+
+        const greenIndices = greenDirections
+          .map((dir) => directionOrder.indexOf(dir))
+          .filter((idx) => idx !== -1);
+
+        if (greenIndices.length === 3) {
+          const allIndices = [0, 1, 2, 3];
+          const missingIndex = allIndices.find(
+            (idx) => !greenIndices.includes(idx)
+          );
+
+          if (typeof missingIndex === 'number') {
+            const centerIndex = (missingIndex + 2) % 4;
+            const middleDir = directionOrder[centerIndex];
+            const targetStartIndex = directionToStartIndex[middleDir];
+
+            if (typeof targetStartIndex === 'number') {
+              let updated = false;
+              carsToPlace = carsToPlace.map((car) => {
+                if (!updated && car.start_cars_points === targetStartIndex) {
+                  updated = true;
+                  return {
+                    ...car,
+                    path_type: 'right_turn',
+                  };
+                }
+                return car;
+              });
+            }
+          }
+        }
+      }
+    }
+
     return {
       id: this.INTERSECTION_ID,
-      sign_positions: this.generateSigns(topicType),
-      carsToPlace: this.generateCars()
+      sign_positions,
+      carsToPlace,
     };
   }
 
@@ -150,7 +205,30 @@ class QuestionGenerator {
    */
   generateQuestions(count = 20, topicType = 'signs') {
     const questions = [];
-    
+
+    // Якщо обрано комбінований режим, генеруємо приблизно 50/50:
+    // половина питань тільки зі світлофорами, половина — тільки з дорожніми знаками.
+    if (topicType === 'both') {
+      const lightsCount = Math.floor(count / 2);
+      const signsCount = count - lightsCount;
+
+      for (let i = 0; i < lightsCount; i++) {
+        questions.push(this.generateQuestion('lights'));
+      }
+      for (let i = 0; i < signsCount; i++) {
+        questions.push(this.generateQuestion('signs'));
+      }
+
+      // Перемішуємо, щоб питання йшли у випадковому порядку
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+
+      return questions;
+    }
+
+    // Звичайний режим: всі питання одного типу    
     for (let i = 0; i < count; i++) {
       questions.push(this.generateQuestion(topicType));
     }

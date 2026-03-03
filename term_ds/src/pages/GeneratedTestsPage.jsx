@@ -14,6 +14,10 @@ export default function GeneratedTests() {
   const [generatedTests, setGeneratedTests] = useState([]);
   const [isLoadingTests, setIsLoadingTests] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roadType, setRoadType] = useState("regular");
+  const [signsType, setSignsType] = useState("lights");
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       setAlert("Авторизуйтесь!", "error");
@@ -21,33 +25,6 @@ export default function GeneratedTests() {
     }
   }, [isLoading, isAuthenticated]);
 
-  // useEffect(() => {
-  //   const fetchGeneratedTests = async () => {
-  //     setIsLoadingTests(true);
-  //     try {
-  //       console.log("Запит на отримання згенерованих тестів...");
-  //       const result = await apiRequest(apiUrl.generatedTests, "GET", null);
-  //       console.log("Отримано відповідь:", result);
-        
-  //       if (Array.isArray(result)) {
-  //         console.log(`Знайдено ${result.length} згенерованих тестів`);
-  //         setGeneratedTests(result);
-  //       } else {
-  //         console.error("Помилка при завантаженні згенерованих тестів:", result?.error || result);
-  //         setAlert("Не вдалося завантажити згенеровані тести", "error");
-  //       }
-  //     } catch (error) {
-  //       console.error("Помилка при завантаженні згенерованих тестів:", error);
-  //       setAlert(`Помилка при завантаженні згенерованих тестів: ${error.message}`, "error");
-  //     } finally {
-  //       setIsLoadingTests(false);
-  //     }
-  //   };
-
-  //   if (isAuthenticated) {
-  //     fetchGeneratedTests();
-  //   }
-  // }, [isAuthenticated]);
   useEffect(() => {
     const fetchGeneratedTests = async () => {
       setIsLoadingTests(true);
@@ -79,17 +56,16 @@ export default function GeneratedTests() {
   const handleGenerateNewTest = async () => {
     setIsLoadingTests(true);
     try {
-      const result = await apiRequest(`${apiUrl.tests}/generate`, "POST", null);
+      const result = await apiRequest(`${apiUrl.tests}/generate`, "POST", {
+        roadType,
+        topicType: signsType,
+      });
       if (result && result.test) {
         setAlert("Новий тест успішно згенеровано!", "success");
         setGeneratedTests((prev) => [
           { ...result.test, success: 0, error: 0 },
           ...prev,
         ]);
-        // const updatedTests = await apiRequest(apiUrl.generatedTests, "GET", null);
-        // if (Array.isArray(updatedTests)) {
-        //   setGeneratedTests(updatedTests);
-        // }
       } else {
         setAlert(result?.error || "Не вдалося згенерувати тест", "error");
       }
@@ -98,6 +74,7 @@ export default function GeneratedTests() {
       setAlert("Помилка при генерації тесту", "error");
     } finally {
       setIsLoadingTests(false);
+      setIsModalOpen(false);
     }
   };
 
@@ -129,11 +106,11 @@ export default function GeneratedTests() {
           <div className="flex justify-between items-center mb-4">
             <h1>Згенеровані тести</h1>
             <button
-              onClick={handleGenerateNewTest}
+              onClick={() => setIsModalOpen(true)}
               disabled={isLoadingTests}
               className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-[manrope] text-lg font-medium"
             >
-              {isLoadingTests ? "Генерація..." : "Згенерувати новий тест"}
+              Згенерувати новий тест
             </button>
           </div>
           <p className="text-gray-600 text-lg mt-2">
@@ -149,7 +126,7 @@ export default function GeneratedTests() {
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg mb-4">Поки що немає згенерованих тестів</p>
             <button
-              onClick={handleGenerateNewTest}
+              onClick={() => setIsModalOpen(true)}
               disabled={isLoadingTests}
               className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-[manrope] text-lg font-medium"
             >
@@ -187,6 +164,68 @@ export default function GeneratedTests() {
             })}
           </ul>
         )}
+
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+              <h2 className="text-xl font-semibold mb-4 font-[manrope]">
+                Налаштування генерації тесту
+              </h2>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Тип перехрестя
+                  </label>
+                  <select
+                    value={roadType}
+                    onChange={(e) => setRoadType(e.target.value)}
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="regular">Звичайне перехрестя</option>
+                    <option value="t_cross">Т-подібне перехрестя</option>
+                    <option value="round">Кругове перехрестя</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Тип знаків
+                  </label>
+                  <select
+                    value={signsType}
+                    onChange={(e) => setSignsType(e.target.value)}
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="lights">Лише світлофори</option>
+                    <option value="signs">Лише дорожні знаки</option>
+                    <option value="both">Світлофори та дорожні знаки</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+                  onClick={() => setIsModalOpen(false)}
+                  disabled={isLoadingTests}
+                >
+                  Скасувати
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGenerateNewTest}
+                  disabled={isLoadingTests}
+                  className="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isLoadingTests ? "Генерація..." : "Згенерувати"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </main>
     </>
   );
