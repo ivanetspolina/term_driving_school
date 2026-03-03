@@ -24,7 +24,14 @@ export default function Test() {
     const fetchTests = async () => {
       const result = await apiRequest(apiUrl.tests, "GET", null);
       if (Array.isArray(result)) {
-        setTests(result);
+        const filtered = result.filter((test) => {
+          const isGeneratedFlag = test.isGenerated === true;
+          const typeStr = String(test.type || "");
+          const isGeneratedByType = typeStr.startsWith("generated_");
+          return !isGeneratedFlag && !isGeneratedByType;
+        });
+        setTests(filtered);
+        // setTests(result);
       } else {
         console.error("Помилка при завантаженні тестів:", result?.error || result);
       }

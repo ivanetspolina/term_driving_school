@@ -107,7 +107,7 @@ exports.getTestById = async (req, res) => {
         .select('questionData questionIndex');
       
       // Формуємо масив питань у форматі, який очікує frontend
-      const generatedQuestions = questions.map(q => q.questionData);
+      const generatedQuestions = questions.map(q => q.questionData);    
       
       return res.json({ 
         test: {
@@ -174,7 +174,7 @@ exports.generateTest = async (req, res) => {
     const generator = new QuestionGenerator();
     
     // Отримуємо параметри з запиту (за замовчуванням)
-    const { topicType = 'signs', questionCount = 5 } = req.body;
+    const { topicType = 'signs', questionCount = 20 } = req.body;
     
     // Валідація topicType
     const validTopicTypes = ['lights', 'signs'];
@@ -275,5 +275,32 @@ exports.getGeneratedTests = async (req, res) => {
   } catch (err) {
     console.error("Помилка при отриманні згенерованих тестів:", err);
     res.status(500).json({ error: "Помилка сервера при отриманні згенерованих тестів" });
+  }
+};
+
+// Видаляємо тест (разом із згенерованими питаннями та результатами)
+exports.deleteTest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const test = await Test.findById(id);
+    if (!test) {
+      return res.status(404).json({ error: "Тест не знайдено" });
+    }
+
+    // Видаляємо всі результати, пов'язані з цим тестом
+    await TestResult.deleteMany({ topic: id });
+
+    // Якщо тест згенерований — видаляємо також усі його питання
+    if (test.isGenerated) {
+      await TestQuestion.deleteMany({ test: id });
+    }
+
+    await test.deleteOne();
+
+    return res.status(200).json({ message: "Тест успішно видалено" });
+  } catch (err) {
+    console.error("Помилка при видаленні тесту:", err);
+    res.status(500).json({ error: "Помилка при видаленні тесту" });
   }
 };

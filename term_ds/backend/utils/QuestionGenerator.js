@@ -101,9 +101,10 @@ class QuestionGenerator {
     const numCars = Math.floor(Math.random() * (this.MAX_CARS - this.MIN_CARS + 1)) + this.MIN_CARS;
     const cars = [];
     const usedStartPoints = new Set();
+    const hasPolice = Math.random() < 0.3;
     
     // Завжди додаємо поліцейську машину (якщо є місце)
-    if (numCars > 0) {
+    if (hasPolice && numCars > 0) {
       const policePoint = this.START_POINTS[Math.floor(Math.random() * this.START_POINTS.length)];
       usedStartPoints.add(policePoint);
       cars.push({
@@ -160,7 +161,7 @@ class QuestionGenerator {
    * @param {string} topicType - 'lights' або 'signs'
    * @returns {Array} Масив питань
    */
-  generateQuestions(count = 5, topicType = 'signs') {
+  generateQuestions(count = 20, topicType = 'signs') {
     const questions = [];
     
     for (let i = 0; i < count; i++) {
