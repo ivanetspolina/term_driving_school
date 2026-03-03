@@ -58,7 +58,11 @@ export const generateValidOrders = (
         if (
           otherPriority === priority &&
           rightHand[key]?.includes(otherKey) &&
-          intersecting
+          intersecting &&
+          !(
+            currentCarDirection === "straight" &&
+            otherCarDirection === "left_turn"
+          )
         ) {
           rightBlocker = true;
           break;
@@ -100,7 +104,7 @@ export const generateValidOrders = (
   // Запуск рекурсії з порожнім порядком
   dfs([], allCars);
 
-  console.log("DFS виконано. Побудовано порядки:", results);
+  // console.log("DFS виконано. Побудовано порядки:", results);
 
   const end = performance.now(); 
   console.log(`Час побудови порядків DFS: ${(end - start).toFixed(2)} мс`);

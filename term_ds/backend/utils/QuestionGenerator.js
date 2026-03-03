@@ -4,26 +4,13 @@
  */
 class QuestionGenerator {
   constructor() {
-    // Константи для звичайного перехрестя
     this.INTERSECTION_ID = 'regular_cross';
     this.DIRECTIONS = ['north', 'east', 'south', 'west'];
-    
-    // Дорожні знаки
     this.REGULATORY_SIGNS = ['stop', 'give_way', 'main_road'];
-    
-    // Світлофори
     this.TRAFFIC_LIGHTS = ['traffic_light_red', 'traffic_light_green'];
-    
-    // Всі знаки
     this.ALL_SIGNS = [...this.REGULATORY_SIGNS, ...this.TRAFFIC_LIGHTS];
-    
-    // Типи руху
     this.PATH_TYPES = ['straight', 'left_turn', 'right_turn'];
-    
-    // Стартові точки (індекси)
     this.START_POINTS = [0, 1, 2, 3];
-    
-    // Ліміти
     this.MIN_CARS = 2;
     this.MAX_CARS = 4;
   }

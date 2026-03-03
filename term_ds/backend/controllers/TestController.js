@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 // Отримуємо всі тести разом зі статистикою
 exports.getAllTests = async (req, res) => {
   try {
-    const tests = await Test.find();
+    // const tests = await Test.find();
+    const tests = await Test.find({ isGenerated: { $ne: true } });
 
     // пробуємо отримати токен
     const authHeader = req.headers.authorization;
@@ -100,6 +101,26 @@ exports.getTestById = async (req, res) => {
       return res.status(404).json({ error: "Тест не знайдено" });
     }
 
+     // Якщо тест згенерований і має власника – перевіряємо, що запит робить саме власник
+    if (test.isGenerated && test.owner) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(403).json({ error: "Немає доступу до цього тесту" });
+      }
+
+      try {
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (test.owner.toString() !== decoded.id) {
+          return res.status(403).json({ error: "Немає доступу до цього тесту" });
+        }
+      } catch (err) {
+        console.warn("JWT невірний або прострочений при отриманні тесту:", err.message);
+        return res.status(403).json({ error: "Немає доступу до цього тесту" });
+      }
+    }
+
      // Якщо тест згенерований, завантажуємо питання з окремої колекції
     if (test.isGenerated) {
       const questions = await TestQuestion.find({ test: id })
@@ -107,7 +128,12 @@ exports.getTestById = async (req, res) => {
         .select('questionData questionIndex');
       
       // Формуємо масив питань у форматі, який очікує frontend
-      const generatedQuestions = questions.map(q => q.questionData);    
+      // const generatedQuestions = questions.map(q => q.questionData);  
+      const generatedQuestions = questions.map((q) => ({
+        _id: q._id,
+        questionIndex: q.questionIndex,
+        ...q.questionData,
+      }));  
       
       return res.json({ 
         test: {
@@ -172,6 +198,22 @@ exports.generateTest = async (req, res) => {
   try {
     const QuestionGenerator = require('../utils/QuestionGenerator');
     const generator = new QuestionGenerator();
+
+    // Отримуємо користувача з JWT (тест генерується відносно користувача)
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Необхідна авторизація для генерації тесту' });
+    }
+
+    let userId;
+    try {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decoded.id;
+    } catch (err) {
+      console.warn('JWT невірний або прострочений при генерації тесту:', err.message);
+      return res.status(401).json({ error: 'Невірний або прострочений токен' });
+    }
     
     // Отримуємо параметри з запиту (за замовчуванням)
     const { topicType = 'signs', questionCount = 20 } = req.body;
@@ -192,14 +234,18 @@ exports.generateTest = async (req, res) => {
     const generatedQuestions = generator.generateQuestions(finalQuestionCount, finalTopicType);
     
     // Формуємо назву тесту
-    const topicName = finalTopicType === 'lights' ? 'Світлофори' : 'Дорожні знаки';
-    const testName = `Згенерований тест: ${topicName} (${new Date().toLocaleDateString('uk-UA')})`;
+    const topicName = finalTopicType === 'lights' ? 'світлофори' : 'дорожні знаки';
+    const intersectionName = 'Звичайне перехрестя';
+    const testName = `${intersectionName}: ${topicName} (${new Date().toLocaleDateString(
+      'uk-UA'
+    )})`;
 
     // Створюємо новий тест
     const test = await Test.create({
       name: testName,
       type: testType,
-      isGenerated: true
+      isGenerated: true,
+      owner: userId,
     });
 
     // Зберігаємо питання в окрему колекцію
@@ -228,9 +274,6 @@ exports.generateTest = async (req, res) => {
 // Отримуємо всі згенеровані тести
 exports.getGeneratedTests = async (req, res) => {
   try {
-    const tests = await Test.find({ isGenerated: true });
-
-    // Отримуємо статистику для згенерованих тестів
     const authHeader = req.headers.authorization;
     let userId = null;
 
@@ -244,9 +287,17 @@ exports.getGeneratedTests = async (req, res) => {
       }
     }
 
-    const results = userId
-      ? await TestResult.find({ user: userId })
-      : [];
+    if (!userId) {
+      return res.status(401).json({ error: "Необхідна авторизація для перегляду згенерованих тестів" });
+    }
+
+    // Отримуємо тільки ті згенеровані тести, які належать поточному користувачу
+    const tests = await Test.find({ isGenerated: true, owner: userId }).sort({ createdAt: -1 });
+
+    const results = await TestResult.find({ user: userId });
+    // const results = userId
+    //   ? await TestResult.find({ user: userId })
+    //   : [];
 
     const resultMap = {};
 
@@ -274,7 +325,10 @@ exports.getGeneratedTests = async (req, res) => {
     res.json(testsWithStats);
   } catch (err) {
     console.error("Помилка при отриманні згенерованих тестів:", err);
-    res.status(500).json({ error: "Помилка сервера при отриманні згенерованих тестів" });
+    res.status(500).json({ 
+      error: "Помилка сервера при отриманні згенерованих тестів", 
+      details: err.message || String(err)
+    });
   }
 };
 

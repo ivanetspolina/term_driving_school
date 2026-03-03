@@ -11,7 +11,7 @@ export const generateTopologicalValidOrders = (
   const results = [];
   const graph = {}; // Орієнтований граф залежностей: key → Set інших машин, які мають їхати після key
   const inBlocked = {}; // Кількість вхідних ребер для кожної машини (тобто скільки інших машин її блокують)
-  console.log("carPaths:", carPaths);
+  // console.log("carPaths:", carPaths);
 
   // Генеруємо унікальні ключі машин за позицією
   const keys = allCars.map((car) => `${car.position[0]}-${car.position[1]}`);
@@ -158,15 +158,15 @@ export const generateTopologicalValidOrders = (
     }
   };
 
-  console.log("Граф залежностей:");
-  for (const key in graph) {
-    console.log(`${key} → [${[...graph[key]].join(", ")}]`);
-  }
+  // console.log("Граф залежностей:");
+  // for (const key in graph) {
+  //   console.log(`${key} → [${[...graph[key]].join(", ")}]`);
+  // }
 
   // Запуск пошуку всіх допустимих топологічних порядків
   backtrack([], new Set(), inBlocked);
 
-  console.log("Топологічне сортування виконано. Побудовано порядки:", results);
+  // console.log("Топологічне сортування виконано. Побудовано порядки:", results);
 
   const end = performance.now();
   console.log(`Час побудови топологічного порядку: ${(end - start).toFixed(2)} мс`);

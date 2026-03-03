@@ -45,7 +45,16 @@ export default function RunTest() {
     setQuestionTimer(0);
     setQuestionTimes([]);
     setIsRunning(STATES.START);
-    navigate("/tests");
+    const isGeneratedTest =
+      testData?.isGenerated === true ||
+      (testData?.type && String(testData.type).startsWith("generated_"));
+
+    if (isGeneratedTest) {
+      navigate("/tests/generated");
+    } else {
+      navigate("/tests");
+    }
+    // navigate("/tests");
   };
 
   const handleNextQuestion = () => {
@@ -107,6 +116,7 @@ export default function RunTest() {
       if (testData?.isGenerated && testData?.generatedQuestions) {
         const question = testData.generatedQuestions[currentQuestionIndex];
         if (question) {
+          console.log("testquestion _id:", question._id);
           setQuestionData(question);
         }
       } else {

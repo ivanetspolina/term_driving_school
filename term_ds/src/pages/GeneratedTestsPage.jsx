@@ -52,20 +52,13 @@ export default function GeneratedTests() {
     const fetchGeneratedTests = async () => {
       setIsLoadingTests(true);
       try {
-        console.log("Запит на отримання всіх тестів...");
-        const result = await apiRequest(apiUrl.tests, "GET", null);
+        console.log("Запит на отримання згенерованих тестів поточного користувача...");
+        const result = await apiRequest(apiUrl.generatedTests, "GET", null);
         console.log("Отримано відповідь:", result);
         
         if (Array.isArray(result)) {
-          // На цій сторінці показуємо лише згенеровані тести
-          const generatedOnly = result.filter((test) => {
-            const isGeneratedFlag = test.isGenerated === true;
-            const typeStr = String(test.type || "");
-            const isGeneratedByType = typeStr.startsWith("generated_");
-            return isGeneratedFlag || isGeneratedByType;
-          });
-          console.log(`Знайдено ${generatedOnly.length} згенерованих тестів`);
-          setGeneratedTests(generatedOnly);
+          console.log(`Знайдено ${result.length} згенерованих тестів користувача`);
+          setGeneratedTests(result);
         } else {
           console.error("Помилка при завантаженні згенерованих тестів:", result?.error || result);
           setAlert("Не вдалося завантажити згенеровані тести", "error");
@@ -177,7 +170,9 @@ export default function GeneratedTests() {
                         </span>
                       )}
                     </NavLink>
-
+                    <div className="list-progress-bar">
+                      <ProgressBar success={test.success || 0} error={test.error || 0} />
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleDeleteTest(test._id)}
@@ -186,11 +181,7 @@ export default function GeneratedTests() {
                     >
                       <Trash2 size={18} />
                     </button>
-                  </div>
-
-                  <div className="list-progress-bar">
-                    <ProgressBar success={test.success || 0} error={test.error || 0} />
-                  </div>
+                  </div>                  
                 </li>
               );
             })}

@@ -47,7 +47,7 @@ export default function RunningSection({
 
   // Розміщуємо машинки на основі питання
   const carsToPlace = setCarsToPlace(questionData.carsToPlace, carsData);
-  console.log("carsToPlace: ", carsToPlace);
+  // console.log("carsToPlace: ", carsToPlace);
 
   // Підготовка знаків із напрямком
   const signDirMap = useMemo(
@@ -132,8 +132,43 @@ export default function RunningSection({
       
   }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     console.log("=== Дані для питання ===", {
+  //       questionIndex,
+  //       questionId: questionData.id,
+  //       carsToPlace,
+  //       carPriorities,
+  //       validOrders,
+  //     });
+  //   }, 200);
+
+  //   return () => clearTimeout(timer);
+  // }, [questionIndex, questionData, carsToPlace, carPriorities, validOrders]);
+   useEffect(() => {
+    if (!questionData) return;
+
+    const timer = setTimeout(() => {
+      console.log("=== Дані для питання ===", {
+        questionIndex,
+        questionId: questionData.id,
+        carsToPlace,
+        carPriorities,
+        validOrders,
+      });
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [questionIndex, questionData]);
+
   // Обробляємо натискання на машинку
   const handleCarClick = (row, col) => {
+    if (!validOrders || validOrders.length === 0) {
+      return toast.error(
+        "Неможливо побудувати правильний порядок проїзду для цього питання. Повідомте, будь ласка, про помилку."
+      );
+    }
+
     if (isCarMoving)
       return toast.info("Зачекайте, поки попередня машинка завершить рух");
 
@@ -233,7 +268,7 @@ export default function RunningSection({
     setFinishedCars(new Set());
   }, [questionIndex, questionData]);
 
-  console.log("carPriorities: ", carPriorities);
+  // console.log("carPriorities: ", carPriorities);
   // console.log("validOrders: ", validOrders);
   // console.log("carsToPlace: ", carsToPlace);
   // console.log("signList: ", signList);
