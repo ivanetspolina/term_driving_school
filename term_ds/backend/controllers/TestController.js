@@ -196,8 +196,7 @@ exports.getUserResults = async function(req, res) {
 // Генеруємо новий тест з динамічними питаннями
 exports.generateTest = async (req, res) => {
   try {
-    const QuestionGenerator = require('../utils/QuestionGenerator');
-    const generator = new QuestionGenerator();
+    const { createGenerator } = require('../utils/generators');
 
     // Отримуємо користувача з JWT (тест генерується відносно користувача)
     const authHeader = req.headers.authorization;
@@ -222,7 +221,7 @@ exports.generateTest = async (req, res) => {
     const validTopicTypes = ['lights', 'signs', 'both'];
     const finalTopicType = validTopicTypes.includes(topicType) ? topicType : 'signs';
     
-    // Валідація кількості питань (мінімум 1, максимум 20)
+    // Валідація кількості питань 20
     const finalQuestionCount = 20;
     
     // Генеруємо унікальний тип для тесту
@@ -231,6 +230,10 @@ exports.generateTest = async (req, res) => {
     const testType = `generated_${timestamp}_${randomSuffix}`;
     
     // Генеруємо питання використовуючи клас
+    // Створюємо генератор під конкретний тип дороги
+    const generator = createGenerator(roadType);
+
+    // Генеруємо питання використовуючи обраний генератор
     const generatedQuestions = generator.generateQuestions(finalQuestionCount, finalTopicType);
     
     // Формуємо назву тесту

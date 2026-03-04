@@ -1,0 +1,48 @@
+{
+  "id": "round_cross",
+  "sign_positions": [
+    {
+      "direction": "north",
+      "sign_id": "traffic_light_green"
+    },
+    {
+      "direction": "east",
+      "sign_id": "traffic_light_red"
+    },
+    {
+      "direction": "south",
+      "sign_id": "traffic_light_green"
+    },
+    {
+      "direction": "west",
+      "sign_id": "traffic_light_red"
+    }
+  ],
+  "carsToPlace": [
+    {
+      "car_id": "car1",
+      "start_round_cars_points": 0,
+      "path_type": "straight"
+    },
+    {
+      "car_id": "car2",
+      "start_cars_points": 3,
+      "path_type": "straight"
+    },
+    {
+      "car_id": "car3",
+      "start_round_cars_points": 2,
+      "path_type": "right_turn"
+    },
+    {
+      "car_id": "car2",
+      "start_cars_points": 2,
+      "path_type": "straight"
+    },
+    {
+      "car_id": "car1",
+      "start_cars_points": 1,
+      "path_type": "straight"
+    }
+  ]
+}

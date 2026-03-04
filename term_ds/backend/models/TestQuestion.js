@@ -20,7 +20,8 @@ const testQuestionSchema = new mongoose.Schema({
     }],
     carsToPlace: [{
       car_id: { type: String, required: true },
-      start_cars_points: { type: Number, required: true },
+      start_cars_points: { type: Number, required: false },
+      start_round_cars_points: { type: Number, required: false },
       path_type: { type: String, required: true }
     }]
   }

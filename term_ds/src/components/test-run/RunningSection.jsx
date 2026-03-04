@@ -10,7 +10,8 @@ import {
   getSignForCell,
   setCarsToPlace,
   specificCarPathsMap,
-  getSignDirectionsMap 
+  getSignDirectionsMap,
+  getFromDirection,
 } from "./utils/roadUtils";
 import { renderSign } from "./utils/renderSign";
 import { generateValidOrders } from "./utils/validOrders";
@@ -35,6 +36,8 @@ export default function RunningSection({
   const [userOrder, setUserOrder] = useState([]);
   const [hasMistake, setHasMistake] = useState(false);
   const [finishedCars, setFinishedCars] = useState(new Set());
+  const [dynamicSigns, setDynamicSigns] = useState(questionData.sign_positions || []);
+  const [lightsToggled, setLightsToggled] = useState(false);
 
   // Статичні дані
   const cars = carsData.cars;
@@ -49,14 +52,26 @@ export default function RunningSection({
   const carsToPlace = setCarsToPlace(questionData.carsToPlace, carsData);
   // console.log("carsToPlace: ", carsToPlace);
 
+  // Скидаємо динамічні знаки при зміні питання
+  useEffect(() => {
+    setDynamicSigns(questionData.sign_positions || []);
+    setLightsToggled(false);
+  }, [questionIndex, questionData]);
+
   // Підготовка знаків із напрямком
   const signDirMap = useMemo(
     () => getSignDirectionsMap(questionData.id),
     [questionData.id]
   );
 
-  const signList =
-    questionData.sign_positions?.map((item) => ({
+  const signList = questionData.sign_positions?.map((item) => ({
+      ...item,
+      ...signDirMap[item.direction],
+    })) || [];
+
+    
+  const visualSignList =
+    dynamicSigns?.map((item) => ({
       ...item,
       ...signDirMap[item.direction],
     })) || [];
@@ -98,6 +113,53 @@ export default function RunningSection({
     return map;
   }, [carsToPlace, grid, signList, blockedDirections]);
 
+  // Початкові світлофори за напрямком на момент початку питання
+  const initialLightsByDirection = useMemo(() => {
+    const map = {};
+    (questionData.sign_positions || []).forEach((s) => {
+      map[s.direction] = s.sign_id;
+    });
+    return map;
+  }, [questionData]);
+
+  // Набір машин, які на старті мали не червоний сигнал (green або інший не-red)
+  const initialNonRedCars = useMemo(() => {
+    const set = new Set();
+
+    carsToPlace.forEach((car) => {
+      const key = `${car.position[0]}-${car.position[1]}`;
+      if (questionData.id === "round_cross" && car.isOnRoundabout) {
+        set.add(key);
+        return;
+      }
+      
+      const fromDir = getFromDirection(car.position, grid);
+      if (!fromDir) return;
+
+      const signId = initialLightsByDirection[fromDir];
+      if (signId && signId !== "traffic_light_red") {
+        set.add(key);
+      }
+    });
+
+    return set;
+  }, [carsToPlace, grid, initialLightsByDirection, questionData.id]);
+
+  // Перемикаємо всі світлофори green ↔ red
+  const toggleLights = () => {
+    setDynamicSigns((prev) =>
+      prev.map((s) => {
+        if (s.sign_id === "traffic_light_green") {
+          return { ...s, sign_id: "traffic_light_red" };
+        }
+        if (s.sign_id === "traffic_light_red") {
+          return { ...s, sign_id: "traffic_light_green" };
+        }
+        return s;
+      })
+    );
+  };
+
   // Стилі для знаків
   const signStyles = useMemo(() => {
     const map = {};
@@ -132,24 +194,11 @@ export default function RunningSection({
       
   }, [carsToPlace, carPaths, carPriorities, questionData.id]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     console.log("=== Дані для питання ===", {
-  //       questionIndex,
-  //       questionId: questionData.id,
-  //       carsToPlace,
-  //       carPriorities,
-  //       validOrders,
-  //     });
-  //   }, 200);
-
-  //   return () => clearTimeout(timer);
-  // }, [questionIndex, questionData, carsToPlace, carPriorities, validOrders]);
    useEffect(() => {
     if (!questionData) return;
 
     const timer = setTimeout(() => {
-      console.log("=== Дані для питання ===", {
+      console.log("=== Дані питання ===", {
         questionIndex,
         questionId: questionData.id,
         carsToPlace,
@@ -225,7 +274,23 @@ export default function RunningSection({
       if (step >= path.length) {
         clearInterval(interval);
         setIsCarMoving(false);
-        setFinishedCars((prev) => new Set([...prev, key]));
+        setFinishedCars((prev) => {
+          const next = new Set([...prev, key]);
+
+          // Якщо необхідні машини вже проїхали, то перемикаємо світлофори 
+          if (initialNonRedCars.size > 0 && !lightsToggled) {
+            const allInitialNonRedDone = Array.from(initialNonRedCars).every(
+              (k) => next.has(k)
+            );
+
+            if (allInitialNonRedDone) {
+              toggleLights();
+              setLightsToggled(true);
+            }
+          }
+
+          return next;
+        });
       } else {
         const current = step === 0 ? clickedCar.position : path[step - 1];
         const {
@@ -334,7 +399,7 @@ export default function RunningSection({
               const cellSign = getSignForCell(
                 rowIndex,
                 colIndex,
-                signList,
+                visualSignList,
                 blockedDirections,
                 signStyles
               );
