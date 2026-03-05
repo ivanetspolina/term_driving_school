@@ -3,13 +3,11 @@ const TestResult = require("../models/TestResult");
 exports.getTestAnalytics = async (req, res) => {
   try {
     const data = await TestResult.aggregate([
-      // 1. додаємо середній час по питаннях
       {
         $addFields: {
           avgTimePerQuestion: { $avg: "$questionTimes" }
         }
       },
-      // 2. підтягуємо назву тесту
       {
         $lookup: {
           from: "tests",
@@ -19,7 +17,26 @@ exports.getTestAnalytics = async (req, res) => {
         }
       },
       { $unwind: "$testInfo" },
-      // 3. підтягуємо дані про користувача (щоб взяти drivingStatus)
+      // 3. нормалізуємо назву теми, щоб згенеровані тести
+      {
+        $addFields: {
+          topicBaseName: {
+            $let: {
+              vars: {
+                idx: { $indexOfBytes: ["$testInfo.name", " ("] }
+              },
+              in: {
+                $cond: [
+                  { $gte: ["$$idx", 0] },
+                  { $substrBytes: ["$testInfo.name", 0, "$$idx"] },
+                  "$testInfo.name"
+                ]
+              }
+            }
+          }
+        }
+      },
+      // 4. підтягуємо дані про користувача (щоб взяти drivingStatus)
       {
         $lookup: {
           from: "users",
@@ -29,14 +46,17 @@ exports.getTestAnalytics = async (req, res) => {
         }
       },
       { $unwind: "$userInfo" },
-      // 4. групуємо по темі та статусу користувача
+      // 5. групуємо по базовій назві теми та статусу користувача
       {
         $group: {
-          _id: { topicName: "$testInfo.name", status: "$userInfo.drivingStatus" },
+          _id: {
+            topicName: "$topicBaseName",
+            status: "$userInfo.drivingStatus"
+          },
           avgTime: { $avg: "$avgTimePerQuestion" }
         }
       },
-      // 5. групуємо ще раз по назві теми
+      // 6. групуємо ще раз по назві теми
       {
         $group: {
           _id: "$_id.topicName",
@@ -48,7 +68,7 @@ exports.getTestAnalytics = async (req, res) => {
           }
         }
       },
-      // 6. приводимо результат у потрібний формат
+      // 7. приводимо результат у потрібний формат
       {
         $project: {
           topicName: "$_id",
